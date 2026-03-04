@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ms" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Keluarga - Educational Game</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config with Custom Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        ui: ['Waknan', 'system-ui', 'sans-serif'],
+                        display: ['IntroRust', 'serif'],
+                        arab: ['SakkalMajalla', 'serif'],
+                        amiri: ['Amiri', 'serif'],
+                        lateef: ['Lateef', 'serif'],
+                        trad: ['TraditionalArabic', 'serif']
+                    },
+                    colors: {
+                        primary: '#FF6B9D',
+                        secondary: '#FFA500',
+                        success: '#4CAF50',
+                        warmBg: '#FFF8E7'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ==================== CUSTOM FONTS @font-face ==================== */
+        @font-face {
+            font-family: 'Waknan';
+            src: url('./fonts/WakNan.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'IntroRust';
+            src: url('./fonts/introrustg-base2line.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SakkalMajalla';
+            src: url('./fonts/Sakkal-Majalla-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Amiri';
+            src: url('./fonts/Amiri-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Lateef';
+            src: url('./fonts/Lateef-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'TraditionalArabic';
+            src: url('./fonts/TraditionalArabic-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ==================== GLOBAL STYLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            font-family: 'Waknan', sans-serif;
+            background: linear-gradient(135deg, #FFE5E5 0%, #FFF8E7 100%);
+        }
+
+        #app {
+            width: 100%;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Screen container */
+        .screen {
+            width: 100%;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(1rem, 2vw, 2rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ==================== KEYFRAME ANIMATIONS ==================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cameraFlash {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        @keyframes polaroidSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(150px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes polaroidFlyToSlot {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(var(--slot-x, 0), var(--slot-y, 0)) scale(0.6);
+            }
+        }
+
+        @keyframes crumple {
+            0%, 100% {
+                transform: skewX(0deg) skewY(0deg);
+                filter: saturate(1);
+            }
+            25% {
+                transform: skewX(-5deg) skewY(3deg);
+            }
+            50% {
+                transform: skewX(4deg) skewY(-4deg);
+                filter: saturate(0.3);
+            }
+            75% {
+                transform: skewX(-3deg) skewY(2deg);
+            }
+        }
+
+        @keyframes starFall {
+            from {
+                opacity: 1;
+                transform: translateY(-100px) rotate(0deg);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(300px) rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes wiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-3deg);
+            }
+            75% {
+                transform: rotate(3deg);
+            }
+        }
+
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .fade-in-anim {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .slide-up-anim {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .wiggle-anim {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* ==================== BUTTON STYLES ==================== */
+        .btn-primary {
+            padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1.5rem, 4vw, 2.5rem);
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-family: 'Waknan', sans-serif;
+            background: linear-gradient(135deg, #FF6B9D, #FF8FB3);
+            color: white;
+            border: none;
+            border-radius: clamp(0.5rem, 2vw, 1rem);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            padding: clamp(0.6rem, 1.5vw, 1rem) clamp(1.2rem, 3vw, 2rem);
+            font-size: clamp(0.9rem, 2vw, 1.3rem);
+            font-family: 'Waknan', sans-serif;
+            background: linear-gradient(135deg, #FFA500, #FFB84D);
+            color: white;
+            border: none;
+            border-radius: clamp(0.4rem, 1.5vw, 0.8rem);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.3);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 165, 0, 0.5);
+        }
+
+        /* ==================== SKRIN 1: MENU UTAMA ==================== */
+        #skrin1 {
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #FFF8E7 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .living-room-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800"><defs><linearGradient id="wall" x1="0%" y1="0%" x2="100%"><stop offset="0%25" style="stop-color:%23F5DEB3;stop-opacity:1"/><stop offset="100%25" style="stop-color:%23FFE4B5;stop-opacity:1"/></linearGradient><linearGradient id="floor" x1="0%" y1="0%" x2="100%"><stop offset="0%25" style="stop-color:%23D2B48C;stop-opacity:1"/><stop offset="100%25" style="stop-color:%23CD853F;stop-opacity:1"/></linearGradient></defs><rect x="0" y="0" width="1000" height="600" fill="url(%23wall)"/><rect x="0" y="600" width="1000" height="200" fill="url(%23floor)"/><rect x="50" y="50" width="400" height="350" fill="%23D4A574" rx="10"/><circle cx="150" cy="300" r="40" fill="%23FFD700" opacity="0.6"/><circle cx="350" cy="150" r="30" fill="%23FFD700" opacity="0.5"/><rect x="600" y="400" width="300" height="200" fill="%238B7355" rx="10"/><rect x="750" y="200" width="150" height="300" fill="%23A0826D" rx="10"/></svg>') center/cover no-repeat;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .menu-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .main-character {
+            width: clamp(120px, 25vw, 250px);
+            height: clamp(120px, 25vw, 250px);
+            margin: clamp(1rem, 3vw, 2rem) auto;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .character-emoji {
+            font-size: clamp(80px, 20vw, 180px);
+            line-height: 1;
+        }
+
+        .menu-title {
+            font-family: 'IntroRust', serif;
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: #FF6B9D;
+            margin: clamp(0.5rem, 2vw, 1.5rem) 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .menu-title-arab {
+            font-family: 'SakkalMajalla', serif;
+            font-size: clamp(1rem, 3vw, 2rem);
+            color: #4CAF50;
+            margin-top: 0.5rem;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: clamp(1.5rem, 4vw, 3rem);
+        }
+
+        /* ==================== SKRIN 2: ARAHAN ==================== */
+        #skrin2 {
+            background: linear-gradient(135deg, #FFF9C4 0%, #FFE0B2 100%);
+        }
+
+        .instructions-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(1rem, 3vw, 2rem);
+            max-width: 90%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .album-preview {
+            background: white;
+            border-radius: clamp(0.75rem, 2vw, 1.5rem);
+            padding: clamp(1rem, 3vw, 2rem);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            max-height: 45vh;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(60px, 15vw, 120px), 1fr));
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+        }
+
+        .album-slot {
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #E0E0E0, #F5F5F5);
+            border: 3px dashed #999;
+            border-radius: clamp(0.5rem, 1.5vw, 1rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(0.25rem, 1vw, 0.5rem);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .album-slot:hover {
+            border-color: #FF6B9D;
+            background: linear-gradient(135deg, #F0F0F0, #FAFAFA);
+        }
+
+        .slot-label {
+            font-family: 'SakkalMajalla', serif;
+            font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .instructions-text {
+            font-size: clamp(0.95rem, 2vw, 1.3rem);
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+            margin: clamp(0.5rem, 1.5vw, 1rem) 0;
+        }
+
+        .instruction-steps {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            background: rgba(255, 107, 157, 0.1);
+            padding: clamp(0.75rem, 2vw, 1.5rem);
+            border-radius: clamp(0.5rem, 1.5vw, 1rem);
+            font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+            color: #333;
+        }
+
+        /* ==================== SKRIN 3: GAMEPLAY ==================== */
+        #skrin3 {
+            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 50%, #FFE4B5 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .garden-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .gameplay-container {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(0.75rem, 2vw, 1.5rem);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: clamp(0.5rem, 1.5vw, 1rem);
+            margin: clamp(0.5rem, 1.5vw, 1rem);
+            flex-wrap: wrap;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .target-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .target-label {
+            font-size: clamp(0.7rem, 1.5vw, 0.95rem);
+            color: #666;
+            font-weight: 500;
+        }
+
+        .target-word {
+            font-family: 'SakkalMajalla', serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: #FF6B9D;
+            font-weight: 700;
+        }
+
+        .progress-info {
+            display: flex;
+            gap: clamp(0.5rem, 1.5vw, 1.25rem);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .score-box, .progress-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .score-label, .progress-label {
+            font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+            color: #666;
+            font-weight: 500;
+        }
+
+        .score-value, .progress-value {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 700;
+            color: #FF6B9D;
+        }
+
+        .game-area {
+            flex: 1;
+            position: relative;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="none" stroke="red" stroke-width="2"/><line x1="16" y1="4" x2="16" y2="10" stroke="red" stroke-width="2"/><line x1="16" y1="22" x2="16" y2="28" stroke="red" stroke-width="2"/><line x1="4" y1="16" x2="10" y2="16" stroke="red" stroke-width="2"/><line x1="22" y1="16" x2="28" y2="16" stroke="red" stroke-width="2"/></svg>') 16 16, auto;
+        }
+
+        .family-character {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 15;
+        }
+
+        .family-character:hover {
+            transform: scale(1.1);
+        }
+
+        .family-character.active-target {
+            animation: pulse 0.6s ease-in-out infinite;
+        }
+
+        .character-sprite {
+            font-size: clamp(60px, 15vw, 140px);
+            line-height: 1;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .character-name {
+            font-size: clamp(0.7rem, 1.5vw, 0.95rem);
+            color: #333;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: clamp(0.25rem, 0.75vw, 0.5rem) clamp(0.5rem, 1vw, 0.75rem);
+            border-radius: clamp(0.25rem, 0.75vw, 0.5rem);
+        }
+
+        .camera-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .camera-flash.active {
+            animation: cameraFlash 0.3s ease-out;
+        }
+
+        /* ==================== SKRIN 4: PROSES ALBUM ==================== */
+        #skrin4 {
+            background: linear-gradient(135deg, #FFE5E5 0%, #FFF8E7 100%);
+            position: relative;
+        }
+
+        .polaroid-container {
+            position: absolute;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+        }
+
+        .polaroid {
+            width: clamp(120px, 25vw, 280px);
+            aspect-ratio: 3/4;
+            background: white;
+            border: clamp(8px, 2vw, 16px) solid white;
+            border-bottom: clamp(40px, 8vw, 80px) solid white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            animation: polaroidSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .polaroid.flying {
+            animation: polaroidFlyToSlot 0.8s ease-in-out forwards;
+        }
+
+        .polaroid.wrong {
+            animation: crumple 0.6s ease-in-out;
+            filter: saturate(0.3);
+        }
+
+        .polaroid-image {
+            width: 100%;
+            height: 75%;
+            font-size: clamp(40px, 12vw, 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FFE0B2, #FFD54F);
+        }
+
+        .polaroid-label {
+            position: absolute;
+            bottom: clamp(5px, 1vw, 12px);
+            font-family: 'SakkalMajalla', serif;
+            font-size: clamp(0.7rem, 1.5vw, 1.1rem);
+            color: #333;
+            font-weight: 600;
+            text-align: center;
+            width: 90%;
+        }
+
+        .feedback-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .feedback-text {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 700;
+            color: #4CAF50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .feedback-text.wrong {
+            color: #FF6B9D;
+        }
+
+        /* ==================== SKRIN 5: TAMAT ==================== */
+        #skrin5 {
+            background: linear-gradient(180deg, #FFF9C4 0%, #FFE0B2 50%, #FFCCBC 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .celebration-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .star {
+            position: absolute;
+            font-size: clamp(24px, 6vw, 60px);
+        }
+
+        .star.falling {
+            animation: starFall 2s ease-in forwards;
+        }
+
+        .completion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(1rem, 3vw, 2rem);
+            position: relative;
+            z-index: 20;
+            animation: fadeIn 0.8s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .completion-title {
+            font-family: 'IntroRust', serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 700;
+            color: #FF6B9D;
+            text-align: center;
+        }
+
+        .completion-title-arab {
+            font-family: 'SakkalMajalla', serif;
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        .final-album {
+            background: white;
+            border-radius: clamp(0.75rem, 2vw, 1.5rem);
+            padding: clamp(1rem, 2.5vw, 2rem);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .final-album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(70px, 16vw, 140px), 1fr));
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+        }
+
+        .completed-slot {
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #FFE0B2, #FFD54F);
+        }
+
+        border-radius: clamp(0.5rem, 1.5vw, 1rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(40px, 12vw, 100px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .completed-slot:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .completed-slot::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.5), transparent);
+            pointer-events: none;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            justify-content: center;
+            margin: clamp(1rem, 2vw, 1.5rem) 0;
+        }
+
+        .star-icon {
+            font-size: clamp(32px, 8vw, 60px);
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .star-icon.empty {
+            opacity: 0.3;
+        }
+
+        .result-message {
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        .result-buttons {
+            display: flex;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        /* ==================== RESPONSIVE TWEAKS ==================== */
+        @media (max-height: 600px) {
+            .menu-title {
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
+            }
+            
+            .main-character {
+                width: clamp(80px, 18vw, 150px);
+                height: clamp(80px, 18vw, 150px);
+            }
+
+            .menu-buttons {
+                margin-top: 1rem;
+            }
+
+            .game-header {
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            .target-word {
+                font-size: clamp(1rem, 2.5vw, 1.5rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .progress-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .album-slot {
+                aspect-ratio: 3/4;
+            }
+
+            .completed-slot {
+                font-size: clamp(30px, 10vw, 80px);
+            }
+        }
+
+        /* Scrollbar styling for instructions */
+        .album-preview::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .album-preview::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .album-preview::-webkit-scrollbar-thumb {
+            background: #FF6B9D;
+            border-radius: 10px;
+        }
+
+        .album-preview::-webkit-scrollbar-thumb:hover {
+            background: #FF4081;
+        }
+
+        .completion-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .completion-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .completion-container::-webkit-scrollbar-thumb {
+            background: #FF6B9D;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- ========== SKRIN 1: MENU UTAMA ========== -->
+        <div id="skrin1" class="screen active">
+            <div class="living-room-bg"></div>
+            <div class="menu-container">
+                <div class="main-character">
+                    <div class="character-emoji">📸</div>
+                </div>
+                <h1 class="menu-title">Album Keluarga</h1>
+                <div class="menu-title-arab">أَلْبُومُ عَائِلَتِي</div>
+                <div class="menu-buttons">
+                    <button class="btn-primary" onclick="startGame()">
+                        MULA<br><span class="menu-title-arab" style="font-size: 0.9em;">إِبْدَأ</span>
+                    </button>
+                    <button class="btn-secondary" onclick="showInstructions()">Arahan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SKRIN 2: ARAHAN ========== -->
+        <div id="skrin2" class="screen">
+            <div class="instructions-container">
+                <h2 style="font-size: clamp(1.5rem, 3.5vw, 2.5rem); color: #FF6B9D; font-weight: 700;">Arahan Permainan</h2>
+                
+                <div class="album-preview">
+                    <h3 style="text-align: center; font-size: clamp(1.1rem, 2.5vw, 1.5rem); margin-bottom: 1rem; color: #333;">Album Keluarga Kosong</h3>
+                    <div class="album-grid" id="instructionAlbum">
+                        <!-- Slots will be generated by JS -->
+                    </div>
+                </div>
+
+                <div class="instructions-text">Dengar perkataan dan tangkap gambar ahli keluarga yang betul!</div>
+
+                <div class="instruction-steps">
+                    <div>✅ Dengarkan nama keluarga yang disebut</div>
+                    <div>📸 Cari orang itu di taman dan klik untuk mengambil gambar</div>
+                    <div>🖼️ Gambar Polaroid akan masuk ke album</div>
+                    <div>🎉 Lengkapkan semua 6 ahli keluarga untuk menang!</div>
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="btn-primary" onclick="startGame()">Buka Kamera 📷</button>
+                    <button class="btn-secondary" onclick="backToMenu()">Menu Utama</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SKRIN 3: GAMEPLAY ========== -->
+        <div id="skrin3" class="screen">
+            <div class="garden-bg"></div>
+            
+            <div class="gameplay-container">
+                <div class="game-header">
+                    <div class="target-display">
+                        <div class="target-label">Cari:</div>
+                        <div class="target-word" id="targetWord">أَبٌ</div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="score-box">
+                            <div class="score-label">Markah</div>
+                            <div class="score-value" id="scoreDisplay">0</div>
+                        </div>
+                        <div class="progress-box">
+                            <div class="progress-label">Kemajuan</div>
+                            <div class="progress-value" id="progressDisplay">0/6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-area" id="gameArea">
+                    <!-- Family characters will be generated here by JS -->
+                </div>
+
+                <div class="camera-flash" id="cameraFlash"></div>
+            </div>
+
+            <div class="feedback-container" id="feedbackContainer"></div>
+        </div>
+
+        <!-- ========== SKRIN 4: PROSES ALBUM ========== -->
+        <div id="skrin4" class="screen">
+            <div style="position: relative; z-index: 30; text-align: center; margin-top: 4rem;">
+                <h2 style="font-size: clamp(1.5rem, 3.5vw, 2.5rem); color: #FF6B9D; font-weight: 700;">Album Anda</h2>
+                <p style="font-size: clamp(0.95rem, 2vw, 1.3rem); color: #666; margin-top: 0.5rem;">Tunggu gambar diproses...</p>
+            </div>
+            <div class="polaroid-container" id="polaroidContainer"></div>
+        </div>
+
+        <!-- ========== SKRIN 5: TAMAT ========== -->
+        <div id="skrin5" class="screen">
+            <div class="celebration-overlay" id="celebrationOverlay"></div>
+            
+            <div class="completion-container">
+                <div>
+                    <h2 class="completion-title">Keluarga Saya Bahagia!</h2>
+                    <div class="completion-title-arab">أُسْرَتِي سَعِيدَةٌ</div>
+                </div>
+
+                <div class="final-album">
+                    <div class="final-album-grid" id="finalAlbum">
+                        <!-- Completed slots will be here -->
+                    </div>
+                </div>
+
+                <div class="star-rating" id="starRating">
+                    <!-- Stars will be generated based on score -->
+                </div>
+
+                <div class="result-message" id="resultMessage">
+                    Tahniah! Album keluarga kita sudah lengkap!
+                </div>
+
+                <div class="result-buttons">
+                    <button class="btn-primary" onclick="restartGame()">Cuba Lagi 🎮</button>
+                    <button class="btn-secondary" onclick="backToMenu()">Menu Utama 🏠</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // ============ GAME STATE ============
+        const gameState = {
+            currentScreen: 'skrin1',
+            currentTargetIndex: 0,
+            completedFamily: [],
+            score: 0,
+            mistakes: 0,
+            allTargets: []
+        };
+
+        // ============ FAMILY DATA ============
+        const familyMembers = [
+            {
+                id: 'ayah',
+                malayName: 'Ayah',
+                arabicLabel: 'أَبٌ',
+                arabicName: 'Abun',
+                emoji: '👨',
+                x: '15%',
+                y: '35%',
+                activity: '(membaca berita)'
+            },
+            {
+                id: 'ibu',
+                malayName: 'Ibu',
+                arabicLabel: 'أُمٌّ',
+                arabicName: 'Ummun',
+                emoji: '👩',
+                x: '50%',
+                y: '40%',
+                activity: '(membaca buku)'
+            },
+            {
+                id: 'datuk',
+                malayName: 'Datuk',
+                arabicLabel: 'جَدٌّ',
+                arabicName: 'Jaddun',
+                emoji: '👴',
+                x: '75%',
+                y: '50%',
+                activity: '(menyiram bunga)'
+            },
+            {
+                id: 'nenek',
+                malayName: 'Nenek',
+                arabicLabel: 'جَدَّةٌ',
+                arabicName: 'Jaddatun',
+                emoji: '👵',
+                x: '25%',
+                y: '60%',
+                activity: '(duduk)'
+            },
+            {
+                id: 'abang',
+                malayName: 'Abang',
+                arabicLabel: 'أَخٌ',
+                arabicName: 'Akhun',
+                emoji: '👦',
+                x: '60%',
+                y: '65%',
+                activity: '(bermain bola)'
+            },
+            {
+                id: 'adik',
+                malayName: 'Adik',
+                arabicLabel: 'أُخْتٌ',
+                arabicName: 'Ukhtun',
+                emoji: '👧',
+                x: '85%',
+                y: '55%',
+                activity: '(main mainan)'
+            }
+        ];
+
+        // ============ AUDIO FUNCTIONS (COMMENTED) ============
+        function playBackgroundMusic() {
+            // TODO: Insert mp3 here
+            // const bgm = new Audio('./audio/background-music.mp3');
+            // bgm.loop = true;
+            // bgm.volume = 0.5;
+            // bgm.play();
+            console.log('🎵 Playing background music...');
+        }
+
+        function playShutterSound() {
+            // TODO: Insert mp3 here
+            // const shutter = new Audio('./audio/camera-shutter.mp3');
+            // shutter.play();
+            console.log('📸 Shutter sound: Klik-Klak!');
+        }
+
+        function playSuccessChime() {
+            // TODO: Insert mp3 here
+            // const chime = new Audio('./audio/success-chime.mp3');
+            // chime.play();
+            console.log('✅ Success chime!');
+        }
+
+        function playErrorBuzzer() {
+            // TODO: Insert mp3 here
+            // const buzzer = new Audio('./audio/error-buzzer.mp3');
+            // buzzer.play();
+            console.log('❌ Error buzzer!');
+        }
+
+        function playVoiceOver(text, malayText = '') {
+            // TODO: Insert mp3 here
+            // const vo = new Audio(`./audio/vo/${text}.mp3`);
+            // vo.play();
+            console.log(`🔊 VO: ${malayText || text}`);
+        }
+
+        // ============ SCREEN NAVIGATION ============
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            gameState.currentScreen = screenId;
+        }
+
+        function backToMenu() {
+            gameState.currentTargetIndex = 0;
+            gameState.completedFamily = [];
+            gameState.score = 0;
+            gameState.mistakes = 0;
+            showScreen('skrin1');
+            playBackgroundMusic();
+        }
+
+        function showInstructions() {
+            showScreen('skrin2');
+            generateInstructionAlbum();
+            playVoiceOver('instructions', 'Jom lengkapkan album keluarga ini! Dengar nama yang disebut, cari mereka dan ambil gambar!');
+        }
+
+        function startGame() {
+            gameState.currentTargetIndex = 0;
+            gameState.completedFamily = [];
+            gameState.score = 0;
+            gameState.mistakes = 0;
+            gameState.allTargets = [...familyMembers];
+            
+            showScreen('skrin3');
+            generateGameArea();
+            updateGameDisplay();
+            announceCurrentTarget();
+            playBackgroundMusic();
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // ============ INSTRUCTION SCREEN ============
+        function generateInstructionAlbum() {
+            const albumDiv = document.getElementById('instructionAlbum');
+            albumDiv.innerHTML = '';
+            
+            familyMembers.forEach(member => {
+                const slot = document.createElement('div');
+                slot.className = 'album-slot';
+                slot.innerHTML = `<div class="slot-label">${member.arabicLabel}</div>`;
+                albumDiv.appendChild(slot);
+            });
+        }
+
+        // ============ GAMEPLAY ============
+        function generateGameArea() {
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = '';
+
+            familyMembers.forEach(member => {
+                const charDiv = document.createElement('div');
+                charDiv.className = 'family-character';
+                charDiv.id = `char-${member.id}`;
+                charDiv.style.left = member.x;
+                charDiv.style.top = member.y;
+                
+                charDiv.innerHTML = `
+                    <div class="character-sprite">${member.emoji}</div>
+                    <div class="character-name">${member.malayName}</div>
+                `;
+                
+                charDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    onCharacterClick(member);
+                };
+
+                gameArea.appendChild(charDiv);
+            });
+
+            updateActiveTarget();
+        }
+
+        function updateGameDisplay() {
+            const target = gameState.allTargets[gameState.currentTargetIndex];
+            if (target) {
+                document.getElementById('targetWord').textContent = target.arabicLabel;
+                document.getElementById('scoreDisplay').textContent = gameState.score;
+                document.getElementById('progressDisplay').textContent = `${gameState.completedFamily.length}/6`;
+            }
+        }
+
+        function updateActiveTarget() {
+            document.querySelectorAll('.family-character').forEach(char => {
+                char.classList.remove('active-target');
+            });
+
+            const target = gameState.allTargets[gameState.currentTargetIndex];
+            if (target) {
+                const activeChar = document.getElementById(`char-${target.id}`);
+                if (activeChar) {
+                    activeChar.classList.add('active-target');
+                }
+            }
+        }
+
+        function announceCurrentTarget() {
+            const target = gameState.allTargets[gameState.currentTargetIndex];
+            if (target) {
+                playVoiceOver(target.arabicName, `${target.arabicName} (${target.malayName})`);
+            }
+        }
+
+        function onCharacterClick(member) {
+            const target = gameState.allTargets[gameState.currentTargetIndex];
+            const isCorrect = member.id === target.id;
+
+            // Camera flash effect
+            const flash = document.getElementById('cameraFlash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+
+            playShutterSound();
+
+            // Show result in skrin4
+            showScreen('skrin4');
+            showPolaroidResult(member, isCorrect);
+        }
+
+        // ============ SKRIN 4: POLAROID PROCESSING ============
+        function showPolaroidResult(member, isCorrect) {
+            const container = document.getElementById('polaroidContainer');
+            container.innerHTML = '';
+
+            const polaroid = document.createElement('div');
+            polaroid.className = 'polaroid';
+            polaroid.innerHTML = `
+                <div class="polaroid-image">${member.emoji}</div>
+                <div class="polaroid-label">${member.arabicLabel}</div>
+            `;
+
+            container.appendChild(polaroid);
+
+            const feedback = document.getElementById('feedbackContainer') || document.createElement('div');
+            feedback.id = 'feedbackContainer';
+            feedback.className = 'feedback-container';
+            feedback.innerHTML = '';
+
+            if (isCorrect) {
+                playSuccessChime();
+                gameState.score += 10;
+                gameState.completedFamily.push(member.id);
+
+                const feedbackText = document.createElement('div');
+                feedbackText.className = 'feedback-text';
+                feedbackText.innerHTML = `✅ Mumtaz!<br>${member.malayName}<br>${member.arabicLabel}`;
+                feedback.appendChild(feedbackText);
+
+                document.body.appendChild(feedback);
+
+                setTimeout(() => {
+                    animatePolaroidToSlot(polaroid, member);
+                }, 800);
+            } else {
+                playErrorBuzzer();
+                gameState.mistakes++;
+
+                polaroid.classList.add('wrong');
+
+                const feedbackText = document.createElement('div');
+                feedbackText.className = 'feedback-text wrong';
+                feedbackText.innerHTML = '❌ Cuba Cari Lagi';
+                feedback.appendChild(feedbackText);
+
+                document.body.appendChild(feedback);
+
+                setTimeout(() => {
+                    showScreen('skrin3');
+                    updateGameDisplay();
+                    updateActiveTarget();
+                    announceCurrentTarget();
+                }, 2000);
+            }
+        }
+
+        function animatePolaroidToSlot(polaroidEl, member) {
+            const gameArea = document.getElementById('gameArea');
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const slotIndex = familyMembers.findIndex(m => m.id === member.id);
+            
+            // Calculate target slot position (simplified)
+            const slotX = gameAreaRect.width * 0.5;
+            const slotY = gameAreaRect.height * 0.3;
+
+            polaroidEl.style.setProperty('--slot-x', `${slotX}px`);
+            polaroidEl.style.setProperty('--slot-y', `${slotY}px`);
+            polaroidEl.classList.add('flying');
+
+            setTimeout(() => {
+                gameState.currentTargetIndex++;
+
+                if (gameState.currentTargetIndex >= familyMembers.length) {
+                    // Game complete!
+                    showCompletionScreen();
+                } else {
+                    showScreen('skrin3');
+                    updateGameDisplay();
+                    updateActiveTarget();
+                    announceCurrentTarget();
+                }
+            }, 1000);
+        }
+
+        // ============ SKRIN 5: COMPLETION ============
+        function showCompletionScreen() {
+            showScreen('skrin5');
+            generateFinalAlbum();
+            generateStarRating();
+            playCompletionAudio();
+            generateFallingStars();
+        }
+
+        function generateFinalAlbum() {
+            const finalAlbum = document.getElementById('finalAlbum');
+            finalAlbum.innerHTML = '';
+
+            familyMembers.forEach(member => {
+                const slot = document.createElement('div');
+                slot.className = 'completed-slot';
+                slot.innerHTML = member.emoji;
+                slot.title = member.malayName;
+                
+                slot.onclick = () => {
+                    playVoiceOver(member.arabicName, `${member.malayName} - ${member.arabicLabel}`);
+                };
+
+                finalAlbum.appendChild(slot);
+            });
+        }
+
+        function generateStarRating() {
+            const starContainer = document.getElementById('starRating');
+            starContainer.innerHTML = '';
+
+            let stars = 3;
+            if (gameState.mistakes > 1) stars = 2;
+            if (gameState.mistakes > 3) stars = 1;
+
+            for (let i = 0; i < 3; i++) {
+                const star = document.createElement('div');
+                star.className = `star-icon ${i >= stars ? 'empty' : ''}`;
+                star.innerHTML = i < stars ? '⭐' : '☆';
+                starContainer.appendChild(star);
+            }
+        }
+
+        function generateFallingStars() {
+            const overlay = document.getElementById('celebrationOverlay');
+            overlay.innerHTML = '';
+
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star falling';
+                star.innerHTML = '⭐';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 0.5 + 's';
+                overlay.appendChild(star);
+            }
+        }
+
+        function playCompletionAudio() {
+            playVoiceOver('completion', 'Tahniah! Album keluarga kita sudah lengkap!');
+            // TODO: Play victory music
+            // const victoryMusic = new Audio('./audio/victory-music.mp3');
+            // victoryMusic.play();
+        }
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', () => {
+            generateInstructionAlbum();
+            playBackgroundMusic();
+            console.log('🎮 Keluarga Saya Game Ready!');
+            console.log('📚 Family Members:', familyMembers);
+        });
+    </script>
+</body>
+</html>

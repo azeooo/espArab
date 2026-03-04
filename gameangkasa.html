@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>مُهِمَّةُ الفَضَاءِ — Misi Angkasa</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --star-color: #fff; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Baloo 2', cursive;
+    background: #050a1a;
+    overflow: hidden;
+    height: 100dvh;
+    width: 100dvw;
+  }
+  .arabic-font {
+    font-family: 'Baloo 2', 'Arial Unicode MS', serif;
+    direction: rtl;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity:0.2; transform:scale(0.8); }
+    50%     { opacity:1;   transform:scale(1.2); }
+  }
+  @keyframes floatUp {
+    0%   { transform:translateY(0px); }
+    50%  { transform:translateY(-12px); }
+    100% { transform:translateY(0px); }
+  }
+  @keyframes ufoFloat {
+    0%   { transform:translateY(0px); }
+    50%  { transform:translateY(-18px); }
+    100% { transform:translateY(0px); }
+  }
+  @keyframes explode {
+    0%   { transform:scale(1);   opacity:1; }
+    50%  { transform:scale(2.5); opacity:0.7; }
+    100% { transform:scale(0);   opacity:0; }
+  }
+  @keyframes starBurst {
+    0%   { transform:translate(0,0) scale(1); opacity:1; }
+    100% { transform:translate(var(--tx),var(--ty)) scale(0); opacity:0; }
+  }
+  @keyframes rocketFlame {
+    0%,100% { transform:scaleY(1);   opacity:0.9; }
+    50%     { transform:scaleY(1.4); opacity:0.6; }
+  }
+  @keyframes laserRise {
+    0%   { transform:translateY(0);     opacity:1; }
+    100% { transform:translateY(-120vh); opacity:0.3; }
+  }
+  @keyframes pulse-glow {
+    0%,100% { box-shadow:0 0 10px rgba(100,200,255,0.4),0 0 30px rgba(100,200,255,0.2); }
+    50%     { box-shadow:0 0 20px rgba(100,200,255,0.8),0 0 50px rgba(100,200,255,0.4); }
+  }
+  @keyframes slideInDown {
+    from { transform:translateY(-60px); opacity:0; }
+    to   { transform:translateY(0);     opacity:1; }
+  }
+  @keyframes slideInUp {
+    from { transform:translateY(60px); opacity:0; }
+    to   { transform:translateY(0);    opacity:1; }
+  }
+  @keyframes scanline {
+    0%   { transform:translateY(-100%); }
+    100% { transform:translateY(200%);  }
+  }
+  @keyframes wobble {
+    0%,100% { transform:rotate(-3deg); }
+    50%     { transform:rotate(3deg);  }
+  }
+  @keyframes ufoShake {
+    0%,100% { transform:translateX(0);   }
+    25%     { transform:translateX(-8px); }
+    75%     { transform:translateX(8px);  }
+  }
+
+  .star         { position:absolute; border-radius:50%; background:#fff; animation:twinkle var(--dur,2s) ease-in-out infinite; animation-delay:var(--delay,0s); }
+  .float-anim   { animation:floatUp 3s ease-in-out infinite; }
+  .ufo-float    { animation:ufoFloat 3s ease-in-out infinite; }
+  .rocket-flame { animation:rocketFlame 0.15s ease-in-out infinite; }
+  .pulse-glow   { animation:pulse-glow 2s ease-in-out infinite; }
+  .slide-down   { animation:slideInDown 0.5s ease-out; }
+  .slide-up     { animation:slideInUp 0.5s ease-out; }
+  .wobble-anim  { animation:wobble 1s ease-in-out infinite; }
+  .ufo-shake    { animation:ufoShake 0.25s ease-in-out; }
+
+  .laser {
+    position:absolute;
+    width:5px;
+    background:linear-gradient(to top,#00ffff,#ffffff);
+    border-radius:4px;
+    box-shadow:0 0 8px #00ffff,0 0 16px #00ffff;
+    pointer-events:none;
+    animation:laserRise 0.45s linear forwards;
+    transform-origin:bottom center;
+  }
+  .boss-laser {
+    position:absolute;
+    width:6px;
+    background:linear-gradient(to top,#a855f7,#ffffff);
+    border-radius:4px;
+    box-shadow:0 0 10px #a855f7,0 0 20px #a855f7;
+    pointer-events:none;
+    animation:laserRise 0.45s linear forwards;
+    transform-origin:bottom center;
+  }
+  .explosion {
+    position:absolute;
+    pointer-events:none;
+    animation:explode 0.4s ease-out forwards;
+  }
+  .btn-main {
+    background:linear-gradient(135deg,#1e3a8a,#3b82f6);
+    border:2px solid #60a5fa;
+    color:white;
+    font-family:'Baloo 2',cursive;
+    font-weight:800;
+    font-size:1.2rem;
+    padding:0.75rem 2.5rem;
+    border-radius:9999px;
+    cursor:pointer;
+    transition:all 0.2s;
+    box-shadow:0 4px 15px rgba(59,130,246,0.4);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    min-width:160px;
+    touch-action:manipulation;
+  }
+  .btn-main:hover  { transform:scale(1.07); box-shadow:0 6px 25px rgba(59,130,246,0.7); background:linear-gradient(135deg,#2563eb,#60a5fa); }
+  .btn-main:active { transform:scale(0.95); }
+  .btn-green { background:linear-gradient(135deg,#065f46,#10b981); border-color:#34d399; box-shadow:0 4px 15px rgba(16,185,129,0.4); }
+  .btn-green:hover { background:linear-gradient(135deg,#047857,#34d399); box-shadow:0 6px 25px rgba(16,185,129,0.7); }
+  .btn-red   { background:linear-gradient(135deg,#7f1d1d,#ef4444); border-color:#f87171; box-shadow:0 4px 15px rgba(239,68,68,0.4); }
+  .btn-red:hover   { background:linear-gradient(135deg,#991b1b,#f87171); }
+  .btn-yellow{ background:linear-gradient(135deg,#78350f,#f59e0b); border-color:#fcd34d; box-shadow:0 4px 15px rgba(245,158,11,0.4); }
+  .btn-yellow:hover{ background:linear-gradient(135deg,#92400e,#fcd34d); }
+  .btn-shoot {
+    background:radial-gradient(circle,#ff4d00,#cc2200);
+    border:3px solid #ff7733;
+    color:white;
+    font-family:'Baloo 2',cursive;
+    font-weight:800;
+    font-size:1.3rem;
+    width:90px; height:90px;
+    border-radius:50%;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(255,77,0,0.6),0 4px 10px rgba(0,0,0,0.5);
+    transition:all 0.1s;
+    touch-action:manipulation;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+  }
+  .btn-shoot:active { transform:scale(0.9); box-shadow:0 0 30px rgba(255,77,0,0.9); }
+  .hologram {
+    background:rgba(0,200,255,0.05);
+    border:2px solid rgba(0,200,255,0.4);
+    box-shadow:0 0 20px rgba(0,200,255,0.3),inset 0 0 20px rgba(0,200,255,0.05);
+    position:relative;
+    overflow:hidden;
+  }
+  .hologram::after {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+    background:linear-gradient(to right,transparent,rgba(0,200,255,0.8),transparent);
+    animation:scanline 2s linear infinite;
+  }
+  .hp-bar { background:linear-gradient(to right,#ff4d00,#ff9900); transition:width 0.25s ease; border-radius:9999px; }
+  .screen { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
+  .screen.active { display:flex; }
+  .game-asteroid {
+    position:absolute;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    user-select:none;
+    z-index:10;
+  }
+  .asteroid-letter {
+    font-family:'Baloo 2','Arial Unicode MS',serif;
+    direction:rtl;
+    text-shadow:2px 2px 4px rgba(0,0,0,0.8);
+    line-height:1;
+  }
+  #gameCanvas, #bossCanvas {
+    position:absolute; inset:0; overflow:hidden; pointer-events:none;
+  }
+  #gameCanvas .game-asteroid, #bossCanvas .game-asteroid { pointer-events:all; }
+  .rocket-container { position:absolute; bottom:88px; z-index:20; }
+</style>
+</head>
+<body>
+
+<div id="starField" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
+
+<!-- SCREEN 1: MAIN MENU -->
+<div id="screenMenu" class="screen active" style="z-index:10;">
+  <div class="relative w-full h-full flex flex-col items-center justify-center">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(30,58,138,0.4) 0%,transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(91,33,182,0.3) 0%,transparent 60%);pointer-events:none;"></div>
+    <div class="slide-down text-center mb-2" style="z-index:2;">
+      <div class="arabic-font text-yellow-300 font-bold" style="font-size:clamp(1.4rem,5vw,2.2rem);text-shadow:0 0 20px rgba(253,224,71,0.8);">مُهِمَّةُ الفَضَاءِ</div>
+      <div class="text-white font-black" style="font-family:'Fredoka One',cursive;font-size:clamp(2rem,8vw,3.5rem);text-shadow:0 0 30px rgba(100,200,255,0.9),0 4px 0 rgba(0,0,0,0.5);">MISI ANGKASA</div>
+      <div class="text-cyan-300 text-sm mt-1" style="letter-spacing:3px;">✦ PERMAINAN BAHASA ARAB ✦</div>
+    </div>
+    <div class="float-anim my-4" style="z-index:2;font-size:5rem;">🚀</div>
+    <div class="slide-up flex flex-col gap-3 items-center mt-2" style="z-index:2;">
+      <button class="btn-main btn-green" onclick="startGame()">🚀 MULA</button>
+      <button class="btn-main" onclick="showRecords()">🏆 REKOD</button>
+      <button class="btn-main btn-red" onclick="if(confirm('Keluar?'))window.close()">✖ KELUAR</button>
+    </div>
+    <div class="absolute bottom-4 text-yellow-300 text-xs opacity-60" style="letter-spacing:4px;">⭐ TEMBAK ASTEROID ARAB ⭐</div>
+  </div>
+</div>
+
+<!-- SCREEN 2: RECORDS -->
+<div id="screenRecords" class="screen" style="z-index:10;">
+  <div class="relative w-full h-full flex flex-col items-center justify-center p-6">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(30,58,138,0.5) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="hologram rounded-2xl p-6 w-full max-w-sm text-center slide-down" style="z-index:2;">
+      <div class="text-yellow-300 font-black text-2xl mb-4" style="font-family:'Fredoka One',cursive;">🏆 REKOD TERTINGGI</div>
+      <div id="recordsList" class="text-white space-y-2 text-lg"></div>
+      <div class="mt-4 text-cyan-300 text-sm">Skor terbaik anda disimpan di sini!</div>
+    </div>
+    <button class="btn-main mt-6 slide-up" style="z-index:2;" onclick="showScreen('screenMenu')">← KEMBALI</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: TUTORIAL -->
+<div id="screenTutorial" class="screen" style="z-index:10;">
+  <div class="relative w-full h-full flex flex-col items-center justify-center p-4">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,46,37,0.6) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="float-anim text-center mb-3 slide-down" style="z-index:2;font-size:4rem;">👨‍🚀</div>
+    <div class="hologram rounded-2xl p-4 max-w-xs w-full text-center mb-4 slide-down" style="z-index:2;">
+      <div class="text-cyan-300 font-bold text-sm mb-2" style="letter-spacing:2px;">ARAHAN KOMANDER</div>
+      <div id="tutorialVO" class="text-white text-sm leading-relaxed"></div>
+    </div>
+    <div class="hologram rounded-2xl p-4 mb-4 text-center slide-down" style="z-index:2;min-width:120px;">
+      <div class="text-cyan-400 text-xs mb-1" style="letter-spacing:2px;">SASARAN</div>
+      <div id="tutorialLetter" class="arabic-font text-yellow-300 font-black" style="font-size:4rem;text-shadow:0 0 20px rgba(253,224,71,0.8);"></div>
+      <div id="tutorialLetterName" class="text-white text-xs mt-1"></div>
+    </div>
+    <div id="tutorialLevelBadge" class="text-cyan-300 text-sm mb-3 font-bold" style="z-index:2;letter-spacing:2px;"></div>
+    <button class="btn-main btn-green slide-up" style="z-index:2;" onclick="startLevel()">🚀 Sedia, Berlepas!</button>
+  </div>
+</div>
+
+<!-- SCREEN 4: GAMEPLAY -->
+<div id="screenGame" class="screen" style="z-index:10;background:linear-gradient(180deg,#020818 0%,#050a1a 50%,#0a0520 100%);">
+  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+    <div class="flex items-center gap-1">
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Fredoka One',cursive;">SKO</span>
+      <span id="scoreDisplay" class="text-white font-black text-lg" style="font-family:'Fredoka One',cursive;">0</span>
+    </div>
+    <div class="text-cyan-300 font-bold text-sm" id="levelDisplay" style="letter-spacing:1px;">LEVEL 1</div>
+    <div class="flex gap-1" id="livesDisplay"><span>❤️</span><span>❤️</span><span>❤️</span></div>
+  </div>
+  <div class="absolute top-12 left-0 right-0 flex justify-center" style="z-index:25;">
+    <div class="bg-black bg-opacity-50 rounded-full px-3 py-1 flex items-center gap-2">
+      <span class="text-cyan-300 text-xs">TEMBAK:</span>
+      <span id="targetReminder" class="arabic-font text-yellow-300 font-black text-2xl"></span>
+    </div>
+  </div>
+  <div id="gameCanvas"></div>
+  <div id="rocketEl" class="rocket-container" style="left:50%;transform:translateX(-50%);">
+    <div style="font-size:2.8rem;line-height:1;">🚀</div>
+    <div class="rocket-flame text-center" style="font-size:1rem;margin-top:-4px;">🔥</div>
+  </div>
+  <div class="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 pb-3 pt-2" style="z-index:30;background:rgba(0,0,0,0.4);">
+    <div class="flex gap-2">
+      <button class="btn-main" style="min-width:60px;padding:0.5rem 1rem;font-size:1.5rem;"
+        ontouchstart="startMove('left')" ontouchend="stopMove()" onmousedown="startMove('left')" onmouseup="stopMove()">◀</button>
+      <button class="btn-main" style="min-width:60px;padding:0.5rem 1rem;font-size:1.5rem;"
+        ontouchstart="startMove('right')" ontouchend="stopMove()" onmousedown="startMove('right')" onmouseup="stopMove()">▶</button>
+    </div>
+    <button class="btn-shoot" id="btnShoot" onclick="shootLaser()">
+      <span style="font-size:1.4rem;">🔫</span>
+      <span style="font-size:0.7rem;font-weight:900;">TEMBAK</span>
+    </button>
+  </div>
+  <!-- Fail Overlay -->
+  <div id="overlayFail" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
+    <div class="text-6xl mb-3 wobble-anim">💥</div>
+    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">MISI GAGAL!</div>
+    <div class="text-white text-sm mb-4">Jangan putus asa, cuba lagi!</div>
+    <div class="flex gap-3">
+      <button class="btn-main btn-yellow" onclick="retryLevel()">🔄 CUBA LAGI</button>
+      <button class="btn-main" onclick="showScreen('screenMenu')">🏠 MENU</button>
+    </div>
+  </div>
+  <!-- Complete Overlay -->
+  <div id="overlayComplete" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
+    <div class="text-6xl mb-3 float-anim">🌟</div>
+    <div class="text-yellow-300 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">TAHAP SELESAI!</div>
+    <div id="completeMsg" class="text-white text-sm mb-2"></div>
+    <div id="completeBonusMsg" class="text-cyan-300 text-sm mb-4"></div>
+    <button class="btn-main btn-green" onclick="nextLevel()">⏭ SETERUSNYA</button>
+  </div>
+</div>
+
+<!-- SCREEN 5: BONUS TUTORIAL -->
+<div id="screenBonusTutorial" class="screen" style="z-index:10;">
+  <div class="relative w-full h-full flex flex-col items-center justify-center p-4">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(76,5,5,0.6) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="float-anim text-center mb-3 slide-down" style="z-index:2;font-size:4rem;">👨‍🚀</div>
+    <div class="text-red-300 font-black text-2xl mb-3 wobble-anim" style="font-family:'Fredoka One',cursive;z-index:2;">⚠️ BOSS MUNCUL! ⚠️</div>
+    <div class="hologram rounded-2xl p-4 max-w-xs w-full text-center mb-4 slide-down" style="z-index:2;">
+      <div class="text-red-300 font-bold text-sm mb-2" style="letter-spacing:2px;">ARAHAN KOMANDER</div>
+      <div class="text-white text-sm leading-relaxed">Perhatian juruterbang! Ini cabaran bonus. Tembak UFO yang membawa kalimah sampai musnah! Setiap UFO perlukan 10 tembakan. Kau boleh buat ni!</div>
+    </div>
+    <div class="hologram rounded-2xl p-4 mb-4 text-center slide-down" style="z-index:2;">
+      <div class="text-red-400 text-xs mb-2" style="letter-spacing:2px;">SASARAN BOSS</div>
+      <div style="font-size:4rem;">🛸</div>
+      <div class="arabic-font text-yellow-300 font-black text-2xl mt-1">كَلِمَاتٌ عَرَبِيَّةٌ</div>
+      <div class="text-white text-xs mt-2 font-bold">10 tembakan setiap UFO</div>
+    </div>
+    <button class="btn-main btn-red slide-up" style="z-index:2;" onclick="startBossMode()">🔥 Sedia, Berlepas!</button>
+  </div>
+</div>
+
+<!-- SCREEN 6: BOSS GAMEPLAY -->
+<div id="screenBoss" class="screen" style="z-index:10;background:linear-gradient(180deg,#1a0000 0%,#050010 50%,#000520 100%);">
+  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
+    <div class="flex items-center gap-1">
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Fredoka One',cursive;">SKO</span>
+      <span id="bossScoreDisplay" class="text-white font-black text-lg" style="font-family:'Fredoka One',cursive;">0</span>
+    </div>
+    <div class="text-red-300 font-bold text-sm" id="bossWordDisplay" style="letter-spacing:1px;">Kalimah 1/7</div>
+    <div class="flex gap-1" id="bossLivesDisplay">❤️❤️❤️</div>
+  </div>
+
+  <!-- UFO — large, centered -->
+  <div id="bossUFOContainer" class="absolute flex flex-col items-center" style="top:65px;left:50%;transform:translateX(-50%);z-index:20;width:300px;text-align:center;">
+    <div class="ufo-float flex flex-col items-center w-full">
+      <div style="font-size:8rem;line-height:1;filter:drop-shadow(0 0 28px rgba(255,80,80,0.9));">🛸</div>
+      <div id="bossWordText" class="arabic-font text-yellow-300 font-black mt-1" style="font-size:3rem;text-shadow:0 0 28px rgba(253,224,71,1),0 0 10px rgba(253,224,71,0.6);min-height:3.5rem;"></div>
+    </div>
+    <div class="mt-3 bg-gray-800 rounded-full border border-gray-600" style="width:240px;height:20px;overflow:hidden;">
+      <div id="bossHPBar" class="hp-bar h-full" style="width:100%;"></div>
+    </div>
+    <div id="bossHPText" class="text-white text-sm font-bold mt-1"></div>
+  </div>
+
+  <div id="bossCanvas"></div>
+  <div id="bossRocketEl" class="rocket-container" style="left:50%;transform:translateX(-50%);">
+    <div style="font-size:2.8rem;line-height:1;">🚀</div>
+    <div class="rocket-flame text-center" style="font-size:1rem;margin-top:-4px;">🔥</div>
+  </div>
+  <div class="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 pb-3 pt-2" style="z-index:30;background:rgba(0,0,0,0.4);">
+    <div class="flex gap-2">
+      <button class="btn-main" style="min-width:60px;padding:0.5rem 1rem;font-size:1.5rem;"
+        ontouchstart="startBossMove('left')" ontouchend="stopBossMove()" onmousedown="startBossMove('left')" onmouseup="stopBossMove()">◀</button>
+      <button class="btn-main" style="min-width:60px;padding:0.5rem 1rem;font-size:1.5rem;"
+        ontouchstart="startBossMove('right')" ontouchend="stopBossMove()" onmousedown="startBossMove('right')" onmouseup="stopBossMove()">▶</button>
+    </div>
+    <button class="btn-shoot" id="btnBossShoot" onclick="shootBossLaser()"
+      style="background:radial-gradient(circle,#7c00ff,#4400aa);border-color:#a855f7;box-shadow:0 0 20px rgba(168,85,247,0.6),0 4px 10px rgba(0,0,0,0.5);">
+      <span style="font-size:1.4rem;">⚡</span>
+      <span style="font-size:0.7rem;font-weight:900;">TEMBAK</span>
+    </button>
+  </div>
+  <!-- Boss Fail Overlay -->
+  <div id="overlayBossFail" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
+    <div class="text-6xl mb-3 wobble-anim">💥</div>
+    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">MISI GAGAL!</div>
+    <div class="text-white text-sm mb-4">Hampir berjaya! Cuba lagi!</div>
+    <div class="flex gap-3">
+      <button class="btn-main btn-yellow" onclick="retryBoss()">🔄 CUBA LAGI</button>
+      <button class="btn-main" onclick="showScreen('screenMenu')">🏠 MENU</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 7: FINAL RESULTS -->
+<div id="screenResults" class="screen" style="z-index:10;">
+  <div class="relative w-full h-full flex flex-col items-center justify-center p-6">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(120,53,15,0.5) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="float-anim text-6xl mb-2" style="z-index:2;">🏆</div>
+    <div class="text-yellow-300 font-black text-3xl mb-1 text-center" style="font-family:'Fredoka One',cursive;z-index:2;text-shadow:0 0 20px rgba(253,224,71,0.8);">MISI SELESAI!</div>
+    <div class="text-white text-sm mb-4" style="z-index:2;">Anda hebat, juruterbang!</div>
+    <div class="hologram rounded-2xl p-5 w-full max-w-xs text-center slide-down" style="z-index:2;">
+      <div class="text-cyan-300 text-sm mb-2" style="letter-spacing:2px;">KEPUTUSAN AKHIR</div>
+      <div class="text-yellow-300 font-black text-5xl mb-2" style="font-family:'Fredoka One',cursive;" id="finalScore">0</div>
+      <div class="text-white text-sm mb-3">mata</div>
+      <div id="rankBadge" class="text-2xl font-black mb-1"></div>
+      <div id="rankName" class="text-yellow-300 font-bold text-lg"></div>
+      <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="bg-blue-900 bg-opacity-50 rounded-lg p-2">
+          <div class="text-cyan-300 font-bold">Leftenan</div><div class="text-white">&lt; 300</div>
+        </div>
+        <div class="bg-purple-900 bg-opacity-50 rounded-lg p-2">
+          <div class="text-purple-300 font-bold">Kapten</div><div class="text-white">300–600</div>
+        </div>
+        <div class="bg-yellow-900 bg-opacity-50 rounded-lg p-2">
+          <div class="text-yellow-300 font-bold">Komander</div><div class="text-white">&gt; 600</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-5 slide-up" style="z-index:2;">
+      <button class="btn-main" onclick="showScreen('screenMenu')">🏠 Menu Utama</button>
+      <button class="btn-main btn-green" onclick="restartAll()">🔄 Main Semula</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIO placeholders -->
+<!-- TODO: Replace with actual .mp3 paths -->
+<audio id="audioBg" loop preload="auto">
+  <source src="assets/soundef/bg_music.mp3" type="audio/mpeg">
+</audio>
+<audio id="audioBeep" preload="auto">
+  <source src="assets/soundef/beep.mp3" type="audio/mpeg">
+</audio>
+<audio id="audioLaser" preload="auto">
+  <source src="assets/soundef/laser.mp3" type="audio/mpeg">
+</audio>
+<audio id="audioBoom" preload="auto">
+  <source src="assets/soundef/boom.mp3" type="audio/mpeg">
+</audio>
+<audio id="audioBuzzer" preload="auto">
+  <source src="assets/soundef/buzzer.mp3" type="audio/mpeg">
+</audio>
+<audio id="audioSuccess" preload="auto">
+  <source src="assets/soundef/successsound.mp3" type="audio/mpeg">
+</audio>
+<script>
+// ===================== DATA =====================
+const LEVELS = [
+  { level:1, target:'ج',  asteroids:['ج','حـ','خـ'], targetName:'Jim',  quota:5 },
+  { level:2, target:'أ',  asteroids:['أ','ن','ب'],   targetName:'Alif', quota:5 },
+  { level:3, target:'د',  asteroids:['د','ز','ذ'],   targetName:'Dal',  quota:5 },
+  { level:4, target:'م',  asteroids:['م','أ','ب'],   targetName:'Mim',  quota:5 },
+  { level:5, target:'ك',  asteroids:['ك','ت','ن'],   targetName:'Kaf',  quota:5 },
+  { level:6, target:'ت',  asteroids:['ت','ن','د'],   targetName:"Ta'",  quota:5 },
+  { level:7, target:'ن',  asteroids:['ن','ث','د'],   targetName:'Nun',  quota:5 },
+];
+
+const BOSS_WORDS     = ['جَدَّةٌ','دُبٌّ','أَسَدٌ','تُفَّاحٌ','كِتَابٌ','نَافِذَةٌ','بَابٌ'];
+const BOSS_HP_PER_UFO= 10;
+
+const ASTEROID_COLORS= [
+  'from-slate-600 to-slate-800',
+  'from-stone-600 to-stone-800',
+  'from-zinc-600 to-zinc-800',
+  'from-neutral-600 to-neutral-800',
+  'from-gray-600 to-gray-800',
+];
+
+// ===================== STATE =====================
+let currentLevel  = 0;
+let score         = 0;
+let lives         = 3;
+let correctHits   = 0;
+let asteroids     = [];
+let asteroidTimer = null;
+let rocketX       = 50;    // percent of game screen width
+let moveDir       = 0;
+let canShoot      = true;
+const SHOOT_CD    = 380;
+let gameRunning   = false;
+let animFrame     = null;
+
+// Boss
+let bossHP          = 0;
+let bossMaxHP       = BOSS_HP_PER_UFO;
+let bossWordIdx     = 0;
+let bossLives       = 3;
+let bossScore       = 0;
+let bossMoveDir     = 0;
+let bossRocketX     = 50;
+let bossGameRunning = false;
+let bossAnimFrame   = null;
+let bossCanShoot    = true;
+let bossHitLocked   = false;
+
+// ===================== UTILS =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function playSound(id) {
+  const a = document.getElementById(id);
+  if (!a) return;
+
+  // pastikan browser load source dalam <source>
+  if (!a.currentSrc) a.load();
+
+  // restart sound effect
+  try { a.currentTime = 0; } catch(e) {}
+
+  const p = a.play();
+  if (p && typeof p.catch === 'function') p.catch(()=>{});
+}
+
+function startBgMusic() { //bagi start the music
+  const bg = document.getElementById('audioBg');
+  if (!bg) return;
+  if (!bg.currentSrc) bg.load();
+  bg.volume = 0.35;
+
+  const p = bg.play();
+  if (p && typeof p.catch === 'function') p.catch(()=>{});
+}
+
+
+
+
+function generateStars() {
+  const sf = document.getElementById('starField');
+  sf.innerHTML = '';
+  for (let i = 0; i < 130; i++) {
+    const s = document.createElement('div');
+    const z = Math.random() * 3 + 1;
+    s.className = 'star';
+    s.style.cssText = `width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${1.5+Math.random()*3}s;--delay:${Math.random()*3}s;`;
+    sf.appendChild(s);
+  }
+}
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('misiAngkasaRecords') || '[]'); } catch(e){ return []; }
+}
+function saveRecord(s) {
+  let r = getRecords();
+  r.push({ score: s, date: new Date().toLocaleDateString('ms-MY') });
+  r.sort((a,b)=>b.score-a.score);
+  r = r.slice(0,5);
+  try { localStorage.setItem('misiAngkasaRecords', JSON.stringify(r)); } catch(e){}
+}
+function showRecords() {
+  const r  = getRecords();
+  const el = document.getElementById('recordsList');
+  if (!r.length) {
+    el.innerHTML = '<div class="text-gray-400">Tiada rekod lagi. Main dulu!</div>';
+  } else {
+    el.innerHTML = r.map((rec,i)=>{
+      const m = ['🥇','🥈','🥉','⭐','⭐'];
+      return `<div class="flex justify-between items-center bg-blue-900 bg-opacity-40 rounded-lg px-3 py-1">
+        <span>${m[i]} Tempat ${i+1}</span>
+        <span class="text-yellow-300 font-black">${rec.score} mata</span>
+        <span class="text-gray-400 text-xs">${rec.date}</span></div>`;
+    }).join('');
+  }
+  showScreen('screenRecords');
+}
+function showOverlay(id) { document.getElementById(id).style.display='flex'; }
+function hideOverlay(id) { document.getElementById(id).style.display='none'; }
+
+// ===================== MAIN MENU =====================
+function startGame()  { 
+  startBgMusic();          // ✅ start music bila tekan MULA
+  currentLevel=0; 
+  score=0; 
+  showTutorial(0); 
+}
+
+function restartAll() { startGame(); }
+
+// ===================== TUTORIAL =====================
+function showTutorial(idx) {
+  const lv = LEVELS[idx];
+  document.getElementById('tutorialLetter').textContent    = lv.target;
+  document.getElementById('tutorialLetterName').textContent= lv.targetName;
+  document.getElementById('tutorialLevelBadge').textContent= `✦ LEVEL ${lv.level} / 7 ✦`;
+  document.getElementById('tutorialVO').textContent        =
+    `Perhatian juruterbang! Asteroid sedang menyerang. Tembak asteroid yang mempunyai huruf "${lv.target}" (${lv.targetName}) sahaja!`;
+  document.getElementById('targetReminder').textContent    = lv.target;
+  showScreen('screenTutorial');
+}
+
+// ===================== LEVEL START =====================
+function startLevel() {
+  stopGame();                  // FIX: always clean up first
+
+  lives       = 3;
+  correctHits = 0;
+  rocketX     = 50;
+  asteroids   = [];
+  gameRunning = true;
+  canShoot    = true;          // FIX: reset shoot flag every level
+
+  const lv = LEVELS[currentLevel];
+  updateLivesDisplay('livesDisplay', lives);
+  document.getElementById('scoreDisplay').textContent   = score;
+  document.getElementById('levelDisplay').textContent   = `LEVEL ${lv.level}`;
+  document.getElementById('targetReminder').textContent = lv.target;
+  document.getElementById('gameCanvas').innerHTML       = '';
+  hideOverlay('overlayFail');
+  hideOverlay('overlayComplete');
+
+  const rEl = document.getElementById('rocketEl');
+  rEl.style.left      = rocketX + '%';
+  rEl.style.transform = 'translateX(-50%)';
+
+  showScreen('screenGame');
+  scheduleAsteroid();
+  gameLoop();
+}
+function retryLevel() { hideOverlay('overlayFail'); startLevel(); }
+function nextLevel()  {
+  hideOverlay('overlayComplete');
+  currentLevel++;
+  stopGame();
+  if (currentLevel >= LEVELS.length) showScreen('screenBonusTutorial');
+  else showTutorial(currentLevel);
+}
+
+// ===================== STOP =====================
+function stopGame() {
+  gameRunning = false;
+  if (asteroidTimer) { clearTimeout(asteroidTimer); asteroidTimer = null; }
+  if (animFrame)     { cancelAnimationFrame(animFrame); animFrame = null; }
+  moveDir  = 0;
+  asteroids= [];
+  const c = document.getElementById('gameCanvas');
+  if (c) c.innerHTML = '';
+}
+
+// ===================== LIVES =====================
+function updateLivesDisplay(id, n) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i=0;i<3;i++) el.innerHTML += i<n ? '❤️':'🖤';
+}
+
+// ===================== SPAWN =====================
+function scheduleAsteroid() {
+  if (!gameRunning) return;
+  spawnAsteroid();
+  asteroidTimer = setTimeout(scheduleAsteroid, 1600 + Math.random()*1200);
+}
+
+function spawnAsteroid() {
+  if (!gameRunning || asteroids.length >= 4) return;
+  const lv = LEVELS[currentLevel];
+
+  // Pick letter — 45% chance target
+  let letter;
+  if (Math.random() < 0.45) {
+    letter = lv.target;
+  } else {
+    const d = lv.asteroids.filter(l=>l!==lv.target);
+    letter  = d[Math.floor(Math.random()*d.length)];
+  }
+  const isTarget = (letter === lv.target);
+
+  const canvas = document.getElementById('gameCanvas');
+  const size   = 72 + Math.floor(Math.random()*22);
+  const xPct   = 8 + Math.random()*84;        // percent; center of asteroid
+  const dur    = 7000 + Math.random()*4000;
+  const clr    = ASTEROID_COLORS[Math.floor(Math.random()*ASTEROID_COLORS.length)];
+
+  const el = document.createElement('div');
+  el.className = 'game-asteroid';
+  // Use margin-left to center at xPct%
+  el.style.cssText =
+    `left:${xPct}%;top:-80px;width:${size}px;height:${size}px;margin-left:-${size/2}px;`;
+  el.innerHTML =
+    `<div class="relative w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br ${clr} border-2 ${isTarget?'border-yellow-400':'border-gray-500'}"
+       style="box-shadow:0 0 10px rgba(0,0,0,0.5)${isTarget?',0 0 10px rgba(253,224,71,0.4)':''};">
+       <div class="asteroid-letter font-black text-white" style="font-size:${Math.round(size*0.44)}px;">${letter}</div>
+     </div>`;
+
+  const a = { el, letter, isTarget, xPct, startTime:Date.now(), duration:dur, size, alive:true };
+  asteroids.push(a);
+  canvas.appendChild(el);
+
+  el.addEventListener('pointerdown', e => {
+    e.stopPropagation();
+    if (!gameRunning || !a.alive) return;
+    handleAsteroidHit(a);
+  });
+}
+
+// ===================== HIT LOGIC (FIX #1) =====================
+// CORRECT letter → +score only
+// WRONG letter   → -heart only
+// Missed bottom  → silent removal, no penalty
+function handleAsteroidHit(a) {
+  if (!a.alive) return;
+  a.alive = false;
+  const lv = LEVELS[currentLevel];
+
+  if (a.letter === lv.target) {
+    // ✅ CORRECT
+    playSound('audioBoom');
+    score += 10;
+    correctHits++;
+    document.getElementById('scoreDisplay').textContent = score;
+    showGameExplosion(a.el, true);
+    removeAsteroid(a);
+    if (correctHits >= lv.quota) {
+      gameRunning = false;
+      if (asteroidTimer) { clearTimeout(asteroidTimer); asteroidTimer = null; }
+      setTimeout(showLevelComplete, 600);
+    }
+  } else {
+    // ❌ WRONG — heart only, no score change
+    playSound('audioBuzzer');
+    showGameExplosion(a.el, false);
+    removeAsteroid(a);
+    loseLife();
+  }
+}
+
+function removeAsteroid(a) {
+  const i = asteroids.indexOf(a);
+  if (i !== -1) asteroids.splice(i, 1);
+  if (a.el && a.el.parentNode) a.el.parentNode.removeChild(a.el);
+}
+
+function loseLife() {
+  lives--;
+  updateLivesDisplay('livesDisplay', lives);
+  if (lives <= 0) {
+    gameRunning = false;
+    if (asteroidTimer) { clearTimeout(asteroidTimer); asteroidTimer = null; }
+    setTimeout(()=>showOverlay('overlayFail'), 400);
+  }
+}
+
+// ===================== EXPLOSION =====================
+function showGameExplosion(refEl, correct) {
+  if (!refEl) return;
+  const rect  = refEl.getBoundingClientRect();
+  const gRect = document.getElementById('screenGame').getBoundingClientRect();
+  const cx = rect.left - gRect.left + rect.width/2;
+  const cy = rect.top  - gRect.top  + rect.height/2;
+
+  const el = document.createElement('div');
+  el.className = 'explosion';
+  el.style.cssText =
+    `left:${cx-30}px;top:${cy-30}px;width:60px;height:60px;font-size:50px;z-index:50;position:absolute;pointer-events:none;`;
+  el.textContent = correct ? '💥':'😵';
+  document.getElementById('screenGame').appendChild(el);
+
+  if (correct) {
+    for (let i=0;i<6;i++) {
+      const star  = document.createElement('div');
+      const ang   = (i/6)*Math.PI*2;
+      const dist  = 50 + Math.random()*30;
+      star.style.cssText =
+        `position:absolute;left:${cx}px;top:${cy}px;font-size:16px;z-index:51;`+
+        `animation:starBurst 0.5s ease-out forwards;--tx:${Math.cos(ang)*dist}px;--ty:${Math.sin(ang)*dist}px;`;
+      star.textContent = '⭐';
+      document.getElementById('screenGame').appendChild(star);
+      setTimeout(()=>star.remove(), 600);
+    }
+  }
+  setTimeout(()=>el.remove(), 500);
+}
+
+// ===================== LEVEL COMPLETE =====================
+function showLevelComplete() {
+  const next = currentLevel + 1;
+  document.getElementById('completeMsg').textContent =
+    `Tahniah! ${correctHits} asteroid betul ditembak! +${correctHits*10} mata`;
+  document.getElementById('completeBonusMsg').textContent =
+    next >= LEVELS.length
+      ? '🎉 Semua huruf selesai! Sedia untuk BOSS?'
+      : `Seterusnya: Huruf ${LEVELS[next].target} (${LEVELS[next].targetName})`;
+  showOverlay('overlayComplete');
+  playSound('audioSuccess');
+}
+
+// ===================== GAME LOOP =====================
+function gameLoop() {
+  if (!gameRunning) return;
+  const now    = Date.now();
+  const canvas = document.getElementById('gameCanvas');
+  const cH     = canvas.offsetHeight || window.innerHeight;
+
+  for (let i=asteroids.length-1; i>=0; i--) {
+    const a = asteroids[i];
+    if (!a.alive) continue;
+    const elapsed = now - a.startTime;
+    const y = (elapsed / a.duration) * (cH + 100) - 80;
+    a.el.style.top = y + 'px';
+    if (y > cH + 10) {
+      // FIX #1: silent removal — no life deduction
+      a.alive = false;
+      removeAsteroid(a);
+    }
+  }
+
+  // Move rocket
+  if (moveDir !== 0) {
+    rocketX += moveDir * 0.55;
+    rocketX  = Math.max(3, Math.min(97, rocketX));
+    const rEl = document.getElementById('rocketEl');
+    rEl.style.left      = rocketX + '%';
+    rEl.style.transform = 'translateX(-50%)';
+  }
+
+  animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ===================== SHOOT (FIX #3) =====================
+function shootLaser() {
+  if (!gameRunning || !canShoot) return;
+  playSound('audioLaser');
+  canShoot = false;
+  setTimeout(()=>{ canShoot = true; }, SHOOT_CD);
+
+  const screenEl = document.getElementById('screenGame');
+  const screenW  = screenEl.offsetWidth;
+
+  // FIX #3A: rocket center derived purely from rocketX percent — no getBoundingClientRect error
+  const rocketPx = (rocketX / 100) * screenW;
+
+  // Spawn laser beam at rocket center
+  const laser = document.createElement('div');
+  laser.className = 'laser';
+  laser.style.cssText = `left:${rocketPx - 2.5}px;bottom:88px;height:36px;position:absolute;`;
+  screenEl.appendChild(laser);
+  setTimeout(()=>{ if (laser.parentNode) laser.remove(); }, 480);
+
+  // FIX #3B: hit detection — asteroid center also in same percent coordinate system
+  let best = null, bestDx = Infinity;
+  for (const a of asteroids) {
+    if (!a.alive) continue;
+    const asteroidPx = (a.xPct / 100) * screenW;  // same reference frame
+    const dx = Math.abs(asteroidPx - rocketPx);
+    const tolerance = a.size / 2 + 14;             // generous but accurate tolerance
+    if (dx < tolerance && dx < bestDx) {
+      bestDx = dx;
+      best   = a;
+    }
+  }
+  if (best) handleAsteroidHit(best);
+}
+
+// ===================== MOVEMENT =====================
+function startMove(dir) { moveDir = dir==='left' ? -1 : 1; }
+function stopMove()     { moveDir = 0; }
+
+// ===================== KEYBOARD =====================
+window.addEventListener('keydown', e => {
+  if (document.getElementById('screenGame').classList.contains('active')) {
+    if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') startMove('left');
+    if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') startMove('right');
+    if (e.key===' ') { e.preventDefault(); unlockAudioOnce();   shootLaser(); }
+  }
+  if (document.getElementById('screenBoss').classList.contains('active')) {
+    if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') startBossMove('left');
+    if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') startBossMove('right');
+    if (e.key===' ') { e.preventDefault(); unlockAudioOnce(); shootBossLaser(); }
+  }
+});
+window.addEventListener('keyup', e => {
+  if (['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)) {
+    stopMove(); stopBossMove();
+  }
+});
+
+// ===================== BOSS MODE =====================
+
+function lockUFOStatic() {
+  const ufoEl = document.getElementById('bossUFOContainer');
+  if (!ufoEl) return;
+
+  // Buang sebarang class animasi yang mungkin buat UFO bergerak
+  ufoEl.classList.remove('ufo-float','ufo-bob','animate-bounce','animate-pulse');
+
+  // Matikan semua animation + transition supaya dia statik
+  ufoEl.style.animation = 'none';
+  ufoEl.style.transition = 'none';
+
+  // Paksa kedudukan statik di tengah skrin
+  ufoEl.style.position = 'absolute';
+  ufoEl.style.left = '50%';
+  ufoEl.style.top = '42%';
+  ufoEl.style.transform = 'translate(-50%, -50%)';
+}
+
+function startBossMode() {
+  bossWordIdx     = 0;
+  bossLives       = 3;
+  bossScore       = score;   // carry over
+  bossRocketX     = 50;
+  bossGameRunning = true;
+  bossCanShoot    = true;
+  bossHitLocked   = false;
+  bossMoveDir     = 0;
+
+  if (bossAnimFrame) { cancelAnimationFrame(bossAnimFrame); bossAnimFrame = null; }
+
+  updateLivesDisplay('bossLivesDisplay', bossLives);
+  document.getElementById('bossScoreDisplay').textContent = bossScore;
+  const rEl = document.getElementById('bossRocketEl');
+  rEl.style.left = bossRocketX + '%';
+  rEl.style.transform = 'translateX(-50%)';
+
+  showScreen('screenBoss');
+  hideOverlay('overlayBossFail');
+
+  lockUFOStatic();
+
+  loadBossWord();
+  bossGameLoop();
+}
+
+function loadBossWord() {
+  if (bossWordIdx >= BOSS_WORDS.length) { endBossMode(); return; }
+  bossHP        = BOSS_HP_PER_UFO;
+  bossMaxHP     = BOSS_HP_PER_UFO;
+  bossHitLocked = false;
+  document.getElementById('bossWordText').textContent    = BOSS_WORDS[bossWordIdx];
+  document.getElementById('bossWordDisplay').textContent = `Kalimah ${bossWordIdx+1}/${BOSS_WORDS.length}`;
+  updateBossHP();
+lockUFOStatic();   // ✅ ADD INI (kalau word bertukar, UFO kekal statik)
+}
+
+function updateBossHP() {
+  const pct = (bossHP / bossMaxHP) * 100;
+  document.getElementById('bossHPBar').style.width = pct + '%';
+  document.getElementById('bossHPText').textContent = `HP: ${bossHP} / ${bossMaxHP}`;
+  const bar = document.getElementById('bossHPBar');
+  if (pct > 60)      bar.style.background = 'linear-gradient(to right,#ff4d00,#ff9900)';
+  else if (pct > 30) bar.style.background = 'linear-gradient(to right,#ff9900,#ffcc00)';
+  else               bar.style.background = 'linear-gradient(to right,#ff0000,#ff4444)';
+}
+
+// FIX #3: Boss shoot — uses bossRocketX percent, compares to UFO center in same frame
+function shootBossLaser() {
+  if (!bossGameRunning || !bossCanShoot) return;
+  playSound('audioLaser');
+  bossCanShoot = false;
+  setTimeout(()=>{ bossCanShoot = true; }, 400);
+
+  const screenEl = document.getElementById('screenBoss');
+  const screenW  = screenEl.offsetWidth;
+  const rocketPx = (bossRocketX / 100) * screenW;
+
+  const laser = document.createElement('div');
+  laser.className = 'boss-laser';
+  laser.style.cssText = `left:${rocketPx - 3}px;bottom:88px;height:40px;position:absolute;`;
+  screenEl.appendChild(laser);
+  setTimeout(()=>{ if (laser.parentNode) laser.remove(); }, 480);
+
+  // Determine if rocket is under UFO
+  const ufoEl   = document.getElementById('bossUFOContainer');
+  const ufoRect = ufoEl.getBoundingClientRect();
+  const gRect   = screenEl.getBoundingClientRect();
+  const ufoCX   = ufoRect.left - gRect.left + ufoRect.width/2;
+  const dx      = Math.abs(rocketPx - ufoCX);
+  const hitZone = ufoRect.width/2 + 40;   // generous because UFO is large
+
+  if (dx < hitZone && bossGameRunning && !bossHitLocked) {
+    hitBoss();
+  }
+}
+
+function hitBoss() {
+  if (bossHP <= 0 || bossHitLocked) return;
+  bossHP--;
+  updateBossHP();
+  playSound('audioBoom');
+
+  const ufoEl = document.getElementById('bossUFOContainer');
+  ufoEl.style.filter = 'brightness(3) saturate(2)';
+  ufoEl.classList.add('ufo-shake');
+  setTimeout(()=>{ ufoEl.style.filter=''; ufoEl.classList.remove('ufo-shake'); }, 200);
+
+  if (bossHP <= 0) {
+    bossHitLocked = true;
+    bossScore += 100;
+    document.getElementById('bossScoreDisplay').textContent = bossScore;
+    showBossExplosion();
+    setTimeout(()=>{
+      bossWordIdx++;
+      bossHitLocked = false;
+      if (bossWordIdx >= BOSS_WORDS.length) { bossGameRunning=false; endBossMode(); }
+      else loadBossWord();
+    }, 900);
+  }
+}
+
+function showBossExplosion() {
+  const ufoEl = document.getElementById('bossUFOContainer');
+  const rect  = ufoEl.getBoundingClientRect();
+  const gRect = document.getElementById('screenBoss').getBoundingClientRect();
+  const cx = rect.left - gRect.left + rect.width/2;
+  const cy = rect.top  - gRect.top  + rect.height/2;
+  for (let i=0;i<10;i++) {
+    const star = document.createElement('div');
+    const ang  = (i/10)*Math.PI*2;
+    const dist = 70 + Math.random()*60;
+    star.style.cssText =
+      `position:absolute;left:${cx}px;top:${cy}px;font-size:22px;z-index:51;`+
+      `animation:starBurst 0.7s ease-out forwards;--tx:${Math.cos(ang)*dist}px;--ty:${Math.sin(ang)*dist}px;`;
+    star.textContent = ['💥','⭐','✨','🌟','💫'][i%5];
+    document.getElementById('screenBoss').appendChild(star);
+    setTimeout(()=>star.remove(), 900);
+  }
+}
+
+function endBossMode() {
+  bossGameRunning = false;
+  score = bossScore;
+  saveRecord(score);
+  document.getElementById('finalScore').textContent = score;
+  let rank, rankEmoji;
+  if      (score >= 600) { rank='Komander'; rankEmoji='🌟 👨‍✈️ 🌟'; }
+  else if (score >= 300) { rank='Kapten';   rankEmoji='⭐ 🧑‍✈️ ⭐'; }
+  else                   { rank='Leftenan'; rankEmoji='🎖️ 👨‍🚀 🎖️'; }
+  document.getElementById('rankBadge').textContent = rankEmoji;
+  document.getElementById('rankName').textContent  = rank;
+  showScreen('screenResults');
+}
+
+function retryBoss()       { hideOverlay('overlayBossFail'); startBossMode(); }
+function startBossMove(dir){ bossMoveDir = dir==='left' ? -1 : 1; }
+function stopBossMove()    { bossMoveDir = 0; }
+
+function bossGameLoop() {
+  if (!bossGameRunning) return;
+  if (bossMoveDir !== 0) {
+    bossRocketX += bossMoveDir * 0.55;
+    bossRocketX  = Math.max(3, Math.min(97, bossRocketX));
+    const rEl = document.getElementById('bossRocketEl');
+    rEl.style.left      = bossRocketX + '%';
+    rEl.style.transform = 'translateX(-50%)';
+  }
+  bossAnimFrame = requestAnimationFrame(bossGameLoop);
+}
+
+let audioUnlocked = false;
+
+function unlockAudioOnce(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+
+  const ids = ['audioBg','audioBeep','audioLaser','audioBoom','audioBuzzer','audioSuccess'];
+  ids.forEach(id=>{
+    const a = document.getElementById(id);
+    if(!a) return;
+    a.volume = (id === 'audioBg') ? 0.35 : 1;
+    a.play().then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
+  });
+}
+
+// unlock bila user first touch/click mana-mana
+window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
+window.addEventListener('keydown', () => unlockAudioOnce(), { once:true });
+
+// ===================== INIT =====================
+generateStars();
+window.addEventListener('resize', generateStars);
+function vib(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+document.getElementById('btnShoot').addEventListener('pointerdown', ()=>vib(25));
+document.getElementById('btnBossShoot').addEventListener('pointerdown', ()=>vib(25));
+</script>
+</body>
+</html>

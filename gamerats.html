@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tikus &amp; Keju — Cabaran Maze</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        'ui':      ['Waknan', 'sans-serif'],
+        'arab':    ['SakkalMajalla', 'serif'],
+        'display': ['IntroRust', 'sans-serif'],
+        'amiri':   ['Amiri', 'serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+/* ═══════════════════════════════════════════
+   FONTS
+═══════════════════════════════════════════ */
+@font-face { font-family:'Waknan';            src:url('./fonts/WakNan.ttf'); }
+@font-face { font-family:'SakkalMajalla';     src:url('./fonts/Sakkal-Majalla-Regular.ttf'); }
+@font-face { font-family:'IntroRust';         src:url('./fonts/introrustg-base2line.otf'); }
+@font-face { font-family:'Amiri';             src:url('./fonts/Amiri-Regular.ttf'); }
+@font-face { font-family:'Lateef';            src:url('./fonts/Lateef-Regular.ttf'); }
+@font-face { font-family:'TraditionalArabic'; src:url('./fonts/TraditionalArabic-Regular.ttf'); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html, body {
+  width:100%; height:100dvh; overflow:hidden;
+  font-family:'Waknan', 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══════════════════════════════════════════
+   BACKGROUND SCENE
+═══════════════════════════════════════════ */
+#bg {
+  position:fixed; inset:0; z-index:0;
+  background: linear-gradient(180deg,
+    #4FC3F7 0%, #81D4FA 28%,
+    #A5D6A7 52%, #66BB6A 68%,
+    #388E3C 100%);
+}
+
+/* Sun */
+.sun {
+  position:absolute; top:clamp(6px,2.5%,24px); left:clamp(8px,4%,40px);
+  width:clamp(36px,6.5vw,72px); height:clamp(36px,6.5vw,72px);
+  background:radial-gradient(circle at 40% 40%, #FFF176, #FFD600, #FF8F00);
+  border-radius:50%;
+  box-shadow: 0 0 0 clamp(4px,1vw,10px) rgba(255,214,0,.35),
+              0 0 0 clamp(8px,2vw,20px) rgba(255,214,0,.18),
+              0 0 clamp(30px,6vw,70px) rgba(255,180,0,.4);
+  animation: sunPulse 3.5s ease-in-out infinite;
+}
+/* Sun rays */
+.sun::before {
+  content:'';
+  position:absolute; inset:-clamp(6px,1.5vw,14px);
+  border-radius:50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%, rgba(255,240,0,.22) 5%, transparent 10%,
+    transparent 17.5%, rgba(255,240,0,.22) 22.5%, transparent 27.5%,
+    transparent 35%, rgba(255,240,0,.22) 40%, transparent 45%,
+    transparent 52.5%, rgba(255,240,0,.22) 57.5%, transparent 62.5%,
+    transparent 70%, rgba(255,240,0,.22) 75%, transparent 80%,
+    transparent 87.5%, rgba(255,240,0,.22) 92.5%, transparent 97.5%
+  );
+  animation: sunSpin 12s linear infinite;
+}
+@keyframes sunPulse {
+  0%,100% { transform:scale(1); }
+  50%      { transform:scale(1.07); }
+}
+@keyframes sunSpin {
+  to { transform:rotate(360deg); }
+}
+
+/* Clouds */
+.cloud {
+  position:absolute; background:white; border-radius:999px; opacity:.88;
+}
+.cloud::before,.cloud::after {
+  content:''; position:absolute; background:white; border-radius:50%;
+}
+.c1 { width:clamp(55px,9vw,110px); height:clamp(18px,3vw,36px); top:7%;  left:18%; animation:cDrift 20s linear infinite; }
+.c1::before { width:55%; height:190%; top:-85%; left:12%; }
+.c1::after  { width:38%; height:165%; top:-55%; left:52%; }
+.c2 { width:clamp(45px,7vw,90px);  height:clamp(16px,2.5vw,30px); top:13%; right:12%; animation:cDrift2 26s linear infinite; }
+.c2::before { width:55%; height:190%; top:-85%; left:12%; }
+.c2::after  { width:38%; height:165%; top:-55%; left:52%; }
+.c3 { width:clamp(38px,6vw,78px);  height:clamp(14px,2.2vw,26px); top:19%; left:48%; animation:cDrift 32s linear infinite .5s; }
+.c3::before { width:55%; height:190%; top:-85%; left:12%; }
+.c3::after  { width:38%; height:165%; top:-55%; left:52%; }
+@keyframes cDrift  { 0%{transform:translateX(-15vw)} 100%{transform:translateX(115vw)} }
+@keyframes cDrift2 { 0%{transform:translateX(115vw)} 100%{transform:translateX(-15vw)} }
+
+/* Flowers */
+.flower {
+  position:absolute; bottom:clamp(1px,.8%,8px);
+  animation:sway 2.8s ease-in-out infinite;
+  transform-origin:bottom center;
+}
+.flower:nth-child(1){left:6%;  animation-delay:0s;}
+.flower:nth-child(2){left:18%; animation-delay:.5s;}
+.flower:nth-child(3){right:9%; animation-delay:.9s;}
+.flower:nth-child(4){right:22%;animation-delay:1.4s;}
+.flower:nth-child(5){left:38%; animation-delay:.3s;}
+.flower:nth-child(6){left:62%; animation-delay:.7s;}
+@keyframes sway { 0%,100%{transform:rotate(-7deg)} 50%{transform:rotate(7deg)} }
+
+/* ═══════════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════════ */
+#shell {
+  position:relative; z-index:10;
+  width:100%; height:100dvh;
+  display:flex; flex-direction:column;
+}
+
+/* ── TOP BAR ── */
+#topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:clamp(3px,1.2vh,10px) clamp(6px,1.8vw,18px);
+  background: linear-gradient(135deg, rgba(255,140,0,.88), rgba(255,215,0,.88));
+  backdrop-filter:blur(6px);
+  border-bottom:3px solid rgba(255,107,0,.5);
+  gap:clamp(4px,1vw,10px); flex-shrink:0;
+}
+.tb-pill {
+  background:rgba(255,255,255,.9);
+  border:2px solid #FFD700; border-radius:999px;
+  padding:clamp(2px,.7vh,6px) clamp(6px,1.4vw,12px);
+  font-size:clamp(.6rem,1.8vw,.95rem);
+  font-family:'Waknan',sans-serif; font-weight:700; color:#444;
+  white-space:nowrap; display:flex; align-items:center; gap:4px;
+}
+.tb-pill b { color:#C84000; font-size:clamp(.72rem,2.2vw,1.1rem); }
+#prog-wrap { flex:1; display:flex; align-items:center; gap:4px; min-width:0; }
+.pd {
+  width:clamp(13px,2.8vw,26px); height:clamp(13px,2.8vw,26px);
+  border-radius:50%; background:#ccc; border:2px solid #aaa;
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(.45rem,1.3vw,.7rem); font-weight:700; flex-shrink:0;
+  transition:background .3s,border-color .3s,color .3s;
+}
+.pd.active { background:#43A047; border-color:#1B5E20; color:#fff; }
+.pd.done   { background:#FFD600; border-color:#FF6F00; color:#333; }
+.pl { flex:1; height:4px; background:#ccc; border-radius:2px; transition:background .4s; }
+.pl.done { background:#43A047; }
+
+/* ── ACTION BAR (Mula / Berhenti) ── */
+#action-bar {
+  display:flex; justify-content:center; align-items:center;
+  gap:clamp(8px,2vw,16px);
+  padding:clamp(2px,.8vh,7px) clamp(8px,2vw,18px);
+  flex-shrink:0;
+}
+.act-btn {
+  font-family:'Waknan',sans-serif; font-weight:700;
+  font-size:clamp(.75rem,2.2vw,1rem);
+  padding:clamp(5px,1.2vh,10px) clamp(16px,3.5vw,30px);
+  border-radius:999px; border:3px solid transparent;
+  cursor:pointer; user-select:none; touch-action:manipulation;
+  box-shadow:0 4px 14px rgba(0,0,0,.28);
+  transition:transform .14s, box-shadow .14s;
+}
+.act-btn:hover  { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.32); }
+.act-btn:active { transform:scale(.92); }
+#btn-mula     { background:linear-gradient(135deg,#43A047,#1B5E20); border-color:#2E7D32; color:#fff; }
+#btn-berhenti { background:linear-gradient(135deg,#E53935,#B71C1C); border-color:#C62828; color:#fff; }
+
+/* ── MAZE AREA ── */
+#maze-area {
+  flex:1; display:flex; justify-content:center; align-items:center;
+  padding:clamp(3px,.8vh,8px); min-height:0; position:relative;
+}
+#maze-wrap { position:relative; display:inline-block; }
+canvas#cv {
+  display:block;
+  border:clamp(3px,.7vw,7px) solid #5D3A1A;
+  border-radius:clamp(5px,1.3vw,11px);
+  box-shadow:0 8px 32px rgba(0,0,0,.38);
+  background:#F0D888;
+  image-rendering:pixelated;
+}
+
+/* ── WIN FLASH OVERLAY (on canvas) ── */
+#win-flash {
+  position:absolute; inset:0; border-radius:clamp(5px,1.3vw,11px);
+  pointer-events:none; z-index:5; opacity:0;
+  background:radial-gradient(ellipse at center, rgba(255,230,0,.75) 0%, rgba(255,150,0,.3) 50%, transparent 80%);
+  transition:opacity .3s;
+}
+#win-flash.show { opacity:1; animation:winFlash 1.2s ease-out forwards; }
+@keyframes winFlash {
+  0%   { opacity:0; }
+  20%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* ── DPAD ── */
+#ctrl-bar {
+  display:flex; justify-content:center; align-items:center;
+  padding:clamp(3px,.8vh,8px); flex-shrink:0;
+}
+.dpad {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(2px,.4vw,5px);
+  width:clamp(110px,28vw,170px);
+}
+.dp-btn {
+  background:linear-gradient(135deg,#FFD600,#FF6F00);
+  border:2.5px solid #E65100; border-radius:clamp(5px,1.3vw,11px);
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(1.1rem,3.6vw,1.9rem);
+  aspect-ratio:1; cursor:pointer; user-select:none;
+  touch-action:manipulation;
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
+  transition:transform .1s, box-shadow .1s;
+}
+.dp-btn:active { transform:scale(.88); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+
+/* ═══════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════ */
+.overlay {
+  position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,.62);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(8px,2vw,20px);
+}
+.mbox {
+  background:linear-gradient(155deg,#FFFDE7,#FFF8E1);
+  border:clamp(3px,.7vw,5px) solid #FFD600;
+  border-radius:clamp(10px,2.5vw,22px);
+  padding:clamp(12px,3vw,28px);
+  max-width:min(480px,96vw); width:100%;
+  max-height:90dvh; overflow-y:auto;
+  box-shadow:0 18px 56px rgba(0,0,0,.45);
+  font-family:'Waknan',sans-serif; text-align:center;
+}
+.m-title {
+  font-family:'IntroRust','Waknan',sans-serif;
+  font-size:clamp(1.1rem,3.8vw,1.9rem);
+  color:#BF360C; margin-bottom:clamp(6px,1.5vh,14px);
+  text-shadow:1px 2px 0 rgba(255,200,0,.5);
+}
+.m-sub {
+  font-size:clamp(.78rem,2.2vw,.98rem); color:#555;
+  margin-bottom:clamp(8px,2vh,16px); line-height:1.75;
+}
+/* Buttons inside modals */
+.mbtn {
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  border:none; border-radius:999px;
+  padding:clamp(7px,1.6vh,13px) clamp(14px,3.5vw,28px);
+  font-size:clamp(.82rem,2.3vw,1.1rem);
+  font-family:'Waknan',sans-serif; font-weight:700;
+  cursor:pointer; touch-action:manipulation;
+  box-shadow:0 4px 12px rgba(0,0,0,.28);
+  transition:transform .14s, box-shadow .14s;
+  margin:clamp(3px,.8vh,7px);
+}
+.mbtn:hover  { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.32); }
+.mbtn:active { transform:scale(.92); }
+.mbtn.green  { background:linear-gradient(135deg,#43A047,#1B5E20); color:#fff; }
+.mbtn.red    { background:linear-gradient(135deg,#E53935,#B71C1C); color:#fff; }
+.mbtn.amber  { background:linear-gradient(135deg,#FF8F00,#E65100); color:#fff; }
+.mbtn.blue   { background:linear-gradient(135deg,#1E88E5,#0D47A1); color:#fff; }
+.mbtn.purple { background:linear-gradient(135deg,#8E24AA,#4A148C); color:#fff; }
+.mbtn.teal   { background:linear-gradient(135deg,#00897B,#004D40); color:#fff; }
+
+/* Quiz option buttons */
+.qopt {
+  display:block; width:100%;
+  background:linear-gradient(135deg,#E3F2FD,#BBDEFB);
+  border:3px solid #1E88E5; border-radius:clamp(7px,1.8vw,13px);
+  padding:clamp(7px,1.8vh,13px); margin:clamp(4px,1vh,8px) 0;
+  font-size:clamp(.95rem,2.8vw,1.35rem);
+  font-family:'SakkalMajalla','Waknan',sans-serif;
+  cursor:pointer; text-align:center;
+  transition:all .14s; touch-action:manipulation;
+}
+.qopt:hover  { background:linear-gradient(135deg,#BBDEFB,#90CAF9); transform:scale(1.025); }
+.qopt.ok     { background:linear-gradient(135deg,#C8E6C9,#A5D6A7); border-color:#43A047; pointer-events:none; }
+.qopt.bad    { background:linear-gradient(135deg,#FFCDD2,#EF9A9A); border-color:#E53935; pointer-events:none; }
+
+/* Score display box */
+.score-box {
+  background:rgba(255,255,255,.82);
+  border:2px solid #FFD600; border-radius:12px;
+  padding:clamp(6px,1.5vh,12px) clamp(12px,2.5vw,22px);
+  margin:clamp(6px,1.5vh,12px) auto;
+  font-size:clamp(.82rem,2.2vw,1rem); color:#444;
+  display:inline-block; min-width:min(280px,88%);
+}
+.score-box .big-num { font-size:clamp(1.6rem,5vw,2.6rem); color:#BF360C; font-weight:900; }
+
+/* Star rating */
+.stars { font-size:clamp(1.6rem,5.5vw,2.8rem); letter-spacing:4px; }
+
+/* ── LEVEL COMPLETE PANEL (shown on canvas area, not modal) ── */
+#lc-panel {
+  display:none; position:absolute; inset:0; z-index:150;
+  background:rgba(0,0,0,.55);
+  align-items:center; justify-content:center;
+}
+#lc-panel.show { display:flex; }
+.lc-box {
+  background:linear-gradient(145deg,#FFFDE7,#FFF176);
+  border:5px solid #FFD600; border-radius:24px;
+  padding:clamp(14px,3.5vw,32px);
+  max-width:min(430px,94vw); width:100%;
+  text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.5);
+  font-family:'Waknan',sans-serif;
+}
+.lc-title { font-family:'IntroRust','Waknan',sans-serif; font-size:clamp(1.3rem,4.5vw,2rem); color:#BF360C; margin-bottom:6px; }
+.lc-sub   { font-size:clamp(.78rem,2.2vw,.96rem); color:#555; margin-bottom:14px; }
+.lc-btns  { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+
+/* Animations */
+.bump { animation:bumpShake .28s ease-out; }
+@keyframes bumpShake {
+  0%{transform:translateX(0)} 30%{transform:translateX(-5px)} 70%{transform:translateX(5px)} 100%{transform:translateX(0)}
+}
+@keyframes popIn {
+  0%   { opacity:0; transform:scale(.7); }
+  70%  { transform:scale(1.05); }
+  100% { opacity:1; transform:scale(1); }
+}
+.pop-in { animation:popIn .4s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+/* Feedback text */
+#q-fb { min-height:26px; font-size:clamp(.8rem,2.2vw,.96rem); font-weight:700; margin-top:6px; }
+
+/* VO banner */
+#vo-banner {
+  display:none; position:fixed; bottom:clamp(60px,12vh,100px); left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.78); color:#FFF176; border-radius:999px;
+  padding:clamp(6px,1.5vh,12px) clamp(18px,4vw,36px);
+  font-size:clamp(.72rem,2vw,.92rem); white-space:nowrap;
+  z-index:300; pointer-events:none;
+  animation:voSlide .4s ease-out;
+}
+@keyframes voSlide {
+  0%   { opacity:0; transform:translateX(-50%) translateY(16px); }
+  100% { opacity:1; transform:translateX(-50%) translateY(0); }
+}
+
+/* Landscape compact */
+@media(orientation:landscape) and (max-height:480px) {
+  #topbar   { padding:2px 8px; }
+  .tb-pill  { font-size:.58rem; padding:2px 6px; }
+  #action-bar { padding:2px 8px; gap:6px; }
+  .act-btn  { font-size:.68rem; padding:4px 12px; }
+  #ctrl-bar { padding:2px; }
+  .dpad     { width:clamp(90px,19vw,126px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ BACKGROUND ══════════ -->
+<div id="bg">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <!-- Flowers -->
+  <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#388E3C" rx="2"/><circle cx="20" cy="18" r="10" fill="#F06292"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
+  <div class="flower"><svg style="width:clamp(16px,3.2vw,34px);height:clamp(26px,5.5vw,50px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#2E7D32" rx="2"/><circle cx="20" cy="18" r="9" fill="#FF7043"/><circle cx="20" cy="18" r="4" fill="#FFF"/></svg></div>
+  <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#43A047" rx="2"/><circle cx="20" cy="18" r="10" fill="#AB47BC"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
+  <div class="flower"><svg style="width:clamp(16px,3.2vw,34px);height:clamp(26px,5.5vw,50px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#1B5E20" rx="2"/><circle cx="20" cy="18" r="8" fill="#EC407A"/><circle cx="20" cy="18" r="4" fill="#FFD600"/></svg></div>
+  <div class="flower"><svg style="width:clamp(16px,3.2vw,34px);height:clamp(26px,5.5vw,50px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#388E3C" rx="2"/><circle cx="20" cy="18" r="9" fill="#29B6F6"/><circle cx="20" cy="18" r="4" fill="#FFF"/></svg></div>
+  <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#2E7D32" rx="2"/><circle cx="20" cy="18" r="10" fill="#FFCA28"/><circle cx="20" cy="18" r="5" fill="#EF5350"/></svg></div>
+</div>
+
+<!-- ══════════ GAME SHELL ══════════ -->
+<div id="shell">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="tb-pill">⭐ <b id="skor-disp">0</b></div>
+    <div class="tb-pill">⏱ <b id="masa-disp">0:00</b></div>
+    <div id="prog-wrap">
+      <div class="pd active" id="pd1">1</div>
+      <div class="pl" id="pl1"></div>
+      <div class="pd" id="pd2">2</div>
+      <div class="pl" id="pl2"></div>
+      <div class="pd" id="pd3">3</div>
+    </div>
+    <div class="tb-pill">🔊 <button id="audio-btn" onclick="toggleAudio()"
+      style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:inherit;padding:0;font-weight:700">ON</button></div>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div id="action-bar">
+    <button class="act-btn" id="btn-mula"     onclick="mulaPermainan()">🚀 Mula</button>
+    <button class="act-btn" id="btn-berhenti" onclick="togglePause()">🛑 Berhenti</button>
+  </div>
+
+  <!-- MAZE -->
+  <div id="maze-area">
+    <div id="maze-wrap">
+      <canvas id="cv"></canvas>
+      <div id="win-flash"></div>
+      <!-- Level Complete Panel (inside maze-area, not a full-page modal) -->
+      <div id="lc-panel">
+        <div class="lc-box pop-in" id="lc-box-inner">
+          <div class="lc-title" id="lc-title">🎉 Level Selesai!</div>
+          <div class="lc-sub"   id="lc-sub">Tahniah!</div>
+          <!-- Score summary -->
+          <div class="score-box" id="lc-score-box">
+            <div>Skor Semasa: <span class="big-num" id="lc-skor-num">0</span></div>
+          </div>
+          <div class="lc-btns"  id="lc-btns"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D-PAD -->
+  <div id="ctrl-bar">
+    <div class="dpad">
+      <div></div>
+      <button class="dp-btn" id="dp-up"
+        onmousedown="dpStart('up',event)" onmouseup="dpEnd()" onmouseleave="dpEnd()"
+        ontouchstart="dpStart('up',event)" ontouchend="dpEnd()">⬆️</button>
+      <div></div>
+      <button class="dp-btn" id="dp-left"
+        onmousedown="dpStart('left',event)" onmouseup="dpEnd()" onmouseleave="dpEnd()"
+        ontouchstart="dpStart('left',event)" ontouchend="dpEnd()">⬅️</button>
+      <div></div>
+      <button class="dp-btn" id="dp-right"
+        onmousedown="dpStart('right',event)" onmouseup="dpEnd()" onmouseleave="dpEnd()"
+        ontouchstart="dpStart('right',event)" ontouchend="dpEnd()">➡️</button>
+      <div></div>
+      <button class="dp-btn" id="dp-down"
+        onmousedown="dpStart('down',event)" onmouseup="dpEnd()" onmouseleave="dpEnd()"
+        ontouchstart="dpStart('down',event)" ontouchend="dpEnd()">⬇️</button>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ VO BANNER ══════════ -->
+<div id="vo-banner"></div>
+
+<!-- ══════════════════════════════════════
+     MODAL: ARAHAN (Intro)
+══════════════════════════════════════ -->
+<div class="overlay" id="mod-intro">
+  <div class="mbox">
+    <div class="m-title">🐭 Mari Mulakan Cabaran Maze Tikus & Keju! 🧀</div>
+    <div class="m-sub" style="text-align:left">
+      <b style="color:#BF360C">📋 Cara Bermain:</b><br>
+      🎮 Kawal tikus dengan <b>butang arah</b> atau papan kekunci ↑↓←→<br>
+      🧱 Elakkan dinding — tikus tidak boleh lalu dinding<br>
+      🧀 Capai keju secepat mungkin untuk skor tinggi!<br>
+      ⭐ Lebih cepat &amp; kurang langgar = lebih banyak bintang<br>
+      🐱 Hati-hati kucing di Level 3!<br>
+      📚 Jawab <b>KEDUA-DUA</b> soalan kuiz untuk ke level seterusnya<br>
+      🚀 Tekan <b>Mula</b> untuk bermula
+    </div>
+    <div>
+      <button class="mbtn green" onclick="tutupIntro()">✅ Faham! Saya Bersedia</button>
+      <button class="mbtn amber" onclick="toggleAudio()">🔊 Audio: <span id="audio-lbl">ON</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: KUIZ
+══════════════════════════════════════ -->
+<div class="overlay" id="mod-kuiz" style="display:none">
+  <div class="mbox">
+    <div class="m-title" id="kuiz-title">📚 Kuiz</div>
+    <div id="kuiz-body"></div>
+    <!-- Navigation after quiz complete -->
+    <div id="kuiz-nav" style="display:none;margin-top:12px">
+      <button class="mbtn green"  id="btn-next-level" onclick="teruskanLevelSeterusnya()">▶️ Level Seterusnya</button>
+      <button class="mbtn red"    onclick="mulaSemulaPermainan()">🔄 Mula Semula</button>
+      <button class="mbtn amber"  onclick="keluarPermainan()">🚪 Keluar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: KEPUTUSAN AKHIR
+══════════════════════════════════════ -->
+<div class="overlay" id="mod-result" style="display:none">
+  <div class="mbox">
+    <div class="m-title" id="res-title">🏆 Tahniah!</div>
+    <div class="stars" id="res-stars"></div>
+    <div class="score-box" style="margin:14px auto">
+      <div>Skor Akhir</div>
+      <div class="big-num" id="res-skor">0</div>
+      <div id="res-detail" style="font-size:clamp(.7rem,2vw,.88rem);color:#666;margin-top:4px"></div>
+    </div>
+    <div id="res-msg" style="font-size:clamp(.8rem,2.2vw,.98rem);color:#333;margin-bottom:12px"></div>
+    <div>
+      <button class="mbtn green" onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
+      <button class="mbtn red"   onclick="keluarPermainan()">🚪 Keluar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: EXIT CONFIRMATION
+══════════════════════════════════════ -->
+<div class="overlay" id="mod-keluar" style="display:none">
+  <div class="mbox">
+    <div class="m-title">🚪 Keluar Permainan?</div>
+    <div class="m-sub">Skor anda akan hilang. Pasti nak keluar?</div>
+    <button class="mbtn red"   onclick="sahKeluar()">Ya, Keluar</button>
+    <button class="mbtn green" onclick="tutupKeluar()">Tidak, Sambung Main</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUDIO MP3 PLACEHOLDERS
+══════════════════════════════════════
+  Letakkan fail MP3 di ./audio/ dan nyahkomen:
+
+  const sndMeow    = new Audio('./audio/meow.mp3');
+  const sndChime   = new Audio('./audio/chime.mp3');
+  const sndBump    = new Audio('./audio/bump.mp3');
+  const sndDrum    = new Audio('./audio/drum.mp3');
+  const sndTraktor = new Audio('./audio/traktor.mp3');
+  const sndWin     = new Audio('./audio/win.mp3');
+
+  Gantikan pemanggilan WebAudio dengan:
+    sndMeow.currentTime=0;    sndMeow.play();
+    sndChime.currentTime=0;   sndChime.play();
+    sndBump.currentTime=0;    sndBump.play();
+    sndDrum.currentTime=0;    sndDrum.play();
+    sndTraktor.currentTime=0; sndTraktor.play();
+    sndWin.currentTime=0;     sndWin.play();
+══════════════════════════════════════ -->
+
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════════
+   AUDIO ENGINE (WebAudio fallback — gantikan dengan MP3)
+═══════════════════════════════════════════════════════════ */
+let audioOn  = true;
+let audioCtx = null;
+// ===== MP3 SFX (ADD THIS) =====
+const meowMp3 = new Audio('./assets/audio/meow.mp3');
+meowMp3.preload = 'auto';
+meowMp3.volume = 0.9;
+
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function tone(freq, type, dur, vol=.3, delay=0) {
+  if (!audioOn) return;
+  try {
+    const ctx=getCtx(), o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(vol, ctx.currentTime+delay);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+delay+dur);
+    o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+dur);
+  } catch(e){}
+}
+function sndBump()    {
+  // sndBump.currentTime=0; sndBump.play(); // ← MP3 PLACEHOLDER
+  tone(140,'square',.14,.45);
+}
+function sndChime()   {
+  // sndChime.currentTime=0; sndChime.play(); // ← MP3 PLACEHOLDER
+  [523,659,784,1047].forEach((f,i)=>tone(f,'sine',.4,.28,i*.11));
+}
+function sndWin()     {
+  // sndWin.currentTime=0; sndWin.play(); // ← MP3 PLACEHOLDER (MUZIK KEMENANGAN CERIA)
+  // Urutan nada ceria naik + arpeggio
+  const pattern=[523,587,659,698,784,880,988,1047];
+  pattern.forEach((f,i)=>tone(f,'sine',.35,.32,i*.09));
+  // tambahan troli double note
+  setTimeout(()=>{
+    [1047,1319,1568,1047,784,1047,1319,2093].forEach((f,i)=>tone(f,'triangle',.4,.26,i*.1));
+  }, 900);
+}
+
+function sndMeow() {
+  if (!audioOn) return;
+
+  // 1) Try MP3 first
+  try {
+    meowMp3.currentTime = 0;
+    const p = meowMp3.play();
+    if (p && typeof p.catch === "function") {
+      p.catch(() => fallbackMeow());
+    }
+    return;
+  } catch (e) {
+    // if mp3 fails, use fallback
+    fallbackMeow();
+  }
+}
+
+// 2) WebAudio fallback (your original meow tone)
+function fallbackMeow() {
+  if (!audioOn) return;
+  try {
+    const ctx=getCtx(), o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.type='sawtooth';
+    o.frequency.setValueAtTime(420,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(190,ctx.currentTime+.32);
+    o.frequency.exponentialRampToValueAtTime(360,ctx.currentTime+.55);
+    g.gain.setValueAtTime(.3,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.65);
+    o.start(ctx.currentTime); o.stop(ctx.currentTime+.65);
+  }catch(e){}
+}
+
+function sndDrum()    {
+  // sndDrum.currentTime=0; sndDrum.play(); // ← MP3 PLACEHOLDER
+  [0,.38,.76].forEach(t=>{tone(80,'sine',.28,.48,t); tone(105,'square',.14,.2,t);});
+}
+function sndTraktor() {
+  // sndTraktor.currentTime=0; sndTraktor.play(); // ← MP3 PLACEHOLDER
+  if (!audioOn) return;
+  try {
+    const ctx=getCtx();
+    for(let i=0;i<6;i++){
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type='sawtooth'; o.frequency.value=58+i*4;
+      g.gain.setValueAtTime(.13,ctx.currentTime+i*.17);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.17+.22);
+      o.start(ctx.currentTime+i*.17); o.stop(ctx.currentTime+i*.17+.25);
+    }
+  }catch(e){}
+}
+function sndCorrect() {
+  tone(659,'sine',.18,.28); tone(784,'sine',.18,.28,.15);
+}
+function sndWrong()   { tone(200,'square',.3,.4); }
+
+function toggleAudio() {
+  audioOn=!audioOn;
+  document.getElementById('audio-btn').textContent = audioOn?'ON':'OFF';
+  document.getElementById('audio-lbl').textContent = audioOn?'ON':'OFF';
+  if (audioOn) try{getCtx().resume();}catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAZE DATA
+═══════════════════════════════════════════════════════════ */
+const MAZES = [
+  // ── Level 1 : 9×9 ──────────────────────────────────
+  {
+    cols:9, rows:9,
+    grid:[
+      [1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,1,0,0,0,1],
+      [1,0,1,0,1,0,1,0,1],
+      [1,0,1,0,0,0,1,0,1],
+      [1,0,1,1,1,0,1,0,1],
+      [1,0,0,0,0,0,1,0,1],
+      [1,1,1,0,1,1,1,0,1],
+      [1,0,0,0,1,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1],
+    ],
+    mula:{r:1,c:1}, tamat:{r:7,c:7}, kucing:null,
+  },
+  // ── Level 2 : 11×11 ─────────────────────────────────
+  {
+    cols:11, rows:11,
+    grid:[
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,1,0,0,0,1],
+      [1,0,1,1,1,0,1,0,1,0,1],
+      [1,0,1,0,0,0,0,0,1,0,1],
+      [1,0,1,0,1,1,1,1,1,0,1],
+      [1,0,0,0,1,0,0,0,0,0,1],
+      [1,1,1,0,1,0,1,1,1,0,1],
+      [1,0,0,0,0,0,1,0,0,0,1],
+      [1,0,1,1,1,1,1,0,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    mula:{r:1,c:1}, tamat:{r:9,c:9}, kucing:null,
+  },
+  // ── Level 3 : 13×13 + moving cat ─────────────────────
+  {
+    cols:13, rows:13,
+    grid:[
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,1,1,1,0,1,1,1,1,1,0,1],
+      [1,0,1,0,0,0,0,0,0,0,1,0,1],
+      [1,0,1,0,1,1,1,1,1,0,1,0,1],
+      [1,0,1,0,1,0,0,0,1,0,0,0,1],
+      [1,0,1,0,1,0,1,0,1,1,1,0,1],
+      [1,0,0,0,1,0,1,0,0,0,1,0,1],
+      [1,1,1,0,1,0,1,1,1,0,1,0,1],
+      [1,0,0,0,0,0,0,0,1,0,0,0,1],
+      [1,0,1,1,1,1,1,0,1,1,1,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    mula:{r:1,c:1}, tamat:{r:11,c:11},
+    kucing:{
+      laluan:[{r:5,c:5},{r:5,c:6},{r:6,c:6},{r:7,c:6},{r:7,c:5},{r:6,c:5}],
+      idx:0, tick:0, selang:28,
+    },
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   QUIZ DATA
+═══════════════════════════════════════════════════════════ */
+const QUIZ = [
+  // Level 1 Quiz
+  {
+    tajuk: '📚 Kuiz Level 1',
+    vo: 'Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.',
+    soalan:[
+      {
+        s:'Kanak-kanak lelaki sedang bermain drum.\nBunyi apakah yang dihasilkan?',
+        opts:['Dum Dum','Ting Ting','Tok Tok'], betul:0,
+        visual:'drum', onShow:sndDrum,
+      },
+      {
+        s:'Apakah huruf Arab yang sesuai dengan bunyi "Dum"?',
+        opts:['د','ب','ج'], betul:0, isArab:true,
+      },
+    ],
+  },
+  // Level 2 Quiz
+  {
+    tajuk: '📚 Kuiz Level 2',
+    vo: 'Hebat! Anda menyelesaikan Level 2! Jawab dua soalan untuk ke Level Akhir.',
+    soalan:[
+      {
+        s:'Apakah bunyi yang dihasilkan oleh traktor ini?',
+        opts:['Jin Jin Jin','Dum Dum','Tok Tok'], betul:0,
+        visual:'traktor', onShow:sndTraktor,
+      },
+      {
+        s:'Apakah huruf Arab yang sesuai dengan bunyi "Jin"?',
+        opts:['ج','د','ب'], betul:0, isArab:true,
+      },
+    ],
+  },
+  // Level 3 Final Quiz
+  {
+    tajuk: '📚 Kuiz Akhir',
+    vo: 'Luar biasa! Anda telah menyelesaikan semua level! Jawab soalan terakhir.',
+    soalan:[
+      {
+        s:'Apakah huruf Arab yang sesuai dengan bentuk haiwan ini?',
+        opts:['ت','ج','د'], betul:1, visual:'flamingo', isArab:true,
+      },
+      {
+        s:'Apakah bentuk huruf Arab seperti objek ini?',
+        opts:['د','ب','ج'],
+        betul:0,            // ✅ index untuk 'د'
+        visual:'cacing',
+        isArab:true,
+      },
+    ],
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   GAME STATE
+═══════════════════════════════════════════════════════════ */
+const G = {
+  level:0, skor:0, jatuhan:0, tick:0,
+  timerRef:null, animRef:null,
+  sedang:false,          // timer/gameplay running
+  dimulakan:false,       // Mula button has been pressed (show mouse)
+  levelMenang:false,     // cheese reached — show BIG glow
+  pemR:1, pemC:1,
+  kucingIdx:0, kucingTick:0, kucingAnim:0,
+  kejuFasa:0,
+  kuizLevel:0, kuizSoalan:0, kuizBetulCount:0,
+  kuizSelesai:false,     // both questions answered correctly
+};
+
+/* ═══════════════════════════════════════════════════════════
+   CANVAS
+═══════════════════════════════════════════════════════════ */
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let TS    = 32; // tile size
+
+function hitungTS() {
+  const tb  = document.getElementById('topbar');
+  const ab  = document.getElementById('action-bar');
+  const cb  = document.getElementById('ctrl-bar');
+  const mA  = document.getElementById('maze-area');
+  const mH  = window.innerHeight - tb.offsetHeight - ab.offsetHeight - cb.offsetHeight - 20;
+  const mW  = mA.offsetWidth - 18;
+  const mz  = MAZES[G.level];
+  return Math.max(16, Math.min(Math.floor(Math.min(mW/mz.cols, mH/mz.rows)), 64));
+}
+function setupCanvas() {
+  TS = hitungTS();
+  const mz  = MAZES[G.level];
+  cv.width  = mz.cols * TS;
+  cv.height = mz.rows * TS;
+}
+
+/* ─── Drawing primitives ──────────────────────────────── */
+function drawMouse(x, y, r) {
+  const c=ctx;
+  // Badan
+  c.fillStyle='#BDBDBD'; c.beginPath(); c.ellipse(x,y,r,r*.8,0,0,Math.PI*2); c.fill();
+  // Kepala
+  c.fillStyle='#9E9E9E'; c.beginPath(); c.ellipse(x,y-r*.58,r*.65,r*.6,0,0,Math.PI*2); c.fill();
+  // Telinga
+  c.fillStyle='#F48FB1';
+  c.beginPath(); c.ellipse(x-r*.45,y-r*1.08,r*.29,r*.31,0,0,Math.PI*2); c.fill();
+  c.beginPath(); c.ellipse(x+r*.45,y-r*1.08,r*.29,r*.31,0,0,Math.PI*2); c.fill();
+  // Mata
+  c.fillStyle='#212121';
+  c.beginPath(); c.ellipse(x-r*.22,y-r*.63,r*.11,r*.11,0,0,Math.PI*2); c.fill();
+  c.beginPath(); c.ellipse(x+r*.22,y-r*.63,r*.11,r*.11,0,0,Math.PI*2); c.fill();
+  c.fillStyle='white';
+  c.beginPath(); c.arc(x-r*.18,y-r*.66,r*.04,0,Math.PI*2); c.fill();
+  c.beginPath(); c.arc(x+r*.26,y-r*.66,r*.04,0,Math.PI*2); c.fill();
+  // Hidung
+  c.fillStyle='#FF80AB'; c.beginPath(); c.ellipse(x,y-r*.44,r*.1,r*.08,0,0,Math.PI*2); c.fill();
+  // Misai
+  c.strokeStyle='rgba(100,100,100,.6)'; c.lineWidth=Math.max(.5,r*.045);
+  [[-1,-.42],[-.65,-.38],[-.3,-.36],[1,-.42],[.65,-.38],[.3,-.36]].forEach(([dx,dy])=>{
+    c.beginPath(); c.moveTo(x,y-r*.44); c.lineTo(x+dx*r*.55,y+dy*r); c.stroke();
+  });
+  // Ekor
+  c.strokeStyle='#BDBDBD'; c.lineWidth=Math.max(1,r*.12);
+  c.beginPath(); c.moveTo(x+r*.58,y+r*.28); c.quadraticCurveTo(x+r*1.4,y+r*.9,x+r*1.1,y+r*1.3); c.stroke();
+}
+
+function drawCheese(x, y, r, fasa, bigGlow) {
+  const c=ctx;
+  const gv = bigGlow ? 1.0 : (0.55 + 0.45*Math.sin(fasa*.1));
+  const gR = r * (bigGlow ? 3.5+Math.sin(fasa*.08) : 2.2+.7*Math.sin(fasa*.1));
+
+  // Glow halo
+  const grad = ctx.createRadialGradient(x,y-r*.15,r*.15,x,y-r*.15,gR);
+  grad.addColorStop(0, `rgba(255,240,0,${bigGlow?0.85:0.55*gv})`);
+  grad.addColorStop(.3, `rgba(255,190,0,${bigGlow?0.6:0.3*gv})`);
+  grad.addColorStop(.65,`rgba(255,140,0,${bigGlow?0.35:0.14*gv})`);
+  grad.addColorStop(1,  'rgba(255,120,0,0)');
+  c.fillStyle=grad;
+  c.beginPath(); c.ellipse(x,y-r*.15,gR,gR,0,0,Math.PI*2); c.fill();
+
+  // Sparkle stars
+  const nStars = bigGlow ? 8 : 5;
+  for(let i=0;i<nStars;i++){
+    const ang  = fasa*.065 + (i/nStars)*Math.PI*2;
+    const dist = r*(bigGlow ? 1.6+.6*Math.sin(fasa*.12+i) : 1.3+.45*Math.sin(fasa*.13+i*1.2));
+    const sx   = x + Math.cos(ang)*dist;
+    const sy   = (y-r*.15) + Math.sin(ang)*dist*.82;
+    const blink= Math.abs(Math.sin(fasa*.19+i*.68));
+    const sr   = r*(bigGlow?.22:.14);
+    c.save(); c.translate(sx,sy); c.rotate(ang+fasa*.05);
+    c.fillStyle=`rgba(255,255,160,${blink*(bigGlow?.95:.88)})`;
+    c.beginPath();
+    c.moveTo(0,-sr); c.lineTo(sr*.28,-sr*.28); c.lineTo(sr,0);
+    c.lineTo(sr*.28,sr*.28); c.lineTo(0,sr); c.lineTo(-sr*.28,sr*.28);
+    c.lineTo(-sr,0); c.lineTo(-sr*.28,-sr*.28); c.closePath(); c.fill();
+    c.restore();
+  }
+
+  // Cheese triangle body
+  c.fillStyle='#FFD600';
+  c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1.5,r*.18);
+  c.beginPath();
+  c.moveTo(x,y-r*1.15); c.lineTo(x+r*1.15,y+r*.65); c.lineTo(x-r*1.15,y+r*.65);
+  c.closePath(); c.fill(); c.stroke();
+
+  // Shine
+  c.fillStyle='rgba(255,255,200,.45)';
+  c.beginPath(); c.ellipse(x-r*.18,y-r*.48,r*.32,r*.17,-0.5,0,Math.PI*2); c.fill();
+
+  // Holes
+  [[-.28,.1,.2],[.32,-.08,.15],[.02,.38,.12]].forEach(([dx,dy,rh])=>{
+    c.fillStyle='#E65100';
+    c.beginPath(); c.ellipse(x+dx*r,y+dy*r,rh*r,rh*r*.8,0,0,Math.PI*2); c.fill();
+    c.fillStyle='#BF360C';
+    c.beginPath(); c.ellipse(x+dx*r+rh*r*.18,y+dy*r+rh*r*.18,rh*r*.58,rh*r*.48,0,0,Math.PI*2); c.fill();
+  });
+
+  // Sparkle on tip
+  if(bigGlow){
+    const kd = .5+.5*Math.abs(Math.sin(fasa*.22));
+    c.fillStyle=`rgba(255,255,200,${kd*.8})`;
+    c.beginPath(); c.arc(x,y-r*1.15,r*.18,0,Math.PI*2); c.fill();
+  }
+}
+
+function drawCat(x, y, r, fasa) {
+  const c=ctx;
+  // Warning glow
+  const wg=ctx.createRadialGradient(x,y,r*.2,x,y,r*2.2);
+  const pw=.38+.28*Math.sin(fasa*.1);
+  wg.addColorStop(0,`rgba(255,80,0,${pw})`); wg.addColorStop(1,'rgba(255,80,0,0)');
+  c.fillStyle=wg; c.beginPath(); c.ellipse(x,y,r*2.2,r*2.2,0,0,Math.PI*2); c.fill();
+  // Body
+  c.fillStyle='#FF8F00'; c.beginPath(); c.ellipse(x,y,r*.7,r*.55,0,0,Math.PI*2); c.fill();
+  // Head
+  c.fillStyle='#FFA726'; c.beginPath(); c.ellipse(x,y-r*.56,r*.5,r*.46,0,0,Math.PI*2); c.fill();
+  // Ears
+  c.fillStyle='#FF8F00';
+  c.beginPath(); c.moveTo(x-r*.4,y-r*.78); c.lineTo(x-r*.6,y-r*1.2); c.lineTo(x-r*.14,y-r*.95); c.fill();
+  c.beginPath(); c.moveTo(x+r*.4,y-r*.78); c.lineTo(x+r*.6,y-r*1.2); c.lineTo(x+r*.14,y-r*.95); c.fill();
+  c.fillStyle='#FFCCBC';
+  c.beginPath(); c.moveTo(x-r*.38,y-r*.8); c.lineTo(x-r*.54,y-r*1.12); c.lineTo(x-r*.17,y-r*.93); c.fill();
+  c.beginPath(); c.moveTo(x+r*.38,y-r*.8); c.lineTo(x+r*.54,y-r*1.12); c.lineTo(x+r*.17,y-r*.93); c.fill();
+  // Eyes
+  c.fillStyle='#00E676';
+  c.beginPath(); c.ellipse(x-r*.19,y-r*.57,r*.13,r*.11,0,0,Math.PI*2); c.fill();
+  c.beginPath(); c.ellipse(x+r*.19,y-r*.57,r*.13,r*.11,0,0,Math.PI*2); c.fill();
+  c.fillStyle='#111';
+  c.beginPath(); c.ellipse(x-r*.19,y-r*.57,r*.055,r*.1,0,0,Math.PI*2); c.fill();
+  c.beginPath(); c.ellipse(x+r*.19,y-r*.57,r*.055,r*.1,0,0,Math.PI*2); c.fill();
+  // Nose
+  c.fillStyle='#FF80AB'; c.beginPath(); c.ellipse(x,y-r*.38,r*.09,r*.07,0,0,Math.PI*2); c.fill();
+  // Tail
+  c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1,r*.15);
+  c.beginPath(); c.moveTo(x+r*.65,y+r*.4); c.quadraticCurveTo(x+r*1.5,y+r*.2,x+r*1.2,y-r*.3); c.stroke();
+}
+
+function drawScene() {
+  const mz=MAZES[G.level];
+  const ts=TS;
+  ctx.clearRect(0,0,cv.width,cv.height);
+
+  // Tiles
+  for(let r=0;r<mz.rows;r++){
+    for(let c=0;c<mz.cols;c++){
+      if(mz.grid[r][c]===1){
+        ctx.fillStyle='#7B3910';
+        ctx.fillRect(c*ts,r*ts,ts,ts);
+        ctx.fillStyle='#9C4C16';
+        ctx.fillRect(c*ts+1,r*ts+1,ts-2,Math.floor(ts/2)-1);
+        ctx.fillStyle='#5A2A0C';
+        ctx.fillRect(c*ts+1,r*ts+Math.floor(ts/2),ts-2,Math.floor(ts/2)-1);
+        ctx.strokeStyle='#481F08'; ctx.lineWidth=1;
+        ctx.strokeRect(c*ts,r*ts,ts,ts);
+      } else {
+        ctx.fillStyle='#EDD080';
+        ctx.fillRect(c*ts,r*ts,ts,ts);
+        ctx.fillStyle='#E5C868';
+        ctx.fillRect(c*ts+1,r*ts+1,ts-2,ts-2);
+      }
+    }
+  }
+
+  // Start marker
+  const s=mz.mula;
+  ctx.fillStyle='rgba(0,200,80,.28)';
+  ctx.fillRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
+  ctx.strokeStyle='rgba(0,180,60,.5)'; ctx.lineWidth=2;
+  ctx.strokeRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
+
+  // Cheese (with BIG glow when level won)
+  const e=mz.tamat;
+  drawCheese(e.c*ts+ts/2, e.r*ts+ts/2, ts*.38, G.kejuFasa, G.levelMenang);
+
+  // Cat (level 3)
+  if(mz.kucing){
+    const cp=mz.kucing.laluan[G.kucingIdx % mz.kucing.laluan.length];
+    drawCat(cp.c*ts+ts/2, cp.r*ts+ts/2, ts*.36, G.kucingAnim);
+  }
+
+  // Mouse — ONLY drawn after Mula pressed
+  if(G.dimulakan){
+    drawMouse(G.pemC*ts+ts/2, G.pemR*ts+ts/2, ts*.38);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATION LOOP (always runs for cheese glow; logic only when sedang=true)
+═══════════════════════════════════════════════════════════ */
+function animLoop() {
+  G.kejuFasa++;
+  G.kucingAnim++;
+
+  if(G.sedang && !G.levelMenang){
+    G.tick++;
+
+    // Move cat
+    const mz=MAZES[G.level];
+    if(mz.kucing){
+      G.kucingTick++;
+      if(G.kucingTick >= mz.kucing.selang){
+        G.kucingTick=0;
+        G.kucingIdx=(G.kucingIdx+1) % mz.kucing.laluan.length;
+        cekKucing();
+      }
+    }
+    updateTopBar();
+  }
+
+  drawScene();
+  G.animRef = requestAnimationFrame(animLoop);
+}
+
+function updateTopBar(){
+  document.getElementById('skor-disp').textContent = G.skor;
+  document.getElementById('masa-disp').textContent = fmtMasa(G.tick);
+}
+function fmtMasa(t){
+  const s=Math.floor(t/60); return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PLAYER MOVEMENT
+═══════════════════════════════════════════════════════════ */
+function isDinding(r,c){
+  const mz=MAZES[G.level];
+  return r<0||r>=mz.rows||c<0||c>=mz.cols||mz.grid[r][c]===1;
+}
+
+function gerak(dr,dc){
+  if(!G.sedang||G.levelMenang) return;
+  const nr=G.pemR+dr, nc=G.pemC+dc;
+  if(isDinding(nr,nc)){
+    sndBump(); G.jatuhan++; G.skor=Math.max(0,G.skor-10);
+    const w=document.getElementById('maze-wrap');
+    w.classList.add('bump'); setTimeout(()=>w.classList.remove('bump'),280);
+    return;
+  }
+  G.pemR=nr; G.pemC=nc;
+  const mz=MAZES[G.level];
+  if(nr===mz.tamat.r && nc===mz.tamat.c) padaMenang();
+}
+
+// Keyboard
+document.addEventListener('keydown', e=>{
+  const map={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+  if(map[e.key]){e.preventDefault(); gerak(...map[e.key]);}
+});
+
+// D-Pad
+let dpIv=null;
+function dpStart(d,e){
+  if(e) e.preventDefault();
+  const m={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]};
+  gerak(...m[d]); dpIv=setInterval(()=>gerak(...m[d]),180);
+}
+function dpEnd(){ if(dpIv){clearInterval(dpIv);dpIv=null;} }
+
+/* ═══════════════════════════════════════════════════════════
+   CAT COLLISION
+═══════════════════════════════════════════════════════════ */
+function cekKucing(){
+  const mz=MAZES[G.level];
+  if(!mz.kucing) return;
+  const cp=mz.kucing.laluan[G.kucingIdx%mz.kucing.laluan.length];
+  if(G.pemR===cp.r && G.pemC===cp.c){
+    sndMeow(); // play meow (mp3 or fallback)
+    G.skor=Math.max(0,G.skor-50); G.tick+=180; // +3 saat
+    const dirs=[[-1,0],[1,0],[0,-1],[0,1]];
+    let ok=false;
+    for(const [dr,dc] of dirs){
+      const nr=G.pemR+dr,nc=G.pemC+dc;
+      if(!isDinding(nr,nc)&&!(nr===cp.r&&nc===cp.c)){G.pemR=nr;G.pemC=nc;ok=true;break;}
+    }
+    if(!ok){G.pemR=mz.mula.r;G.pemC=mz.mula.c;}
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   WIN — CHEESE REACHED
+═══════════════════════════════════════════════════════════ */
+function padaMenang(){
+  G.sedang     = false;
+  G.levelMenang = true;  // ← triggers BIG cheese glow
+
+  // Bonus score
+  const bonusMasa=Math.max(0,500-Math.floor(G.tick/60)*5);
+  G.skor += bonusMasa;
+  updateTopBar();
+
+  // Win sounds
+  sndChime();
+  setTimeout(sndWin, 400);
+
+  // Flash overlay
+  const fl=document.getElementById('win-flash');
+  fl.classList.add('show');
+  setTimeout(()=>fl.classList.remove('show'),1200);
+
+  // Show VO banner
+  const quiz=QUIZ[G.level];
+  showVO(quiz.vo);
+
+  // After 1.8s — show Level Complete panel (NOT a win screen, just next-step choices)
+  setTimeout(()=>{ showLevelComplete(G.level); }, 1800);
+}
+
+/* ─── Level Complete Panel ──────────────────────────────── */
+function showLevelComplete(lvl){
+  const panel   = document.getElementById('lc-panel');
+  const isAkhir = lvl===2;
+
+  document.getElementById('lc-title').textContent =
+    isAkhir ? '🏆 Semua Level Selesai!' : `🎉 Level ${lvl+1} Selesai!`;
+  document.getElementById('lc-sub').textContent   =
+    isAkhir
+      ? 'Tahniah! Anda berjaya tamat semua level!'
+      : `Tahniah! Tikus berjaya mendapatkan keju Level ${lvl+1}!`;
+
+  document.getElementById('lc-skor-num').textContent = G.skor;
+
+  const btns=document.getElementById('lc-btns');
+  btns.innerHTML=`
+    <button class="mbtn purple" onclick="bukKuiz(${lvl})">📚 Jawab Kuiz</button>
+    <button class="mbtn red"    onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
+    <button class="mbtn amber"  onclick="keluarPermainan()">🚪 Keluar</button>
+  `;
+
+  // re-trigger animation
+  const box=document.getElementById('lc-box-inner');
+  box.classList.remove('pop-in');
+  void box.offsetWidth;
+  box.classList.add('pop-in');
+
+  panel.classList.add('show');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   QUIZ SYSTEM
+   Rule: BOTH questions must be answered correctly.
+   Wrong → "Cuba Lagi" (stay in quiz, retry SAME question)
+   Both correct → show "Next Level" nav
+═══════════════════════════════════════════════════════════ */
+function bukKuiz(lvl){
+  document.getElementById('lc-panel').classList.remove('show');
+  G.kuizLevel    = lvl;
+  G.kuizSoalan   = 0;
+  G.kuizBetulCount = 0;
+  G.kuizSelesai  = false;
+  renderKuiz();
+  document.getElementById('kuiz-nav').style.display='none';
+  document.getElementById('mod-kuiz').style.display='flex';
+}
+
+// startQuiz — PLACEHOLDER (called by bukKuiz, replaceable externally)
+function startQuiz(level){
+  console.log(`[startQuiz] Level ${level+1} quiz triggered`);
+  bukKuiz(level);
+}
+
+function renderKuiz(){
+  const qd   = QUIZ[G.kuizLevel];
+  const sq   = qd.soalan[G.kuizSoalan];
+  const total= qd.soalan.length;
+
+  document.getElementById('kuiz-title').textContent =
+    `${qd.tajuk} — Soalan ${G.kuizSoalan+1} / ${total}`;
+
+  let html='';
+  if(sq.visual) html+=`<div style="margin:8px auto;width:clamp(55px,18vw,95px)">${svgVisual(sq.visual)}</div>`;
+
+  html+=`<p style="font-size:clamp(.82rem,2.3vw,1rem);color:#333;margin-bottom:10px;white-space:pre-line">${sq.s}</p>`;
+
+  sq.opts.forEach((opt,i)=>{
+    const arabSt = sq.isArab
+      ? 'font-family:"SakkalMajalla",serif;font-size:clamp(1.4rem,4.8vw,2.1rem);direction:rtl'
+      : '';
+    html+=`<button class="qopt" id="qopt${i}" onclick="pilihJwp(${i})" style="${arabSt}">${opt}</button>`;
+  });
+  html+=`<div id="q-fb"></div>`;
+
+  document.getElementById('kuiz-body').innerHTML=html;
+  if(sq.onShow) setTimeout(sq.onShow,350);
+}
+
+function pilihJwp(idx){
+  const qd  = QUIZ[G.kuizLevel];
+  const sq  = qd.soalan[G.kuizSoalan];
+  const fb  = document.getElementById('q-fb');
+
+  // Lock all options
+  sq.opts.forEach((_,i)=>{ const b=document.getElementById('qopt'+i); if(b) b.onclick=null; });
+
+  if(idx===sq.betul){
+    /* ── CORRECT ── */
+    document.getElementById('qopt'+idx).classList.add('ok');
+    fb.innerHTML='<span style="color:#2E7D32">✅ Betul! Bagus sekali!</span>';
+    sndCorrect();
+    G.kuizBetulCount++;
+
+    setTimeout(()=>{
+      G.kuizSoalan++;
+      if(G.kuizSoalan < qd.soalan.length){
+        // More questions
+        renderKuiz();
+      } else {
+        // All questions answered correctly
+        G.kuizSelesai=true;
+        document.getElementById('kuiz-body').innerHTML=`
+          <div style="font-size:clamp(1.4rem,4.5vw,2rem);margin:10px 0">🎊🎊🎊</div>
+          <p style="font-size:clamp(.9rem,2.5vw,1.1rem);color:#2E7D32;font-weight:700;margin-bottom:8px">
+            Tahniah! Anda menjawab SEMUA soalan dengan betul!
+          </p>
+        `;
+        document.getElementById('kuiz-title').textContent='✅ Kuiz Selesai!';
+        // Show nav buttons
+        const nav=document.getElementById('kuiz-nav');
+        if(G.kuizLevel<2){
+          document.getElementById('btn-next-level').textContent='▶️ Teruskan ke Level Seterusnya';
+          document.getElementById('btn-next-level').style.display='inline-flex';
+        } else {
+          document.getElementById('btn-next-level').style.display='none';
+        }
+        nav.style.display='block';
+        sndWin();
+        // Auto show final result if last level
+        if(G.kuizLevel===2) setTimeout(tunjukKeputusanAkhir, 800);
+      }
+    }, 900);
+
+  } else {
+    /* ── WRONG — Cuba Lagi ── */
+    document.getElementById('qopt'+idx).classList.add('bad');
+    fb.innerHTML=`
+      <div style="color:#C62828;font-size:clamp(.88rem,2.4vw,1.05rem)">
+        ❌ Jawapan salah! Cuba Lagi!
+      </div>`;
+    sndWrong();
+
+    // Re-enable after 1s (same question, same options)
+    setTimeout(()=>{
+      document.getElementById('qopt'+idx).classList.remove('bad');
+      fb.innerHTML='';
+      sq.opts.forEach((_,i)=>{
+        const b=document.getElementById('qopt'+i);
+        if(b) b.onclick=()=>pilihJwp(i);
+      });
+    }, 1000);
+  }
+}
+
+/* ─── Proceed after quiz ──────────────────────────────── */
+function teruskanLevelSeterusnya(){
+  document.getElementById('mod-kuiz').style.display='none';
+  if(G.kuizLevel<2){
+    mulaLevelBaru(G.kuizLevel+1);
+  } else {
+    tunjukKeputusanAkhir();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FINAL RESULT
+═══════════════════════════════════════════════════════════ */
+function tunjukKeputusanAkhir(){
+  document.getElementById('mod-kuiz').style.display='none';
+  document.getElementById('lc-panel').classList.remove('show');
+
+  let bintang=1;
+  if(G.skor>=800 && G.jatuhan<=5) bintang=3;
+  else if(G.skor>=400) bintang=2;
+
+  document.getElementById('res-title').textContent  = '🏆 Anda Pemenang!';
+  document.getElementById('res-stars').textContent  = '⭐'.repeat(bintang)+'🌑'.repeat(3-bintang);
+  document.getElementById('res-skor').textContent   = G.skor;
+  document.getElementById('res-detail').innerHTML   =
+    `Masa: ${fmtMasa(G.tick)} &nbsp;|&nbsp; Langgar Dinding: ${G.jatuhan}`;
+  document.getElementById('res-msg').innerHTML      =
+    bintang===3 ? '<b style="color:#2E7D32">🌟 Luar Biasa! Markah Penuh!</b>'
+    : bintang===2 ? '👍 Bagus! Boleh lebih baik lagi!'
+    : '💪 Teruskan berlatih!';
+
+  document.getElementById('mod-result').style.display='flex';
+  sndWin();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════════════════ */
+function updateProgress(){
+  for(let i=1;i<=3;i++){
+    const d=document.getElementById('pd'+i);
+    d.classList.remove('active','done');
+    if(i-1<G.level) d.classList.add('done');
+    else if(i-1===G.level) d.classList.add('active');
+  }
+  for(let i=1;i<=2;i++){
+    document.getElementById('pl'+i).classList.toggle('done',G.level>=i);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════ */
+function mulaPermainan(){
+  if(G.sedang) return;
+  G.dimulakan=true;
+  mulakanLevel();
+}
+
+function togglePause(){
+  if(!G.dimulakan) return;
+  G.sedang = !G.sedang;
+  document.getElementById('btn-berhenti').textContent =
+    G.sedang ? '🛑 Berhenti' : '▶️ Sambung';
+}
+
+function mulakanLevel(){
+  const mz=MAZES[G.level];
+  G.pemR=mz.mula.r; G.pemC=mz.mula.c;
+  G.sedang=true; G.levelMenang=false;
+  G.tick=0; G.kucingIdx=0; G.kucingTick=0;
+  document.getElementById('btn-berhenti').textContent='🛑 Berhenti';
+  setupCanvas(); updateProgress();
+}
+
+function mulaLevelBaru(lvl){
+  document.getElementById('lc-panel').classList.remove('show');
+  document.getElementById('mod-kuiz').style.display='none';
+  G.level=lvl; G.jatuhan=0; G.kucingIdx=0; G.kucingTick=0;
+  G.levelMenang=false;
+  updateProgress(); mulakanLevel();
+}
+
+function mulaSemulaPermainan(){
+  document.getElementById('mod-result').style.display='none';
+  document.getElementById('mod-kuiz').style.display='none';
+  document.getElementById('lc-panel').classList.remove('show');
+  Object.assign(G,{
+    level:0,skor:0,jatuhan:0,tick:0,
+    kucingIdx:0,kucingTick:0,
+    sedang:false,dimulakan:false,levelMenang:false,
+    kejuFasa:0,kucingAnim:0,
+    kuizLevel:0,kuizSoalan:0,kuizBetulCount:0,kuizSelesai:false,
+  });
+  document.getElementById('btn-berhenti').textContent='🛑 Berhenti';
+  updateTopBar(); updateProgress(); setupCanvas();
+}
+
+function keluarPermainan(){
+  document.getElementById('mod-keluar').style.display='flex';
+}
+function sahKeluar(){
+  document.getElementById('mod-keluar').style.display='none';
+  mulaSemulaPermainan();
+  // Show intro again
+  document.getElementById('mod-intro').style.display='flex';
+}
+function tutupKeluar(){
+  document.getElementById('mod-keluar').style.display='none';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VO BANNER (Voice-Over text)
+═══════════════════════════════════════════════════════════ */
+let voTimer=null;
+function showVO(text){
+  const b=document.getElementById('vo-banner');
+  b.textContent=text; b.style.display='block';
+  if(voTimer) clearTimeout(voTimer);
+  voTimer=setTimeout(()=>{ b.style.display='none'; },6000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INTRO MODAL
+═══════════════════════════════════════════════════════════ */
+function tutupIntro(){
+  document.getElementById('mod-intro').style.display='none';
+  setupCanvas(); // draw idle maze (no mouse yet)
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SVG VISUALS
+═══════════════════════════════════════════════════════════ */
+function svgVisual(t){
+  const M={
+    drum:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="25" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><rect x="10" y="25" width="60" height="30" fill="#A0522D" stroke="#5D2F0A" stroke-width="2"/><ellipse cx="40" cy="55" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><line x1="15" y1="25" x2="15" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="40" y1="25" x2="40" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="65" y1="25" x2="65" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="5" y1="15" x2="18" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/><line x1="75" y1="15" x2="62" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/></svg>`,
+    traktor:`<svg viewBox="0 0 100 70"><rect x="30" y="20" width="45" height="30" rx="4" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/><rect x="50" y="10" width="20" height="20" rx="3" fill="#81C784" stroke="#2E7D32" stroke-width="1.5"/><circle cx="20" cy="50" r="15" fill="#333" stroke="#111" stroke-width="2"/><circle cx="20" cy="50" r="8" fill="#666"/><circle cx="72" cy="55" r="10" fill="#333" stroke="#111" stroke-width="2"/><circle cx="72" cy="55" r="5" fill="#666"/><rect x="10" y="30" width="20" height="10" rx="2" fill="#FF8C00"/></svg>`,
+    flamingo: `<div style="font-size:80px; line-height:80px;">🦩</div>`,
+    cacing: `
+  <div style="
+    width:100px;
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
+    <img 
+      src="assets/images/cacing2.png" 
+      style="max-width:100%; max-height:100%; object-fit:contain;"
+    />
+  </div>`,
+  };
+  return M[t]||'';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESIZE
+═══════════════════════════════════════════════════════════ */
+window.addEventListener('resize',()=>{ setupCanvas(); });
+
+/* ═══════════════════════════════════════════════════════════
+   BOOT — idle state, modal shown, animation loop starts
+   NO game logic runs until Mula is pressed
+═══════════════════════════════════════════════════════════ */
+setupCanvas();
+updateTopBar();
+updateProgress();
+animLoop(); // starts animation loop (cheese glow only; gameplay gated by G.sedang)
+// Intro modal is already in HTML and visible by default
+</script>
+</body>
+</html>
