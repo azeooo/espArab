@@ -19,21 +19,11 @@ tailwind.config = {
 }
 </script>
 <style>
-@font-face {
-  font-family: 'WakNan';
-  src: url('./fonts/WakNan.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'IntroRust';
-  src: url('./fonts/introrustg-base2line.otf') format('opentype');
-}
-@font-face {
-  font-family: 'SakkalMajalla';
-  src: url('./fonts/Sakkal-Majalla-Regular.ttf') format('truetype');
-}
+@font-face { font-family: 'WakNan'; src: url('./fonts/WakNan.ttf') format('truetype'); }
+@font-face { font-family: 'IntroRust'; src: url('./fonts/introrustg-base2line.otf') format('opentype'); }
+@font-face { font-family: 'SakkalMajalla'; src: url('./fonts/Sakkal-Majalla-Regular.ttf') format('truetype'); }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   width: 100%; height: 100dvh; overflow: hidden;
   background: #fdf6ee;
@@ -63,18 +53,8 @@ html, body {
 }
 
 /* ── DECORATIVE ELEMENTS ── */
-.cloud {
-  position: absolute;
-  background: white;
-  border-radius: 50px;
-  opacity: 0.85;
-}
-.cloud::before, .cloud::after {
-  content: '';
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-}
+.cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.85; }
+.cloud::before, .cloud::after { content: ''; position: absolute; background: white; border-radius: 50%; }
 
 .sun {
   position: absolute;
@@ -149,19 +129,6 @@ html, body {
 .house-window.left { left: 15%; }
 .house-window.right { right: 15%; }
 
-/* ── FENCE ── */
-.fence {
-  position: absolute;
-  bottom: 0;
-  display: flex; gap: 4px;
-}
-.fence-post {
-  width: clamp(12px,2vw,22px);
-  background: #e8c070;
-  border-radius: 3px 3px 0 0;
-  border: 2px solid #c8a050;
-}
-
 /* ── TITLE BOX ── */
 .title-box {
   background: linear-gradient(135deg, #fff8e1, #fff3cd);
@@ -212,13 +179,6 @@ html, body {
   box-shadow: 0 6px 16px rgba(251,140,0,0.45), 0 3px 0 #e65100;
 }
 .btn-orange:hover { transform: translateY(-2px); }
-
-.btn-red {
-  background: linear-gradient(135deg, #ef5350, #e53935);
-  border-color: #b71c1c;
-  color: white;
-  box-shadow: 0 6px 16px rgba(229,57,53,0.45), 0 3px 0 #b71c1c;
-}
 
 /* ── CAMERA CURSOR ── */
 #screen-game { cursor: crosshair; }
@@ -301,14 +261,7 @@ html, body {
 }
 
 /* ── FLASH OVERLAY ── */
-#flash {
-  position: fixed; inset: 0;
-  background: white;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 500;
-  transition: opacity 0.05s;
-}
+#flash { position: fixed; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 500; transition: opacity 0.05s; }
 #flash.on { opacity: 1; }
 
 /* ── POLAROID ── */
@@ -348,15 +301,8 @@ html, body {
   overflow: hidden;
   transition: border-color 0.3s;
 }
-.album-frame.filled {
-  border: 3px solid #f9a825;
-  background: white;
-}
-.album-frame img {
-  width: 90%; height: 75%;
-  object-fit: cover;
-  border-radius: 4px;
-}
+.album-frame.filled { border: 3px solid #f9a825; background: white; }
+.album-frame img { width: 90%; height: 75%; object-fit: cover; border-radius: 4px; }
 .album-frame .frame-label {
   font-family: 'SakkalMajalla', serif;
   font-size: clamp(12px,2vw,18px);
@@ -376,43 +322,55 @@ html, body {
 }
 .popup-overlay.show { opacity: 1; pointer-events: all; }
 
+/* ── EXTRA: MENU 3D + SPARKLES ── */
+.menu-3d {
+  transform-style: preserve-3d;
+  animation: menuFloat 4.2s ease-in-out infinite;
+}
+@keyframes menuFloat {
+  0%,100%{ transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+  50%{ transform: translateY(-10px) rotateX(4deg) rotateY(-4deg); }
+}
+.title-box::after{
+  content:"";
+  position:absolute; inset:-10px;
+  border-radius: inherit;
+  pointer-events:none;
+  background: radial-gradient(circle at 20% 10%, rgba(255,255,255,0.65), transparent 38%),
+              radial-gradient(circle at 80% 30%, rgba(255,255,255,0.55), transparent 42%),
+              radial-gradient(circle at 50% 90%, rgba(255,255,255,0.45), transparent 40%);
+  filter: blur(0.2px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}
+.sparkle {
+  position: absolute;
+  width: 10px; height: 10px;
+  pointer-events: none;
+  opacity: 0.0;
+  transform: translate(-50%,-50%) scale(0.6);
+  animation: sparklePop 1.35s ease-out forwards;
+  z-index: 30;
+}
+.sparkle::before, .sparkle::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(circle, rgba(255,255,255,1), rgba(255,255,255,0) 65%);
+}
+@keyframes sparklePop {
+  0%{ opacity:0; transform: translate(-50%,-50%) scale(0.4); }
+  20%{ opacity:1; transform: translate(-50%,-50%) scale(1.1); }
+  100%{ opacity:0; transform: translate(-50%,-50%) scale(1.8); }
+}
+
 /* ── ANIMATIONS ── */
-@keyframes floatup {
-  0%{transform:translateY(0) rotate(-3deg);}
-  100%{transform:translateY(-20px) rotate(-3deg);}
-}
-@keyframes slideInUp {
-  from{transform:translateY(100px) rotate(-5deg);opacity:0;}
-  to{transform:translateY(0) rotate(-3deg);opacity:1;}
-}
-@keyframes flyToAlbum {
-  0%{transform:scale(1) rotate(-3deg);opacity:1;}
-  60%{transform:scale(0.7) rotate(5deg);}
-  100%{transform:scale(0.15) rotate(15deg) translate(30px,-30px);opacity:0;}
-}
-@keyframes starFall {
-  0%{transform:translateY(-60px) rotate(0deg);opacity:1;}
-  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
-}
-@keyframes bounce {
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-12px);}
-}
-@keyframes pulse {
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.06);}
-}
-@keyframes cloudDrift {
-  0%{transform:translateX(0);}
-  100%{transform:translateX(40px);}
-}
-@keyframes wrongShake {
-  0%,100%{transform:translateX(0);}
-  20%{transform:translateX(-8px);}
-  40%{transform:translateX(8px);}
-  60%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-}
+@keyframes slideInUp { from{transform:translateY(100px) rotate(-5deg);opacity:0;} to{transform:translateY(0) rotate(-3deg);opacity:1;} }
+@keyframes starFall { 0%{transform:translateY(-60px) rotate(0deg);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+@keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+@keyframes cloudDrift { 0%{transform:translateX(0);} 100%{transform:translateX(40px);} }
+@keyframes wrongShake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(5px);} }
+
 .anim-bounce { animation: bounce 2s ease-in-out infinite; }
 .anim-pulse { animation: pulse 2.5s ease-in-out infinite; }
 .cloud-anim { animation: cloudDrift 6s ease-in-out infinite alternate; }
@@ -449,6 +407,39 @@ html, body {
   z-index: 999;
   animation: starFall 3s ease-in forwards;
 }
+
+/* menu top-right sound button */
+.sound-btn{
+  position:absolute;
+  top: clamp(10px,2vw,16px);
+  left: clamp(10px,2vw,16px);
+  z-index: 50;
+  display:flex;
+  gap: 8px;
+}
+.icon-btn{
+  width: clamp(44px,8vw,56px);
+  height: clamp(44px,8vw,56px);
+  border-radius: 16px;
+  border: 3px solid #f9a825;
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s, box-shadow .15s;
+}
+.icon-btn:active{ transform: scale(0.95); }
+.icon-btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+.icon-btn span{ font-size: clamp(18px,3.2vw,26px); }
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .anim-bounce,.anim-pulse,.cloud-anim,.sun,.menu-3d { animation:none !important; }
+}
 </style>
 </head>
 <body>
@@ -457,6 +448,13 @@ html, body {
      SCREEN 1 — MAIN MENU
 ══════════════════════════════════════════ -->
 <div id="screen-menu" class="screen active bg-livingroom">
+  <!-- Sound toggle button -->
+  <div class="sound-btn">
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="Mute/Unmute">
+      <span id="sound-emoji">🔊</span>
+    </button>
+  </div>
+
   <!-- Decorative sky + clouds -->
   <div class="sun"></div>
   <div class="cloud cloud-anim" style="width:clamp(80px,14vw,140px);height:clamp(30px,5vw,50px);top:8%;left:8%;">
@@ -488,22 +486,26 @@ html, body {
   <!-- Camera character (emoji placeholder until assets loaded) -->
   <div class="anim-bounce" style="position:absolute;top:14%;right:6%;font-size:clamp(48px,8vw,80px);z-index:5;">📷</div>
 
-  <!-- Title Card -->
-  <div class="title-box" style="z-index:10;margin-bottom:clamp(10px,3vw,24px);">
+  <!-- Title Card (3D float) -->
+  <div class="title-box menu-3d" style="z-index:10;margin-bottom:clamp(10px,3vw,24px);">
     <h1 style="font-family:'IntroRust',sans-serif;font-size:clamp(22px,5vw,52px);color:#e65100;text-shadow:2px 2px 0 rgba(0,0,0,0.1);line-height:1.1;">ALBUM KELUARGA</h1>
     <p style="font-family:'SakkalMajalla',serif;font-size:clamp(18px,3.5vw,36px);color:#6d4c41;direction:rtl;margin-top:4px;">أَلْبُومُ عَائِلَتِي</p>
+    <p style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,15px);color:#7a5a4e;margin-top:6px;">✨ Tekan MULA untuk mula bermain! ✨</p>
   </div>
 
   <!-- Buttons -->
   <div style="display:flex;gap:clamp(10px,2.5vw,20px);flex-wrap:wrap;justify-content:center;z-index:10;">
-    <button class="btn-main btn-green anim-pulse" onclick="showScreen('screen-instructions')">
+    <button id="btn-mula" class="btn-main btn-green anim-pulse" type="button">
       <span style="font-family:'IntroRust',sans-serif;">MULA</span>
       <span style="font-family:'SakkalMajalla',serif;font-size:0.9em;direction:rtl;margin-right:6px;">  إِبْدَأ</span>
     </button>
-    <button class="btn-main btn-blue" onclick="showScreen('screen-instructions')">
+    <button id="btn-arahan" class="btn-main btn-blue" type="button">
       <span style="font-family:'WakNan',sans-serif;">Arahan</span>
     </button>
   </div>
+
+  <!-- sparkle layer (generated by JS) -->
+  <div id="sparkle-layer" style="position:absolute;inset:0;pointer-events:none;z-index:25;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -513,39 +515,18 @@ html, body {
   <div class="sun"></div>
   <div class="grass-strip"></div>
 
-  <!-- Album book -->
   <div style="background:linear-gradient(135deg,#fff8e1,#ffe082);border:4px solid #f9a825;border-radius:16px;padding:clamp(12px,2vw,22px);width:min(96vw,700px);max-height:88dvh;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.18);position:relative;z-index:10;">
     <h2 style="font-family:'IntroRust',sans-serif;font-size:clamp(16px,3vw,30px);color:#e65100;text-align:center;margin-bottom:clamp(6px,1.5vw,14px);">📚 ALBUM KELUARGA SAYA</h2>
 
-    <!-- 6 empty frames -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,1.5vw,14px);margin-bottom:clamp(8px,1.5vw,14px);">
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">أَبٌ</span>
-      </div>
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">أُمٌّ</span>
-      </div>
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">جَدٌّ</span>
-      </div>
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">جَدَّةٌ</span>
-      </div>
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">أَخٌ</span>
-      </div>
-      <div class="instr-frame" style="height:clamp(60px,10vw,100px);">
-        <span style="font-size:clamp(20px,4vw,38px);">🕳️</span>
-        <span class="ar">أُخْتٌ</span>
-      </div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">أَبٌ</span></div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">أُمٌّ</span></div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">جَدٌّ</span></div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">جَدَّةٌ</span></div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">أَخٌ</span></div>
+      <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">أُخْتٌ</span></div>
     </div>
 
-    <!-- Instruction text -->
     <div style="background:rgba(255,255,255,0.7);border-radius:12px;padding:clamp(8px,1.5vw,14px);text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">
       <p style="font-family:'WakNan',sans-serif;font-size:clamp(12px,2vw,18px);color:#4e342e;line-height:1.4;">
         🎙️ <em>Jom lengkapkan album keluarga ini!</em><br>
@@ -556,9 +537,12 @@ html, body {
       </p>
     </div>
 
-    <div style="text-align:center;">
-      <button class="btn-main btn-orange" onclick="startGame()">
+    <div style="text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-main btn-orange" type="button" onclick="startGame()">
         📷 <span style="font-family:'IntroRust',sans-serif;">Buka Kamera</span>
+      </button>
+      <button class="btn-main btn-blue" type="button" onclick="showScreen('screen-menu')">
+        ⬅️ <span style="font-family:'WakNan',sans-serif;">Kembali</span>
       </button>
     </div>
   </div>
@@ -568,7 +552,6 @@ html, body {
      SCREEN 3 — GAMEPLAY
 ══════════════════════════════════════════ -->
 <div id="screen-game" class="screen bg-garden aim-mode">
-  <!-- Sky decorations -->
   <div class="sun"></div>
   <div class="cloud cloud-anim" style="width:clamp(70px,12vw,120px);height:clamp(28px,4.5vw,45px);top:5%;left:5%;z-index:2;">
     <div style="position:absolute;width:55%;height:165%;border-radius:50%;background:rgba(255,255,255,0.9);top:-55%;left:18%;"></div>
@@ -590,35 +573,27 @@ html, body {
     </div>
   </div>
 
-  <!-- Grass bottom -->
   <div class="grass-strip"></div>
 
-  <!-- Tree left -->
   <div style="position:absolute;bottom:15%;left:1%;z-index:3;">
     <div style="width:clamp(40px,6vw,70px);height:clamp(60px,10vw,110px);background:linear-gradient(180deg,#66bb6a,#43a047);border-radius:50%;margin:0 auto;"></div>
     <div style="width:clamp(12px,2vw,22px);height:clamp(30px,5vw,55px);background:#6d4c41;margin:0 auto;border-radius:3px;"></div>
   </div>
-  <!-- Tree right -->
   <div style="position:absolute;bottom:15%;right:1%;z-index:3;">
     <div style="width:clamp(50px,7vw,80px);height:clamp(70px,12vw,130px);background:linear-gradient(180deg,#81c784,#388e3c);border-radius:50%;margin:0 auto;"></div>
     <div style="width:clamp(14px,2.2vw,24px);height:clamp(35px,5.5vw,60px);background:#6d4c41;margin:0 auto;border-radius:3px;"></div>
   </div>
 
-  <!-- Path -->
   <div style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);width:30%;height:10%;background:linear-gradient(180deg,#d4a050,#b8882a);border-radius:40% 40% 0 0;z-index:2;"></div>
 
-  <!-- Characters container -->
   <div id="chars-container" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>
 
-  <!-- Wrong feedback -->
   <div id="wrong-msg" style="position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:rgba(229,57,53,0.92);color:white;border-radius:20px;padding:8px 22px;font-family:'WakNan',sans-serif;font-size:clamp(13px,2vw,18px);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:150;">
     ❌ Cuba cari lagi!
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     POLAROID CAPTURE POPUP
-══════════════════════════════════════════ -->
+<!-- POLAROID CAPTURE POPUP -->
 <div id="polaroid-popup" class="popup-overlay">
   <div id="polaroid-card" class="polaroid-card" style="animation:slideInUp 0.5s ease forwards;">
     <img id="polaroid-img" class="polaroid-img" src="" alt=""/>
@@ -628,26 +603,21 @@ html, body {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SCREEN 4 — ALBUM (mid-game)
-══════════════════════════════════════════ -->
+<!-- SCREEN 4 — ALBUM (mid-game) -->
 <div id="screen-album" class="screen" style="background:linear-gradient(135deg,#fff8e1,#ffe082);">
   <div style="background:white;border:4px solid #f9a825;border-radius:20px;padding:clamp(12px,2.5vw,24px);width:min(96vw,700px);box-shadow:0 10px 30px rgba(0,0,0,0.18);">
     <h2 style="font-family:'IntroRust',sans-serif;font-size:clamp(16px,3vw,28px);color:#e65100;text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">📷 Album Kita!</h2>
     <div id="mid-album-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.8vw,16px);margin-bottom:clamp(10px,2vw,20px);"></div>
     <div style="text-align:center;">
-      <button class="btn-main btn-green" onclick="continueGame()">
+      <button class="btn-main btn-green" type="button" onclick="continueGame()">
         ➡️ <span style="font-family:'WakNan',sans-serif;">Seterusnya</span>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SCREEN 5 — COMPLETE
-══════════════════════════════════════════ -->
+<!-- SCREEN 5 — COMPLETE -->
 <div id="screen-complete" class="screen" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);">
-  <!-- Stars bg decorations placed here by JS -->
   <div class="sun" style="top:4%;right:8%;"></div>
   <div class="grass-strip" style="background:linear-gradient(180deg,#66bb6a,#43a047);"></div>
 
@@ -659,16 +629,14 @@ html, body {
     <div id="complete-album-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.8vw,16px);margin-bottom:clamp(12px,2vw,20px);"></div>
 
     <div style="text-align:center;">
-      <button class="btn-main btn-orange" onclick="showScreen('screen-menu');resetGame();">
+      <button class="btn-main btn-orange" type="button" onclick="showScreen('screen-menu');resetGame();">
         🏠 <span style="font-family:'WakNan',sans-serif;">Menu Utama</span>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     VIEWFINDER OVERLAY
-══════════════════════════════════════════ -->
+<!-- VIEWFINDER -->
 <div id="viewfinder">
   <div id="viewfinder-inner">
     <div class="vf-corner-bl"></div>
@@ -678,82 +646,141 @@ html, body {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     FLASH OVERLAY
-══════════════════════════════════════════ -->
+<!-- FLASH -->
 <div id="flash"></div>
 
-<!-- ══════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════ -->
 <script>
-// ── AUDIO SETUP ────────────────────────────────────────────────────────────
-// Replace each file path with your real audio assets when ready.
+/* ============================================================================
+   ✅ FIX SUMMARY
+   1) BGM autoplay issue fixed: BGM starts ONLY after user gesture (MULA/Arahan)
+   2) Added Mute/Unmute button on menu (persists across screens)
+   3) Added sparkle flower effect on menu (lightweight, no images)
+   4) Improved showScreen so it DOES NOT auto-play bgm without gesture
+============================================================================ */
 
+/* ── AUDIO SETUP ──────────────────────────────────────────────────────────── */
 const sounds = {
-  bgm:     new Audio('assets/audio/bgm_family.mp3'), // Background music (looping)
-  shutter: new Audio('assets/audio/shutter.mp3'),    // Camera shutter click
-  correct: new Audio('assets/soundef/successsound.mp3'),      // Correct capture chime
-  wrong:   new Audio('assets/audio/buzzer.mp3'),      // Wrong click buzzer
-  victory: new Audio('assets/audio/victory.mp3'),    // Game complete fanfare
+  bgm:     new Audio('assets/audio/bgm.mp3'),
+  shutter: new Audio('assets/audio/shutter.mp3'),
+  correct: new Audio('assets/soundef/shutter.mp3'),
+  wrong:   new Audio('assets/audio/buzzer.mp3'),
+  victory: new Audio('assets/audio/victory.mp3'),
 };
 sounds.bgm.loop = true;
+sounds.bgm.volume = 0.50;
+sounds.bgm.playbackRate = 0.7; // slow sikit
 sounds.bgm.volume = 0.50;
 sounds.shutter.volume = 1.0;
 sounds.correct.volume = 0.9;
 sounds.wrong.volume   = 0.7;
 sounds.victory.volume = 0.85;
 
-// Voice-over files — one per family member
-// Replace paths with your own recorded VO files.
 const voices = {
-  ayah:  new Audio('assets/vo/ayah.mp3'),   // "أَبٌ  (Abun)"
-  ibu:   new Audio('assets/vo/ibu.mp3'),    // "أُمٌّ (Ummun)"
-  atuk:  new Audio('assets/vo/atuk.mp3'),   // "جَدٌّ (Jaddun)"
-  nenek: new Audio('assets/vo/nenek.mp3'),  // "جَدَّةٌ (Jaddatun)"
-  abang: new Audio('assets/vo/abang.mp3'),  // "أَخٌ  (Akhun)"
-  kakak: new Audio('assets/vo/kakak.mp3'),  // "أُخْتٌ (Ukhtun)"
+  ayah:  new Audio('assets/vo/ayah.mp3'),
+  ibu:   new Audio('assets/vo/ibu.mp3'),
+  atuk:  new Audio('assets/vo/atuk.mp3'),
+  nenek: new Audio('assets/vo/nenek.mp3'),
+  abang: new Audio('assets/vo/abang.mp3'),
+  kakak: new Audio('assets/vo/kakak.mp3'),
 };
 
-// ── MOBILE AUDIO UNLOCK ─────────────────────────────────────────────────────
-// Mobile browsers block audio until the first user gesture.
-// On first tap/click anywhere, silently resume the AudioContext.
+/* ── AUDIO STATE ──────────────────────────────────────────────────────────── */
 let audioUnlocked = false;
-function unlockAudioOnce() {
+let musicWanted = true;      // user preference (mute/unmute)
+let bgmStartedOnce = false;  // only start after user gesture
+
+function setMuted(isMuted){
+  musicWanted = !isMuted;
+  const emoji = document.getElementById('sound-emoji');
+  if (emoji) emoji.textContent = musicWanted ? '🔊' : '🔇';
+
+  // mute affects ALL sounds
+  const vol = musicWanted ? 1 : 0;
+  Object.values(sounds).forEach(a => a.muted = !musicWanted);
+  Object.values(voices).forEach(a => a.muted = !musicWanted);
+
+  // if muting, pause bgm
+  if (!musicWanted) {
+    try { sounds.bgm.pause(); } catch(e){}
+  } else {
+    // if unmuting and we already had a user gesture, resume bgm
+    if (audioUnlocked) startBGM();
+  }
+}
+
+async function unlockAudioOnce(){
   if (audioUnlocked) return;
   audioUnlocked = true;
-  // Play & immediately pause every audio object to unlock the browser
-  const all = [...Object.values(sounds), ...Object.values(voices)];
-  all.forEach(a => { a.play().then(()=>a.pause()).catch(()=>{}); });
-  // Resume BGM if it was meant to be playing
-  if (!sounds.bgm.paused) return;
-  sounds.bgm.play().catch(()=>{});
-}
-document.addEventListener('pointerdown', unlockAudioOnce, { once: true });
 
-// ── AUDIO HELPERS ────────────────────────────────────────────────────────────
-function playSound(key) {
+  // "Prime" audio objects without audible output
+  const all = [...Object.values(sounds), ...Object.values(voices)];
+  await Promise.all(all.map(a => {
+    try {
+      a.muted = true;
+      const p = a.play();
+      if (p && p.then) return p.then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
+      a.pause(); a.currentTime = 0;
+    } catch(e){}
+    return Promise.resolve();
+  }));
+
+  // restore mute preference
+  const shouldMute = !musicWanted;
+  Object.values(sounds).forEach(a => a.muted = shouldMute);
+  Object.values(voices).forEach(a => a.muted = shouldMute);
+
+  // Start bgm if user wants music
+  startBGM();
+}
+
+async function startBGM(){
+  if (!audioUnlocked) return;
+  if (!musicWanted) return;
+
+  try{
+    // avoid restarting from 0 repeatedly
+    if (!bgmStartedOnce){
+      sounds.bgm.currentTime = 0;
+      bgmStartedOnce = true;
+    }
+    await sounds.bgm.play();
+  }catch(e){
+    // still blocked? will work after next user gesture
+    console.warn('BGM blocked:', e);
+  }
+}
+
+function playSound(key){
   const s = sounds[key];
   if (!s) return;
-  s.currentTime = 0;
-  s.play().catch(()=>{});
+  if (!musicWanted) return;
+  try{
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+  }catch(e){}
 }
 
-function playVO(id) {
+function playVO(id){
   const v = voices[id];
   if (!v) return;
-  // Stop any currently playing VO first
-  Object.values(voices).forEach(x => { x.pause(); x.currentTime = 0; });
-  v.play().catch(()=>{});
+  if (!musicWanted) return;
+  try{
+    Object.values(voices).forEach(x => { x.pause(); x.currentTime = 0; });
+    v.currentTime = 0;
+    v.play().catch(()=>{});
+  }catch(e){}
 }
 
-function stopBGM() {
-  sounds.bgm.pause();
-  sounds.bgm.currentTime = 0;
+function stopBGM(){
+  try { sounds.bgm.pause(); sounds.bgm.currentTime = 0; } catch(e){}
+  bgmStartedOnce = false;
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
-// ── CHARACTER DATA ────────────────────────────────────
+/* Unlock audio on first gesture anywhere */
+document.addEventListener('pointerdown', unlockAudioOnce, { once:true });
+document.addEventListener('keydown', unlockAudioOnce, { once:true });
+
+/* ── CHARACTER DATA ──────────────────────────────────── */
 const CHARACTERS = [
   { id:'ayah',  malay:'AYAH',  arabic:'أَبٌ',    activity:'🚗 mencuci kereta',    emoji:'👨',  color:'#1565c0', imgClick:'assets/images/ayah1.png',  imgSnap:'assets/images/ayah1.png',  vo:'assets/vo/ayah.mp3'  },
   { id:'ibu',   malay:'IBU',   arabic:'أُمٌّ',   activity:'📖 membaca buku',      emoji:'👩',  color:'#ad1457', imgClick:'assets/images/ibu1.png',   imgSnap:'assets/images/ibu1.png',   vo:'assets/vo/ibu.mp3'   },
@@ -763,7 +790,6 @@ const CHARACTERS = [
   { id:'kakak', malay:'KAKAK', arabic:'أُخْتٌ',  activity:'🪆 main mainan',       emoji:'👧',  color:'#6a1b9a', imgClick:'assets/images/kakak1.png', imgSnap:'assets/images/kakak1.png', vo:'assets/vo/kakak.mp3' },
 ];
 
-// Character positions in garden (% of viewport)
 const POSITIONS = [
   { left:'8%',  bottom:'20%' },
   { left:'22%', bottom:'22%' },
@@ -773,25 +799,45 @@ const POSITIONS = [
   { left:'82%', bottom:'21%' },
 ];
 
-// ── GAME STATE ────────────────────────────────────────
+/* ── GAME STATE ──────────────────────────────────────── */
 let currentTargetIdx = 0;
 let order = [];
 let captured = {};
 let gameActive = false;
 
-// ── SCREEN NAVIGATION ─────────────────────────────────
-function showScreen(id) {
+/* ── SCREEN NAVIGATION ───────────────────────────────── */
+function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Start BGM when menu is shown
-  if (id === 'screen-menu') {
-    sounds.bgm.play().catch(()=>{});
-  }
+
+  // viewfinder hide when leaving game
+  if (id !== 'screen-game') vf.style.display = 'none';
 }
 
-// ── START GAME ────────────────────────────────────────
-function startGame() {
-  playSound('shutter'); // Shutter click when MULA/Buka Kamera is pressed
+/* Buttons (menu) — ensure user gesture triggers audio */
+const btnMula = document.getElementById('btn-mula');
+const btnArahan = document.getElementById('btn-arahan');
+btnMula.addEventListener('click', () => {
+  unlockAudioOnce();
+  playSound('shutter');
+  showScreen('screen-instructions');
+});
+btnArahan.addEventListener('click', () => {
+  unlockAudioOnce();
+  playSound('shutter');
+  showScreen('screen-instructions');
+});
+
+/* Sound toggle */
+document.getElementById('btn-sound').addEventListener('click', (e)=>{
+  unlockAudioOnce();
+  setMuted(musicWanted); // toggle
+});
+
+/* ── START GAME ──────────────────────────────────────── */
+function startGame(){
+  unlockAudioOnce();
+  playSound('shutter');
   currentTargetIdx = 0;
   captured = {};
   order = shuffleArray(CHARACTERS.map(c=>c.id));
@@ -802,15 +848,16 @@ function startGame() {
   announceTarget();
 }
 
-function resetGame() {
+function resetGame(){
   currentTargetIdx = 0;
   captured = {};
   order = [];
   gameActive = false;
-  sounds.bgm.play().catch(()=>{}); // Restart BGM on menu return
+  // on menu return, do NOT auto-play unless unlocked; startBGM handles it.
+  startBGM();
 }
 
-function shuffleArray(arr) {
+function shuffleArray(arr){
   const a = [...arr];
   for (let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -819,15 +866,17 @@ function shuffleArray(arr) {
   return a;
 }
 
-// ── RENDER CHARACTERS IN GARDEN ───────────────────────
-function renderChars() {
+/* ── RENDER CHARACTERS IN GARDEN ─────────────────────── */
+function renderChars(){
   const container = document.getElementById('chars-container');
   container.innerHTML = '';
   const shuffledPos = shuffleArray(POSITIONS);
 
   CHARACTERS.forEach((char, i) => {
     const pos = shuffledPos[i];
-    const size = 'clamp(90px,14vw,140px)';
+
+    // slightly bigger than before (kids-friendly)
+    const size = 'clamp(105px,16vw,165px)';
 
     const wrapper = document.createElement('div');
     wrapper.className = 'char-wrapper';
@@ -841,17 +890,15 @@ function renderChars() {
       pointer-events:all;
     `;
 
-    // Activity label
     const label = document.createElement('div');
     label.style.cssText = `
-      position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+      position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
       background:rgba(0,0,0,0.6);color:white;border-radius:12px;
       padding:2px 8px;font-family:'WakNan',sans-serif;
       font-size:clamp(9px,1.4vw,13px);white-space:nowrap;pointer-events:none;
     `;
     label.textContent = char.activity;
 
-    // Image clip
     const clip = document.createElement('div');
     clip.className = 'char-img-clip';
 
@@ -859,7 +906,6 @@ function renderChars() {
     img.src = char.imgClick;
     img.alt = char.malay;
 
-    // Fallback emoji if image missing
     img.onerror = () => {
       clip.innerHTML = '';
       const fb = document.createElement('div');
@@ -870,7 +916,6 @@ function renderChars() {
     };
     clip.appendChild(img);
 
-    // Ring
     const ring = document.createElement('div');
     ring.className = 'char-ring';
 
@@ -878,68 +923,64 @@ function renderChars() {
     wrapper.appendChild(clip);
     wrapper.appendChild(ring);
 
-    // Touch events
     wrapper.addEventListener('touchstart', (e) => {
       e.preventDefault();
       wrapper.classList.add('tapped');
       setTimeout(()=>wrapper.classList.remove('tapped'),600);
       handleCharClick(char.id);
     }, {passive:false});
+
     wrapper.addEventListener('click', () => handleCharClick(char.id));
 
     container.appendChild(wrapper);
   });
+
   gameActive = true;
 }
 
-// ── ANNOUNCE TARGET ───────────────────────────────────
-function announceTarget() {
-  if(currentTargetIdx >= order.length) { endGame(); return; }
+/* ── ANNOUNCE TARGET ─────────────────────────────────── */
+function announceTarget(){
+  if (currentTargetIdx >= order.length) { endGame(); return; }
   const targetId = order[currentTargetIdx];
   const char = CHARACTERS.find(c=>c.id===targetId);
   document.getElementById('target-arabic').textContent = char.arabic;
   document.getElementById('target-malay').textContent = char.malay;
-  playVO(char.id); // Play voice-over for the announced target
+  playVO(char.id);
 }
 
-// ── HANDLE CLICK ──────────────────────────────────────
-function handleCharClick(clickedId) {
-  if(!gameActive) return;
+/* ── HANDLE CLICK ────────────────────────────────────── */
+function handleCharClick(clickedId){
+  if (!gameActive) return;
   const targetId = order[currentTargetIdx];
-  if(clickedId === targetId) {
-    handleCorrect(targetId);
-  } else {
-    handleWrong(clickedId);
-  }
+  if (clickedId === targetId) handleCorrect(targetId);
+  else handleWrong(clickedId);
 }
 
-function handleCorrect(id) {
+function handleCorrect(id){
   gameActive = false;
   const char = CHARACTERS.find(c=>c.id===id);
   captured[id] = true;
 
-  // Flash
   const flash = document.getElementById('flash');
   flash.classList.add('on');
   setTimeout(()=>flash.classList.remove('on'),150);
 
-  playSound('shutter'); // Camera shutter on correct click
-  setTimeout(()=>playSound('correct'), 180); // Chime shortly after flash
+  playSound('shutter');
+  setTimeout(()=>playSound('correct'), 180);
 
-  // Hide character
   const el = document.getElementById(`char-${id}`);
-  if(el) { el.style.opacity='0.3'; el.style.pointerEvents='none'; }
+  if (el) { el.style.opacity='0.3'; el.style.pointerEvents='none'; }
 
-  // Show polaroid popup
   setTimeout(()=>showPolaroid(char),200);
 }
 
-function showPolaroid(char) {
+function showPolaroid(char){
   const popup = document.getElementById('polaroid-popup');
   const img = document.getElementById('polaroid-img');
   const arabic = document.getElementById('polaroid-arabic');
   const malay = document.getElementById('polaroid-malay');
 
+  img.style.display = '';
   img.src = char.imgSnap || char.imgClick;
   img.onerror = ()=>{ img.style.display='none'; };
   arabic.textContent = char.arabic;
@@ -954,44 +995,40 @@ function showPolaroid(char) {
     document.getElementById('capture-count').textContent = count;
     document.getElementById('progress-bar').style.width = `${(count/6)*100}%`;
 
-    if(currentTargetIdx >= order.length) {
-      setTimeout(endGame, 400);
-    } else {
-      gameActive = true;
-      announceTarget();
-    }
+    if (currentTargetIdx >= order.length) setTimeout(endGame, 400);
+    else { gameActive = true; announceTarget(); }
   }, 2200);
 }
 
-function handleWrong(id) {
+function handleWrong(id){
   const el = document.getElementById(`char-${id}`);
-  if(el) {
+  if (el) {
     el.style.animation = 'wrongShake 0.5s ease';
     setTimeout(()=>el.style.animation='',500);
   }
-  playSound('wrong'); // Soft buzzer on wrong click
+  playSound('wrong');
 
   const msg = document.getElementById('wrong-msg');
   msg.style.opacity = '1';
   setTimeout(()=>msg.style.opacity='0',1500);
 }
 
-// ── END GAME ──────────────────────────────────────────
-function endGame() {
+/* ── END GAME ────────────────────────────────────────── */
+function endGame(){
   gameActive = false;
   renderAlbumGrid('complete-album-grid', true);
   showScreen('screen-complete');
   dropStars();
   stopBGM();
-  playSound('victory'); // Victory fanfare on game complete
+  playSound('victory');
 }
 
-function continueGame() {
+function continueGame(){
   showScreen('screen-game');
   gameActive = true;
 }
 
-function renderAlbumGrid(gridId, interactive) {
+function renderAlbumGrid(gridId, interactive){
   const grid = document.getElementById(gridId);
   if(!grid) return;
   grid.innerHTML = '';
@@ -999,9 +1036,9 @@ function renderAlbumGrid(gridId, interactive) {
     const isCaptured = !!captured[char.id];
     const frame = document.createElement('div');
     frame.className = `album-frame ${isCaptured?'filled':''}`;
-    frame.style.cssText = `height:clamp(80px,13vw,130px);border-radius:10px;padding:6px;`;
+    frame.style.cssText = `height:clamp(190px,10vw,240px);border-radius:10px;padding:6px;`;
 
-    if(isCaptured) {
+    if(isCaptured){
       const img = document.createElement('img');
       img.src = char.imgSnap || char.imgClick;
       img.alt = char.malay;
@@ -1023,11 +1060,12 @@ function renderAlbumGrid(gridId, interactive) {
       frame.appendChild(lbl);
       frame.appendChild(mlbl);
 
-      if(interactive) {
+      if(interactive){
         frame.style.cursor='pointer';
         frame.title='Klik untuk dengar';
         frame.addEventListener('click',()=>{
-          // playVO(char.id);
+          unlockAudioOnce();
+          playVO(char.id); // ✅ replay pronunciation
           frame.style.transform='scale(1.05)';
           setTimeout(()=>frame.style.transform='',300);
         });
@@ -1047,8 +1085,8 @@ function renderAlbumGrid(gridId, interactive) {
   });
 }
 
-// ── DROP STARS ────────────────────────────────────────
-function dropStars() {
+/* ── DROP STARS ──────────────────────────────────────── */
+function dropStars(){
   const count=18;
   const colors=['⭐','🌟','✨','💫'];
   for(let i=0;i<count;i++){
@@ -1059,14 +1097,13 @@ function dropStars() {
       s.style.left=`${Math.random()*95}vw`;
       s.style.top=`-50px`;
       s.style.animationDuration=`${2+Math.random()*2}s`;
-      s.style.animationDelay=`0s`;
       document.getElementById('screen-complete').appendChild(s);
       setTimeout(()=>s.remove(),5000);
     },i*160);
   }
 }
 
-// ── VIEWFINDER FOLLOW MOUSE (desktop) ────────────────
+/* ── VIEWFINDER FOLLOW ───────────────────────────────── */
 const vf = document.getElementById('viewfinder');
 const gameScreen = document.getElementById('screen-game');
 
@@ -1075,9 +1112,7 @@ gameScreen.addEventListener('mousemove',(e)=>{
   vf.style.left=e.clientX+'px';
   vf.style.top=e.clientY+'px';
 });
-gameScreen.addEventListener('mouseleave',()=>{
-  vf.style.display='none';
-});
+gameScreen.addEventListener('mouseleave',()=>{ vf.style.display='none'; });
 gameScreen.addEventListener('touchmove',(e)=>{
   const t=e.touches[0];
   vf.style.display='block';
@@ -1088,19 +1123,60 @@ gameScreen.addEventListener('touchend',()=>{
   setTimeout(()=>vf.style.display='none',500);
 },{passive:true});
 
-// Hide viewfinder when not in game screen
-document.querySelectorAll('.screen:not(#screen-game)').forEach(s=>{
-  s.addEventListener('mouseenter',()=>vf.style.display='none');
-});
+/* ── MENU SPARKLES (flowers spark all over screen) ───── */
+const sparkleLayer = document.getElementById('sparkle-layer');
+function spawnSparkle(){
+  if (!sparkleLayer) return;
+  const s = document.createElement('div');
+  s.className = 'sparkle';
 
-// ── START BGM ON PAGE LOAD ────────────────────────────
-// BGM will start after first user interaction (mobile unlock handles this)
-window.addEventListener('load', () => {
-  sounds.bgm.play().catch(()=>{
-    // Autoplay blocked — BGM will start after first user tap (unlockAudioOnce)
-  });
-});
+  // random pastel “flower sparkle”
+  const pastel = [
+    'rgba(255,138,101,0.95)',
+    'rgba(236,64,122,0.95)',
+    'rgba(171,71,188,0.95)',
+    'rgba(255,202,40,0.95)',
+    'rgba(102,187,106,0.95)'
+  ];
+  const c = pastel[Math.floor(Math.random()*pastel.length)];
+  s.style.filter = `drop-shadow(0 0 10px ${c})`;
 
+  const x = Math.random()*100;
+  const y = Math.random()*100;
+  s.style.left = x + '%';
+  s.style.top  = y + '%';
+
+  // tiny flower shape using CSS (4 petals)
+  s.innerHTML = `
+    <div style="position:absolute;inset:0;transform:rotate(${Math.random()*360}deg)">
+      <div style="position:absolute;left:50%;top:0%;transform:translateX(-50%);width:6px;height:6px;background:${c};border-radius:999px;"></div>
+      <div style="position:absolute;left:0%;top:50%;transform:translateY(-50%);width:6px;height:6px;background:${c};border-radius:999px;"></div>
+      <div style="position:absolute;right:0%;top:50%;transform:translateY(-50%);width:6px;height:6px;background:${c};border-radius:999px;"></div>
+      <div style="position:absolute;left:50%;bottom:0%;transform:translateX(-50%);width:6px;height:6px;background:${c};border-radius:999px;"></div>
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:rgba(255,255,255,0.95);border-radius:999px;"></div>
+    </div>
+  `;
+  sparkleLayer.appendChild(s);
+  setTimeout(()=>s.remove(), 1600);
+}
+let sparkleTimer = null;
+function startSparkles(){
+  if (sparkleTimer) return;
+  sparkleTimer = setInterval(()=>{
+    // spawn a few per burst
+    for(let i=0;i<3;i++) spawnSparkle();
+  }, 450);
+}
+function stopSparkles(){
+  if (!sparkleTimer) return;
+  clearInterval(sparkleTimer);
+  sparkleTimer = null;
+}
+startSparkles();
+
+/* ── INIT ───────────────────────────────────────────── */
+setMuted(false); // default unmuted UI
+// DO NOT autoplay BGM here (browser blocks). It will start after user gesture via unlockAudioOnce.
 </script>
 </body>
 </html>

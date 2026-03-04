@@ -162,7 +162,7 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
   </div>
 
   <div style="position:relative;z-index:10;display:flex;flex-direction:column;gap:.78rem;align-items:center;margin-top:.55rem;">
-    <button class="btn btn-green" onpointerenter="playSound('engine_vroom')" onclick="onMenuBtn('mula')">🏁 MULA</button>
+    <button class="btn btn-green" onclick="onMenuBtn('mula')">🏁 MULA</button>
     <button class="btn btn-orange" onpointerenter="playSound('engine_vroom')" onclick="onMenuBtn('arahan')">📖 Arahan</button>
     <button class="btn btn-red" onpointerenter="playSound('engine_vroom')" onclick="onMenuBtn('keluar')">🚪 Keluar</button>
   </div>
@@ -296,7 +296,7 @@ const ASSET_CONFIG = { carImage: "" }; // TODO: "./assets/my_car.png"
 const SPEED = {
   ROAD_SCROLL:      0.0022,
   BARREL_Z:         0.0040,   // how fast barrels approach
-  COIN_Z:           0.0032,   // how fast coins approach
+  COIN_Z:           0.0020,   // how fast coins approach
   THINK_MS:         2400,     // ms barrels stay frozen before moving
   BOOST_MULT:       1.18,     // speed multiplier after correct answer
   BOOST_MS:         1200,
@@ -305,21 +305,21 @@ const SPEED = {
   SPARKLE_SCROLL:   0.0014,
 };
 
-const BONUS_DURATION_MS = 10000; // 10 seconds of bonus
+const BONUS_DURATION_MS = 15000; // 10 seconds of bonus
 
 // ============================================================
 // AUDIO — replace file paths in AUDIO_FILES when ready
 // ============================================================
 const AUDIO_FILES = {
-  bgm_menu:     "./audio/bgm_menu.mp3",
-  bgm_racing:   "./audio/bgm_racing.mp3",
-  bgm_bonus:    "./audio/bgm_bonus.mp3",
-  engine_vroom: "./audio/engine_vroom.mp3",
-  ding_correct: "./audio/ding_correct.mp3",
-  brake_wrong:  "./audio/brake_wrong.mp3",
-  coin_collect: "./audio/coin_collect.mp3",
-  crowd_cheer:  "./audio/crowd_cheer.mp3",
-  fireworks:    "./audio/fireworks.mp3"
+  bgm_menu:     "./assets/audio/bgm_family.mp3",
+  bgm_racing:   "./assets/audio/bgm_racing.mp3",
+  bgm_bonus:    "./assets/audio/bgm_bonus.mp3",
+  //engine_vroom: "./assets/soundef/engine_vroom.mp3",
+  ding_correct: "./assets/audio/ding_correct.mp3",
+  buzzer:       "./assets/soundef/buzzer.mp3",
+  coin_collect: "./assets/audio/coinsound.mp3",
+  crowd_cheer:  "./assets/audio/crowd_cheer.mp3",
+  fireworks:    "./assets/soundef/successsound.mp3"
 };
 // VO files — fill in paths when you have them
 const VO_FILES = {
@@ -628,7 +628,12 @@ function drawFinishLine(z){
 // DRAW: BARREL
 // ============================================================
 function drawBarrel(bx,by,bz,num){
-  const sc=0.38+bz*0.62, W=46*sc, H=72*sc;
+  
+  const sc = 0.38 + bz*0.62;
+  const SIZE = 1.35;          // ✅ tukar 1.2 / 1.5 ikut suka
+  const W = 46*sc*SIZE;
+  const H = 72*sc*SIZE;
+
   ctx.save(); ctx.translate(bx,by);
   ctx.fillStyle='rgba(0,0,0,.22)'; ctx.beginPath(); ctx.ellipse(0,H*.5+4,W*.6,H*.1,0,0,Math.PI*2); ctx.fill();
   const bg=ctx.createLinearGradient(-W/2,0,W/2,0);
@@ -782,7 +787,7 @@ function resolveCollision(correct, val){
   } else {
     // +0 marks, reset chain
     G.missedNums[val]=(G.missedNums[val]||0)+1;
-    playSound('brake_wrong');
+    playSound('buzzer');
     spawnFadeUp(G.carX, ROAD.carY-35, '✗', '#EF5350');
     G.isSlowing=true; G.slowTimer=SPEED.SLOW_MS;
     G.correctChain=0; // ★ reset chain on wrong
@@ -954,7 +959,7 @@ function gameLoop(ts){
       G.phase='resolve';
       G.missedNums[G.currentTarget.val]=(G.missedNums[G.currentTarget.val]||0)+1;
       G.correctChain=0; // ★ reset on miss
-      playSound('brake_wrong');
+      playSound('buzzer');
       G.barrels=[];
       setTimeout(()=>{ if(G.phase!=='finished'&&G.phase!=='bonus') spawnBarrels(); },700);
     }
