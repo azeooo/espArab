@@ -41,7 +41,7 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
   top:2.2%;
   left:50%;
   transform:translateX(-50%);
-  z-index:999; /* above HUD */
+  z-index:999;
   display:none;
   text-align:center;
   pointer-events:none;
@@ -80,7 +80,6 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 @keyframes slideUp{0%{transform:translateY(60px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
 .num-pop{animation:popNum .45s cubic-bezier(.3,1.5,.5,1) both;}
 .num-glow{animation:glowPulse 1.8s ease-in-out infinite;}
-/* bonus title uses inline style + JS class */
 .bonus-show{animation:bonusTitleAnim .6s cubic-bezier(.3,1.3,.5,1) both,bonusPulse 2s ease-in-out .6s infinite;}
 .trophy-drop{animation:trophyDrop .7s cubic-bezier(.2,1.4,.4,1) both;}
 .slide-up{animation:slideUp .5s ease-out both;}
@@ -137,7 +136,6 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
     <div style="font-size:.9rem;font-weight:700;color:rgba(255,255,255,.8);margin-top:.2rem;letter-spacing:.12em;">لعبة الأرقام العربية</div>
   </div>
 
-  <!-- CAR: replace SVG with <img src="./assets/my_car.png"> when ready -->
   <div style="position:relative;z-index:10;animation:bobCar 1.7s ease-in-out infinite;filter:drop-shadow(0 12px 24px rgba(180,0,0,.6));">
     <svg viewBox="0 0 160 220" width="108" height="148">
       <defs><radialGradient id="cg" cx="40%" cy="30%"><stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#B71C1C"/></radialGradient></defs>
@@ -215,13 +213,11 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 <div id="screen-game" class="screen" style="background:#0d0d1a;">
   <canvas id="road-canvas"></canvas>
 
-  <!-- ★ BONUS TITLE — perfectly centered on all devices ★ -->
   <div id="bonus-title-wrap">
     <div id="bonus-title-text" style="font-size:clamp(2.2rem,9vw,3.4rem);font-weight:900;color:#FFE66D;text-shadow:0 0 30px #FF8C42,0 0 60px #FFE66D,0 5px 0 rgba(0,0,0,.5);letter-spacing:.06em;line-height:2.05;"> BONUS TIME!</div>
     <div style="font-size:clamp(.9rem,3vw,1.1rem);font-weight:800;color:rgba(255,255,255,.9);margin-top:.35rem;letter-spacing:.1em;">وقت المكافأة 🌈</div>
   </div>
 
-  <!-- Bonus bar -->
   <div id="bonus-bar-wrap">
     <div id="bonus-bar-bg"><div id="bonus-bar-fill" style="width:100%;"></div></div>
     <div id="bonus-bar-label">⏱ Masa Bonus</div>
@@ -229,10 +225,8 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 
   <div id="fx-layer"></div>
 
-  <!-- Round counter -->
   <div id="round-counter">Soalan: <span id="hud-round">0</span> / <span id="hud-maxround">15</span></div>
 
-  <!-- HUD — score only, NO streak display -->
   <div id="hud">
     <div id="target-num-big" class="num-pop num-glow">—</div>
     <div id="target-word"></div>
@@ -243,7 +237,6 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
     <button class="btn btn-sand" style="font-size:.78rem;padding:.3rem .85rem;min-width:65px;" onclick="stopGame()">⏹ Stop</button>
   </div>
 
-  <!-- Tutorial hint -->
   <div id="tutorial-hint" style="position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);border:2px solid rgba(255,220,0,.5);border-radius:1.8rem;padding:1rem 1.8rem;text-align:center;z-index:88;pointer-events:none;display:none;backdrop-filter:blur(8px);">
     <div style="font-size:1rem;font-weight:900;color:#FFE66D;">👆 Tekan kiri/kanan untuk pilih nombor!</div>
     <div style="font-size:.85rem;color:#A8E6F0;direction:rtl;margin-top:.25rem;">اضغط يسار/يمين لاختيار الرقم</div>
@@ -285,49 +278,51 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
      SCRIPT
 ══════════════════════════════════════ -->
 <script>
-// ============================================================
-// ASSET CONFIG — replace path to use your own car PNG
-// ============================================================
-const ASSET_CONFIG = { carImage: "" }; // TODO: "./assets/my_car.png"
+const ASSET_CONFIG = { carImage: "" };
 
 // ============================================================
-// ★ SPEED CONFIG — edit ONLY here ★
+// === TUNED SPEED: slower barrels ===
 // ============================================================
 const SPEED = {
   ROAD_SCROLL:      0.0022,
-  BARREL_Z:         0.0040,   // how fast barrels approach
-  COIN_Z:           0.0020,   // how fast coins approach
-  THINK_MS:         2400,     // ms barrels stay frozen before moving
-  BOOST_MULT:       1.18,     // speed multiplier after correct answer
+  BARREL_Z:         0.0028,   // === TUNED SPEED: slower barrels (was 0.0040) ===
+  COIN_Z:           0.0020,
+  THINK_MS:         2600,     // === TUNED SPEED: slightly more think time (was 2400) ===
+  BOOST_MULT:       1.18,
   BOOST_MS:         1200,
-  WRONG_SLOW_MULT:  0.78,     // speed multiplier after wrong answer
+  WRONG_SLOW_MULT:  0.78,
   SLOW_MS:          900,
   SPARKLE_SCROLL:   0.0014,
 };
 
-const BONUS_DURATION_MS = 15000; // 10 seconds of bonus
+const BONUS_DURATION_MS = 20000;
 
-// ============================================================
-// AUDIO — replace file paths in AUDIO_FILES when ready
-// ============================================================
 const AUDIO_FILES = {
   bgm_menu:     "./assets/audio/bgm_family.mp3",
   bgm_racing:   "./assets/audio/bgm_racing.mp3",
   bgm_bonus:    "./assets/audio/bgm_bonus.mp3",
-  //engine_vroom: "./assets/soundef/engine_vroom.mp3",
   ding_correct: "./assets/audio/ding_correct.mp3",
   buzzer:       "./assets/soundef/buzzer.mp3",
   coin_collect: "./assets/audio/coinsound.mp3",
   crowd_cheer:  "./assets/audio/crowd_cheer.mp3",
   fireworks:    "./assets/soundef/successsound.mp3"
 };
-// VO files — fill in paths when you have them
+// === VO PLACEHOLDERS: storyboard numbers + end feedback ===
+// Replace each path with your actual .mp3 when ready.
+// Keys MUST match exactly the `word` values in the NUMBERS array below.
 const VO_FILES = {
-  Wahidun:"",Ithnani:"",Thalatatun:"","Arba'atun":"",
-  Khamsatun:"",Sittatun:"","Sab'atun":"",Thamaniyatun:"",
-  "Tis'atun":"","'Asharatun":"",
-  Mumtaz:"",   // TODO: "./audio/vo_mumtaz.mp3"
-  CubaLagi:""  // TODO: "./audio/vo_cubalagi.mp3"
+  Wahidun:      "./assets/vo/Wahidun.mp3",      // TODO: VO "Wahidun!"     (1)
+  Ithnani:      "./assets/vo/Ithnani.mp3",      // TODO: VO "Ithnani!"     (2)
+  Thalatatun:   "./assets/vo/Thalatatun.mp3",   // TODO: VO "Thalatatun!"  (3)
+  "Arba'atun":  "./assets/vo/Arbaatun.mp3",     // TODO: VO "Arba'atun!"   (4)
+  Khamsatun:    "./assets/vo/Khamsatun.mp3",    // TODO: VO "Khamsatun!"   (5)
+  Sittatun:     "./assets/vo/Sittatun.mp3",     // TODO: VO "Sittatun!"    (6)
+  "Sab'atun":   "./assets/vo/Sabatun.mp3",      // TODO: VO "Sab'atun!"    (7)
+  Thamaniyatun: "./assets/vo/Thamaniyatun.mp3", // TODO: VO "Thamaniyatun!" (8)
+  "Tis'atun":   "./assets/vo/Tisatun.mp3",      // TODO: VO "Tis'atun!"    (9)
+  "'Asharatun": "./assets/vo/Asharatun.mp3",    // TODO: VO "'Asharatun!"  (10)
+  Mumtaz:       "./assets/vo/Mumtaz.mp3",       // TODO: VO "Mumtaz!"      (end — excellent)
+  CubaLagi:     "./assets/vo/CubaLagi.mp3"      // TODO: VO "Cuba lagi!"   (end — try again)
 };
 
 const audioPool = {};
@@ -360,9 +355,6 @@ function playBGM(n){
 }
 function playVO(w){ const s=VO_FILES[w]; if(!s)return; const a=new Audio(s); a.play().catch(()=>{}); }
 
-// ============================================================
-// NUMBER VOCAB
-// ============================================================
 const NUMBERS=[
   {val:1, arabic:'١', word:'Wahidun'},
   {val:2, arabic:'٢', word:'Ithnani'},
@@ -376,9 +368,6 @@ const NUMBERS=[
   {val:10,arabic:'١٠',word:"'Asharatun"}
 ];
 
-// ============================================================
-// GAME STATE
-// ============================================================
 let G = {};
 function resetG(){
   G = {
@@ -387,28 +376,19 @@ function resetG(){
     score: 0,
     round: 0,
     maxRounds: 15,
-
-    // ★ correctChain — internal only, never displayed in HUD
     correctChain: 0,
-
-    // Phase: idle | think | barrels | resolve | bonus | finished
     phase: 'idle',
-
     barrels: [],
     coins: [],
     currentTarget: null,
     correctLane: -1,
     lastCorrectLane: -1,
-
     isBoosting: false, boostTimer: 0,
     isSlowing:  false, slowTimer: 0,
-
     bonusTimer: 0,
-    bonusStarted: false,  // has bonus been triggered this game?
-
+    bonusStarted: false,
     isTutorial: false,
     missedNums: {},
-
     raf: null, lastTime: 0,
     roadOffset: 0,
     carX: 0, carTargetX: 0, carBobT: 0,
@@ -418,9 +398,6 @@ function resetG(){
 }
 resetG();
 
-// ============================================================
-// DOM HELPERS
-// ============================================================
 const $ = id => document.getElementById(id);
 const canvas = $('road-canvas');
 const ctx    = canvas.getContext('2d');
@@ -428,9 +405,6 @@ function showScreen(s){ ['menu','game','end'].forEach(n=>$('screen-'+n).classLis
 function openModal(id){ $(id).style.display='flex'; }
 function closeModal(id){ $(id).style.display='none'; }
 
-// ============================================================
-// CANVAS / ROAD LAYOUT
-// ============================================================
 let ROAD = {};
 function resizeCanvas(){
   canvas.width  = canvas.offsetWidth  || window.innerWidth;
@@ -456,46 +430,268 @@ function positionCarTarget(){
 }
 
 // ============================================================
-// DRAW: SKY + ENVIRONMENT
+// === FIX: hills anchored at horizon (not bottom) ===
+// === 3D HILLS: gradients + rim + shadow + texture ===
+// PALETTE: sky-blue top → cyan → warm cream at horizon
+//          Hills FAR  = lavender/rose (light, airy — atmospheric perspective)
+//          Hills MID  = violet/pink/golden (mid saturation)
+//          Hills NEAR = bold purple/magenta/orange — overlaps horizon IN FRONT of road
 // ============================================================
 function drawSky(){
   const {W,H,vy}=ROAD;
+  const t = Date.now() * 0.001;
+
+  // === PARALLAX: visual-only offset based on lane ===
+  const lp = (G.lane - 1) * ROAD.W * 0.015; // base unit per spec
+
+  // ── Sky gradient: bright day sky blue → cyan → warm cream ──
   const sg=ctx.createLinearGradient(0,0,0,vy);
-  sg.addColorStop(0,'#FFECB3'); sg.addColorStop(.5,'#FFD54F'); sg.addColorStop(1,'#FFB300');
+  sg.addColorStop(0,  '#87CEEB');
+  sg.addColorStop(.38,'#B2EBF2');
+  sg.addColorStop(.74,'#E0F7FA');
+  sg.addColorStop(1,  '#FFF8E1');
   ctx.fillStyle=sg; ctx.fillRect(0,0,W,vy);
-  // Sun glow halo
+
+  // ── Sun glow (animated pulse) ──
+  const sunX=W*0.84, sunY=vy*0.20;
   ctx.save();
-  const sh=ctx.createRadialGradient(W*.82,vy*.22,0,W*.82,vy*.22,vy*.38);
-  sh.addColorStop(0,'rgba(255,250,200,.4)'); sh.addColorStop(1,'rgba(255,180,0,0)');
-  ctx.fillStyle=sh; ctx.fillRect(0,0,W,vy); ctx.restore();
+  const sg2=ctx.createRadialGradient(sunX,sunY,0,sunX,sunY,vy*(0.30+0.05*Math.sin(t*1.5)));
+  sg2.addColorStop(0,'rgba(255,255,180,.6)'); sg2.addColorStop(.5,'rgba(255,240,100,.18)'); sg2.addColorStop(1,'rgba(255,220,80,0)');
+  ctx.fillStyle=sg2; ctx.fillRect(0,0,W,vy); ctx.restore();
   // Sun disc
   ctx.save();
-  const sr=ctx.createRadialGradient(W*.82,vy*.22,0,W*.82,vy*.22,32);
-  sr.addColorStop(0,'#FFF9C4'); sr.addColorStop(.55,'#FFE66D'); sr.addColorStop(1,'#FFCA28');
-  ctx.fillStyle=sr; ctx.beginPath(); ctx.arc(W*.82,vy*.22,32,0,Math.PI*2); ctx.fill(); ctx.restore();
-  drawCloud(W*.1,vy*.2,78,.85); drawCloud(W*.52,vy*.12,58,.72); drawCloud(W*.8,vy*.36,46,.65);
-  // Horizon band
-  const hg=ctx.createLinearGradient(0,vy-28,0,vy+22);
-  hg.addColorStop(0,'#FFCA28'); hg.addColorStop(1,'#E65100');
-  ctx.fillStyle=hg; ctx.fillRect(0,vy-22,W,48);
-  // Dunes
-  ctx.save();
-  ctx.fillStyle='#BF360C'; ctx.globalAlpha=.5; ctx.beginPath(); ctx.ellipse(W*.13,vy+14,W*.22,36,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#D84315'; ctx.globalAlpha=.44; ctx.beginPath(); ctx.ellipse(W*.87,vy+10,W*.2,30,0,0,Math.PI*2); ctx.fill();
+  const sunR=26+2.5*Math.sin(t*2.0);
+  const halo=ctx.createRadialGradient(sunX,sunY,sunR*0.8,sunX,sunY,sunR*2.4);
+  halo.addColorStop(0,'rgba(255,252,150,.4)'); halo.addColorStop(1,'rgba(255,220,60,0)');
+  ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(sunX,sunY,sunR*2.4,0,Math.PI*2); ctx.fill();
+  const sr=ctx.createRadialGradient(sunX-sunR*.25,sunY-sunR*.25,0,sunX,sunY,sunR);
+  sr.addColorStop(0,'#FFFFFF'); sr.addColorStop(.4,'#FFF9C4'); sr.addColorStop(1,'#FFD740');
+  ctx.fillStyle=sr; ctx.beginPath(); ctx.arc(sunX,sunY,sunR,0,Math.PI*2); ctx.fill();
   ctx.restore();
-  drawCactus3D(W*.04,vy+8,.58); drawCactus3D(W*.93,vy+5,.5);
-  drawPyramid(W*.88,vy+8, 54*Math.min(1,W/400));
+
+  // ── Drifting clouds ──
+  const ct=(t*0.016)%1;
+  drawCloud((W*(0.06+ct*0.38))%W,      vy*.20,76,.88);
+  drawCloud((W*(0.48+ct*0.26)+50)%W,   vy*.10,58,.72);
+  drawCloud((W*(0.76+ct*0.20)-30)%W,   vy*.32,46,.64);
+  drawCloud((W*(0.28-ct*0.14+1))%W,    vy*.22,40,.54);
+
+  // ════════════════════════════════════════════════════════
+  // === 3D HILLS: three layers, each a proper hill silhouette
+  //     anchored so their BASE sits AT vy (horizon line).
+  //     Near ridge base extends BELOW vy so it overlaps road.
+  //
+  //     Each hill is drawn using a smooth bezier path (not ellipse)
+  //     with:  (a) volumetric vertical gradient
+  //            (b) side-light overlay
+  //            (c) rim highlight stroke on ridge
+  //            (d) cast shadow (near only)
+  //            (e) light grain texture dots
+  // ════════════════════════════════════════════════════════
+
+  // --- Layer 1: FAR hills (atmospheric — soft lavender/rose) ---
+  // peak tops sit ~12% of H above vy, base at vy+2%H
+  _draw3DHillLayer([
+    {cx:W*0.10+lp*0.20, peakY:vy-H*0.120, baseY:vy+H*0.020, halfW:W*0.220},
+    {cx:W*0.26+lp*0.20, peakY:vy-H*0.098, baseY:vy+H*0.020, halfW:W*0.180},
+    {cx:W*0.42+lp*0.20, peakY:vy-H*0.115, baseY:vy+H*0.020, halfW:W*0.200},
+    {cx:W*0.60-lp*0.20, peakY:vy-H*0.092, baseY:vy+H*0.020, halfW:W*0.195},
+    {cx:W*0.76-lp*0.20, peakY:vy-H*0.118, baseY:vy+H*0.020, halfW:W*0.215},
+    {cx:W*0.93-lp*0.20, peakY:vy-H*0.100, baseY:vy+H*0.020, halfW:W*0.185},
+  ],{
+    topCol:'#CE93D8', botCol:'rgba(209,196,233,0.3)',
+    rimCol:'rgba(255,255,255,0.14)', rimWidth:1.8, rimBlur:4,
+    sideAlpha:0.06, grainAlpha:0.03, layerAlpha:0.55, shadow:false
+  });
+
+  // --- Layer 2: MID hills (pink/golden, more contrast) ---
+  // peak tops ~8% H above vy, base at vy+4%H
+  _draw3DHillLayer([
+    {cx:W*0.06+lp*0.45, peakY:vy-H*0.082, baseY:vy+H*0.040, halfW:W*0.240},
+    {cx:W*0.28+lp*0.45, peakY:vy-H*0.068, baseY:vy+H*0.040, halfW:W*0.210},
+    {cx:W*0.70-lp*0.45, peakY:vy-H*0.075, baseY:vy+H*0.040, halfW:W*0.225},
+    {cx:W*0.92-lp*0.45, peakY:vy-H*0.080, baseY:vy+H*0.040, halfW:W*0.230},
+  ],{
+    topCol:'#F48FB1', botCol:'rgba(255,204,128,0.4)',
+    rimCol:'rgba(255,255,255,0.20)', rimWidth:2.0, rimBlur:5,
+    sideAlpha:0.08, grainAlpha:0.04, layerAlpha:0.75, shadow:false
+  });
+
+  // --- Layer 3: NEAR ridge (bold purple+orange, overlaps horizon) ---
+  // peak tops ~3% H above vy, base at vy+7%H — overlaps road top edge
+  _draw3DHillLayer([
+    {cx:W*0.03+lp*0.70, peakY:vy-H*0.032, baseY:vy+H*0.072, halfW:W*0.260},
+    {cx:W*0.22+lp*0.70, peakY:vy-H*0.028, baseY:vy+H*0.072, halfW:W*0.220},
+    {cx:W*0.75-lp*0.70, peakY:vy-H*0.030, baseY:vy+H*0.072, halfW:W*0.235},
+    {cx:W*0.98-lp*0.70, peakY:vy-H*0.025, baseY:vy+H*0.072, halfW:W*0.250},
+  ],{
+    topCol:'#BA68C8', botCol:'rgba(255,138,101,0.55)',
+    rimCol:'rgba(255,255,255,0.28)', rimWidth:2.5, rimBlur:7,
+    sideAlpha:0.10, grainAlpha:0.05, layerAlpha:0.92, shadow:true
+  });
+
+  // ── Horizon band (ties hills to road) ──
+  const hg=ctx.createLinearGradient(0,vy-24,0,vy+28);
+  hg.addColorStop(0,'rgba(255,229,127,0.0)');
+  hg.addColorStop(.3,'rgba(255,229,127,0.85)');
+  hg.addColorStop(.7,'rgba(255,171,118,0.75)');
+  hg.addColorStop(1,'rgba(255,112,67,0.0)');
+  ctx.fillStyle=hg; ctx.fillRect(0,vy-24,W,52);
+
+  // ── Foreground decorations (cactus, pyramid) ──
+  drawCactus3D(W*.04, vy+H*0.04, .58);
+  drawCactus3D(W*.93, vy+H*0.03, .50);
+  drawPyramid( W*.88, vy+H*0.04, 54*Math.min(1,W/400));
+
+  // ── Sparkles + shimmer ──
+  _drawSkySparkles(W,vy,t);
+  _drawHeatShimmer(W,vy,t);
 }
+
+// ──────────────────────────────────────────────────────────────
+// === 3D HILLS: main drawing helper ===
+// hills = [{cx, peakY, baseY, halfW}]
+// opts  = {topCol, botCol, rimCol, rimWidth, rimBlur,
+//          sideAlpha, grainAlpha, layerAlpha, shadow}
+// Uses smooth bezier hill path (not ellipse) so silhouette is
+// natural. Base is anchored at baseY so it crosses the horizon.
+// ──────────────────────────────────────────────────────────────
+function _draw3DHillLayer(hills, opts){
+  const {topCol,botCol,rimCol,rimWidth,rimBlur,sideAlpha,grainAlpha,layerAlpha,shadow}=opts;
+  ctx.save();
+  ctx.globalAlpha=layerAlpha;
+
+  hills.forEach(({cx,peakY,baseY,halfW})=>{
+    const midY=(peakY+baseY)*0.5;
+
+    // ── build hill path (cubic bezier arch) ──
+    function hillPath(){
+      ctx.beginPath();
+      ctx.moveTo(cx-halfW, baseY);
+      ctx.bezierCurveTo(
+        cx-halfW*0.55, baseY,
+        cx-halfW*0.30, peakY,
+        cx,            peakY
+      );
+      ctx.bezierCurveTo(
+        cx+halfW*0.30, peakY,
+        cx+halfW*0.55, baseY,
+        cx+halfW,      baseY
+      );
+      ctx.closePath();
+    }
+
+    // (d) cast shadow — offset duplicate, near layer only
+    if(shadow){
+      ctx.save();
+      ctx.globalAlpha=0.13;
+      ctx.fillStyle='rgba(0,0,0,1)';
+      ctx.shadowColor='rgba(0,0,0,0.4)';
+      ctx.shadowBlur=12;
+      ctx.shadowOffsetX=3; ctx.shadowOffsetY=4;
+      hillPath(); ctx.fill();
+      ctx.restore();
+    }
+
+    // (a) volumetric gradient fill — top lighter → bottom darker/transparent
+    const vg=ctx.createLinearGradient(cx,peakY,cx,baseY);
+    vg.addColorStop(0,   topCol);
+    vg.addColorStop(0.55,botCol);
+    vg.addColorStop(1,   'rgba(255,248,230,0.0)');
+    ctx.fillStyle=vg;
+    hillPath(); ctx.fill();
+
+    // (a) side-light overlay — left edge slightly darker, right slightly lighter
+    const sg=ctx.createLinearGradient(cx-halfW,0,cx+halfW,0);
+    sg.addColorStop(0,   `rgba(0,0,0,${sideAlpha*1.4})`);
+    sg.addColorStop(0.45,'rgba(0,0,0,0)');
+    sg.addColorStop(0.65,'rgba(255,255,255,0)');
+    sg.addColorStop(1,   `rgba(255,255,255,${sideAlpha})`);
+    ctx.save(); ctx.globalAlpha=1;
+    ctx.fillStyle=sg;
+    hillPath(); ctx.fill();
+    ctx.restore();
+
+    // (c) rim highlight stroke along ridge
+    ctx.save();
+    ctx.globalAlpha=1;
+    ctx.strokeStyle=rimCol;
+    ctx.lineWidth=rimWidth;
+    ctx.shadowColor='rgba(255,255,255,0.6)';
+    ctx.shadowBlur=rimBlur;
+    ctx.beginPath();
+    ctx.moveTo(cx-halfW, baseY);
+    ctx.bezierCurveTo(cx-halfW*0.55,baseY, cx-halfW*0.30,peakY, cx,peakY);
+    ctx.bezierCurveTo(cx+halfW*0.30,peakY, cx+halfW*0.55,baseY, cx+halfW,baseY);
+    ctx.stroke();
+    ctx.restore();
+
+    // (e) subtle grain texture — a few tiny dots inside the hill
+    ctx.save();
+    ctx.globalAlpha=grainAlpha;
+    ctx.fillStyle='rgba(0,0,0,1)';
+    // clip to hill shape so dots stay inside
+    hillPath(); ctx.clip();
+    const grainCount=Math.floor(halfW*0.28);
+    for(let g=0;g<grainCount;g++){
+      const gx=cx-halfW*0.9+Math.random()*halfW*1.8;
+      const gy=peakY+(baseY-peakY)*(0.15+Math.random()*0.8);
+      const gs=0.7+Math.random()*1.4;
+      ctx.beginPath(); ctx.arc(gx,gy,gs,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  ctx.restore();
+}
+
+// ──────────────────────────────────────────────────────────────
+// Sparkles — white/cyan tone matches sky
+// ──────────────────────────────────────────────────────────────
+function _drawSkySparkles(W,vy,t){
+  const sparkles=[
+    {x:0.05,y:0.30,phase:0.0,col:'#E1F5FE'},
+    {x:0.93,y:0.24,phase:1.2,col:'#FFF9C4'},
+    {x:0.14,y:0.12,phase:2.4,col:'#E1F5FE'},
+    {x:0.87,y:0.42,phase:0.8,col:'#FFF9C4'},
+    {x:0.43,y:0.07,phase:1.9,col:'#E1F5FE'},
+    {x:0.70,y:0.10,phase:3.1,col:'#F3E5F5'},
+    {x:0.32,y:0.38,phase:2.0,col:'#FFF9C4'},
+  ];
+  sparkles.forEach(sp=>{
+    const op=0.20+0.40*Math.abs(Math.sin(t*1.1+sp.phase));
+    const sx=W*sp.x, sy=vy*sp.y, sz=3.2+1.8*Math.sin(t*0.9+sp.phase);
+    ctx.save(); ctx.globalAlpha=op; ctx.fillStyle=sp.col; ctx.shadowColor=sp.col; ctx.shadowBlur=8;
+    ctx.beginPath();
+    for(let i=0;i<8;i++){const a=i*Math.PI/4,r=i%2===0?sz:sz*0.36; i===0?ctx.moveTo(sx+Math.cos(a)*r,sy+Math.sin(a)*r):ctx.lineTo(sx+Math.cos(a)*r,sy+Math.sin(a)*r);}
+    ctx.closePath(); ctx.fill(); ctx.restore();
+  });
+}
+
+// ──────────────────────────────────────────────────────────────
+// Heat shimmer at horizon
+// ──────────────────────────────────────────────────────────────
+function _drawHeatShimmer(W,vy,t){
+  const a=0.035+0.022*Math.sin(t*2.5);
+  const s=ctx.createLinearGradient(0,vy-20,0,vy+12);
+  s.addColorStop(0,'rgba(255,255,220,0)'); s.addColorStop(.5,`rgba(255,255,200,${a})`); s.addColorStop(1,'rgba(255,255,220,0)');
+  ctx.fillStyle=s; ctx.fillRect(0,vy-20,W,32);
+}
+
 function drawCloud(cx,cy,r,op){
   ctx.save(); ctx.globalAlpha=op;
   const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
-  cg.addColorStop(0,'rgba(255,255,255,.9)'); cg.addColorStop(1,'rgba(255,255,255,.5)');
+  cg.addColorStop(0,'rgba(255,255,255,1)'); cg.addColorStop(1,'rgba(240,248,255,0.7)');
   ctx.fillStyle=cg;
   ctx.beginPath(); ctx.ellipse(cx,cy,r,r*.42,0,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(cx-r*.38,cy+r*.1,r*.53,r*.37,0,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(cx+r*.4,cy+r*.07,r*.48,r*.34,0,0,Math.PI*2); ctx.fill();
+  // soft sky-blue shadow on bottom for puff depth
+  ctx.fillStyle='rgba(180,220,240,0.18)';
+  ctx.beginPath(); ctx.ellipse(cx,cy+r*.28,r*.75,r*.20,0,0,Math.PI*2); ctx.fill();
   ctx.restore();
 }
+
 function drawCactus3D(x,y,sc){
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
   ctx.fillStyle='rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(0,4,18,6,0,0,Math.PI*2); ctx.fill();
@@ -510,6 +706,7 @@ function drawCactus3D(x,y,sc){
   ctx.fillStyle='#388E3C'; ctx.beginPath(); ctx.arc(0,-64,9,0,Math.PI*2); ctx.fill();
   ctx.restore();
 }
+
 function drawPyramid(x,y,size){
   ctx.save(); ctx.translate(x,y);
   ctx.fillStyle='rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0,4,size*.85,size*.18,0,0,Math.PI*2); ctx.fill();
@@ -531,13 +728,17 @@ function drawPyramid(x,y,size){
 function drawNormalRoad(){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
   const topW=W*topHalf, botW=W*botHalf;
+  const t=Date.now()*.001;
   ctx.save();
   ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx+topW,vy); ctx.lineTo(vx+botW,bottom); ctx.lineTo(vx-botW,bottom); ctx.closePath();
   const rg=ctx.createLinearGradient(0,vy,0,bottom); rg.addColorStop(0,'#546E7A'); rg.addColorStop(1,'#263238');
   ctx.fillStyle=rg; ctx.fill();
-  // sheen
+  // subtle road sheen movement
+  const sheenOff = Math.sin(t*0.7)*0.08;
   const sh=ctx.createLinearGradient(vx-topW,0,vx+topW,0);
-  sh.addColorStop(0,'rgba(255,255,255,0)'); sh.addColorStop(.5,'rgba(255,255,255,.055)'); sh.addColorStop(1,'rgba(255,255,255,0)');
+  sh.addColorStop(0,'rgba(255,255,255,0)');
+  sh.addColorStop(0.5+sheenOff,'rgba(255,255,255,.065)');
+  sh.addColorStop(1,'rgba(255,255,255,0)');
   ctx.fillStyle=sh; ctx.fill();
   ctx.strokeStyle='#F5D680'; ctx.lineWidth=3.5;
   ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx-botW,bottom);
@@ -580,14 +781,12 @@ function drawRainbowRoad(){
     ctx.fillStyle=col; ctx.beginPath();
     ctx.moveTo(vx-hw0,y0f); ctx.lineTo(vx+hw0,y0f); ctx.lineTo(vx+hw1,y1f); ctx.lineTo(vx-hw1,y1f); ctx.closePath(); ctx.fill();
   });
-  // Center glow strip
   const cg=ctx.createLinearGradient(vx,vy,vx,bottom);
   cg.addColorStop(0,'rgba(255,255,255,0)'); cg.addColorStop(.4,'rgba(255,255,255,.6)'); cg.addColorStop(1,'rgba(255,255,255,.08)');
   const cwT=topW*.3, cwB=botW*.3;
   ctx.fillStyle=cg; ctx.beginPath(); ctx.moveTo(vx-cwT,vy); ctx.lineTo(vx+cwT,vy); ctx.lineTo(vx+cwB,bottom); ctx.lineTo(vx-cwB,bottom); ctx.closePath(); ctx.fill();
   drawRoadSparkles();
   ctx.restore();
-  // Edge glow
   ctx.save();
   ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=4.5; ctx.shadowColor='#fff'; ctx.shadowBlur=14;
   ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx-botW,bottom); ctx.stroke();
@@ -606,10 +805,18 @@ function drawRoadSparkles(){
     ctx.closePath(); ctx.fill(); ctx.restore();
   });
 }
+// === FIX: horizon seam haze — blends hill base ↔ road top edge ===
 function drawFog(){
-  const fg=ctx.createLinearGradient(0,ROAD.vy*.6,0,ROAD.vy+70);
-  fg.addColorStop(0,'rgba(255,220,130,0)'); fg.addColorStop(1,'rgba(255,200,80,.1)');
-  ctx.fillStyle=fg; ctx.fillRect(0,ROAD.vy*.6,ROAD.W,95);
+  const {W,vy,H}=ROAD;
+  // Main seam band: centered on vy, soft feather above and below
+  const fg=ctx.createLinearGradient(0,vy-H*0.06,0,vy+H*0.08);
+  fg.addColorStop(0,   'rgba(255,248,230,0.00)');
+  fg.addColorStop(0.30,'rgba(255,240,210,0.38)');
+  fg.addColorStop(0.52,'rgba(255,230,190,0.55)');
+  fg.addColorStop(0.72,'rgba(255,220,170,0.28)');
+  fg.addColorStop(1,   'rgba(255,210,160,0.00)');
+  ctx.fillStyle=fg;
+  ctx.fillRect(0,vy-H*0.06,W,H*0.14);
 }
 function drawFinishLine(z){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
@@ -625,27 +832,51 @@ function drawFinishLine(z){
 }
 
 // ============================================================
-// DRAW: BARREL
+// === BARREL SCALE: bigger + more 3D ===
 // ============================================================
 function drawBarrel(bx,by,bz,num){
-  
   const sc = 0.38 + bz*0.62;
-  const SIZE = 1.35;          // ✅ tukar 1.2 / 1.5 ikut suka
+  // === BARREL SCALE: bigger, responsive to screen width ===
+  const SIZE = (ROAD.W < 420 ? 1.62 : 1.52); // was 1.35 — now bigger
   const W = 46*sc*SIZE;
   const H = 72*sc*SIZE;
 
   ctx.save(); ctx.translate(bx,by);
-  ctx.fillStyle='rgba(0,0,0,.22)'; ctx.beginPath(); ctx.ellipse(0,H*.5+4,W*.6,H*.1,0,0,Math.PI*2); ctx.fill();
+
+  // --- Shadow (stronger for 3D feel) ---
+  ctx.fillStyle='rgba(0,0,0,.30)'; // was .22 — stronger shadow
+  ctx.beginPath(); ctx.ellipse(0,H*.5+5,W*.65,H*.11,0,0,Math.PI*2); ctx.fill();
+
+  // --- Barrel body gradient ---
   const bg=ctx.createLinearGradient(-W/2,0,W/2,0);
-  bg.addColorStop(0,'#0D47A1'); bg.addColorStop(.25,'#1565C0'); bg.addColorStop(.5,'#42A5F5'); bg.addColorStop(.72,'#1976D2'); bg.addColorStop(1,'#0D47A1');
+  bg.addColorStop(0,'#0D47A1');
+  bg.addColorStop(.22,'#1565C0');
+  bg.addColorStop(.5,'#42A5F5');
+  bg.addColorStop(.72,'#1976D2');
+  bg.addColorStop(1,'#0D47A1');
   ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect(-W/2,-H/2,W,H,W*.16); ctx.fill();
+
+  // --- Metal bands ---
   ctx.strokeStyle='rgba(13,71,161,.8)'; ctx.lineWidth=Math.max(1.2,2.2*sc);
   [-H*.3,0,H*.3].forEach(ry=>{ctx.beginPath();ctx.ellipse(0,ry,W/2,H*.09,0,0,Math.PI*2);ctx.stroke();});
+
+  // --- Top cap ---
   ctx.fillStyle='#1565C0'; ctx.beginPath(); ctx.ellipse(0,-H/2,W/2,H*.1,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='rgba(100,181,246,.4)'; ctx.beginPath(); ctx.roundRect(-W*.16,-H*.42,W*.13,H*.76,W*.06); ctx.fill();
+  ctx.fillStyle='rgba(100,181,246,.3)'; ctx.beginPath(); ctx.ellipse(0,-H/2,W*.35,H*.07,0,0,Math.PI*2); ctx.fill();
+
+  // === BARREL SCALE: stronger highlight strip for 3D ===
+  ctx.fillStyle='rgba(144,202,249,.55)'; // was .4 — brighter highlight
+  ctx.beginPath(); ctx.roundRect(-W*.16,-H*.42,W*.13,H*.76,W*.06); ctx.fill();
+  // extra specular dot on top
+  ctx.fillStyle='rgba(255,255,255,.38)';
+  ctx.beginPath(); ctx.ellipse(-W*.06,-H*.38,W*.055,H*.055,-.3,0,Math.PI*2); ctx.fill();
+
+  // --- Arabic number ---
   ctx.fillStyle='#fff'; ctx.font=`900 ${Math.max(13,H*.39)}px 'Segoe UI',sans-serif`;
-  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor='rgba(0,0,80,.6)'; ctx.shadowBlur=5;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(0,0,80,.7)'; ctx.shadowBlur=7; // stronger text shadow
   ctx.fillText(num.arabic,0,0); ctx.shadowBlur=0;
+
   ctx.restore();
 }
 
@@ -770,47 +1001,41 @@ function resolveCollision(correct, val){
   G.barrels=[];
 
   if(correct){
-    // ★ +10 marks
     G.score+=10;
     $('hud-score').textContent=G.score;
     playSound('ding_correct');
     spawnFadeUp(G.carX, ROAD.carY-30, '+10', '#5CB85C');
     G.isBoosting=true; G.boostTimer=SPEED.BOOST_MS;
 
-    // ★ Increment correctChain (internal, not shown)
     G.correctChain++;
     if(G.correctChain>=5 && !G.bonusStarted){
       G.bonusStarted=true;
       setTimeout(()=>startBonus(), 700);
-      return; // don't schedule next barrel
+      return;
     }
   } else {
-    // +0 marks, reset chain
     G.missedNums[val]=(G.missedNums[val]||0)+1;
     playSound('buzzer');
     spawnFadeUp(G.carX, ROAD.carY-35, '✗', '#EF5350');
     G.isSlowing=true; G.slowTimer=SPEED.SLOW_MS;
-    G.correctChain=0; // ★ reset chain on wrong
+    G.correctChain=0;
   }
 
-  // Continue to next question if game not over
   if(G.round<G.maxRounds){
     setTimeout(()=>{ if(G.phase!=='finished'&&G.phase!=='bonus') spawnBarrels(); }, correct?700:950);
   } else {
-    // Reached maxRounds without bonus — go to end
     setTimeout(()=>triggerFinish(), 1000);
   }
 }
 
 // ============================================================
-// BONUS MODE — triggered by correctChain reaching 5
+// BONUS MODE
 // ============================================================
 function startBonus(){
   G.phase='bonus';
   G.bonusTimer=BONUS_DURATION_MS;
   G.barrels=[];
 
-  // Show BONUS TIME centered
   const bw=$('bonus-title-wrap');
   bw.style.display='block';
   const bt=$('bonus-title-text');
@@ -819,7 +1044,6 @@ function startBonus(){
   $('bonus-bar-wrap').style.display='flex';
   $('bonus-bar-fill').style.width='100%';
 
-  // Blank question HUD during bonus
   $('target-num-big').textContent='';
   $('target-word').textContent='';
 
@@ -828,14 +1052,10 @@ function startBonus(){
   spawnBonusCoins();
 }
 
-// ★ endBonus → immediately show END SCREEN
 function endBonus(){
-  // 1) Stop coins
   G.coins=[];
-  // 2) Hide bonus UI
   $('bonus-title-wrap').style.display='none';
   $('bonus-bar-wrap').style.display='none';
-  // 3) Show end screen
   triggerFinish();
 }
 
@@ -859,7 +1079,7 @@ function checkCoins(){
     if(c.collected) return;
     if(Math.abs(c.lane-G.lane)<0.78 && c.z>=0.78 && c.z<1.02){
       c.collected=true;
-      G.score+=5; // ★ +5 per coin
+      G.score+=5;
       $('hud-score').textContent=G.score;
       playSound('coin_collect');
       spawnFadeUp(G.carX, ROAD.carY-40, '+5', '#FFE66D');
@@ -874,13 +1094,11 @@ function triggerFinish(){
   G.phase='finished';
   if(G.raf){ cancelAnimationFrame(G.raf); G.raf=null; }
 
-  // Animate finish line
   G.finishLineZ=0;
   let fz=0;
   const anim=()=>{ fz+=0.028; G.finishLineZ=fz; if(fz<1.2) requestAnimationFrame(anim); };
   requestAnimationFrame(anim);
 
-  // ★ Play end SFX
   playSound('crowd_cheer');
   playSound('fireworks');
 
@@ -888,7 +1106,6 @@ function triggerFinish(){
     buildEndScreen();
     showScreen('end');
     spawnConfetti($('end-confetti'));
-    // ★ VO based on score
     if(G.score >= G.maxRounds*10*0.7) playVO('Mumtaz');
     else playVO('CubaLagi');
   }, 1600);
@@ -947,25 +1164,21 @@ function gameLoop(ts){
   if(G.isBoosting){ G.boostTimer-=dt; if(G.boostTimer<=0) G.isBoosting=false; }
   if(G.isSlowing)  { G.slowTimer -=dt; if(G.slowTimer <=0) G.isSlowing =false; }
 
-  // Think countdown → then barrels start moving
   if(G.phase==='think'){ G.thinkTimer-=dt; if(G.thinkTimer<=0) G.phase='barrels'; }
 
-  // Barrel movement
   if(G.phase==='barrels'){
     G.barrels.forEach(b=>{ b.z+=SPEED.BARREL_Z*spd*ndt; });
     checkBarrels();
-    // If barrels pass without collision (missed)
     if(G.barrels.length && Math.min(...G.barrels.map(b=>b.z))>=1.1 && G.phase==='barrels'){
       G.phase='resolve';
       G.missedNums[G.currentTarget.val]=(G.missedNums[G.currentTarget.val]||0)+1;
-      G.correctChain=0; // ★ reset on miss
+      G.correctChain=0;
       playSound('buzzer');
       G.barrels=[];
       setTimeout(()=>{ if(G.phase!=='finished'&&G.phase!=='bonus') spawnBarrels(); },700);
     }
   }
 
-  // Bonus countdown
   if(G.phase==='bonus'){
     G.bonusTimer-=dt;
     $('bonus-bar-fill').style.width=Math.max(0,G.bonusTimer/BONUS_DURATION_MS*100)+'%';
@@ -973,7 +1186,6 @@ function gameLoop(ts){
     G.coins=G.coins.filter(c=>c.z<1.12);
     replenishCoins();
     checkCoins();
-    // ★ When bonus timer hits 0 → end screen
     if(G.bonusTimer<=0) endBonus();
   }
 
@@ -984,13 +1196,11 @@ function gameLoop(ts){
   if(G.phase==='bonus') drawRainbowRoad(); else drawNormalRoad();
   drawFog();
 
-  // Barrels
   if(G.phase==='think'||G.phase==='barrels'){
     [...G.barrels].sort((a,b)=>a.z-b.z).forEach(b=>{
       if(b.z>0&&b.z<1.05){ const {bx,by}=zToScreenPos(b.lane,b.z); drawBarrel(bx,by,b.z,b.num); }
     });
   }
-  // Coins
   if(G.phase==='bonus'){
     G.coins.forEach(c=>{
       if(!c.collected&&c.z>0&&c.z<1.05){ const {bx,by}=zToScreenPos(c.lane,c.z); drawCoin(bx,by,c.z,c.spin); }

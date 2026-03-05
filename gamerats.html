@@ -545,6 +545,7 @@ canvas#cv {
     sndDrum.currentTime=0;    sndDrum.play();
     sndTraktor.currentTime=0; sndTraktor.play();
     sndWin.currentTime=0;     sndWin.play();
+
 ══════════════════════════════════════ -->
 
 <script>
@@ -559,6 +560,121 @@ const meowMp3 = new Audio('./assets/audio/meow.mp3');
 meowMp3.preload = 'auto';
 meowMp3.volume = 0.9;
 
+/* ═══════════════════════════════════════════════════════════
+   ✅ VOICE OVER (PLACEHOLDER) — ikut skrip yang kau bagi
+   Letak mp3 ElevenLabs kat folder contoh:
+     ./assets/vo/VO_INTRO_01.mp3
+   Lepas tu isi path dekat src: ""
+═══════════════════════════════════════════════════════════ */
+const VO_LINES = {
+  // INTRO
+  //VO_INTRO_01: { text:"Mari Mulakan Cabaran Maze Tikus & Keju!", src:"" }, // TODO: "./assets/vo/VO_INTRO_01.mp3"
+  VO_INTRO_02: { text:"Kawal tikus, elakkan dinding, dan capai keju secepat mungkin.", src:"./assets/vogame1/g1_kawal tikus.mp3" }, // TODO
+
+  // MOTIVASI
+  VO_MOTIVASI_01: { text:"Cepat, bantu tikus cari keju!", src:"" }, // TODO
+  //VO_MOTIVASI_02: { text:"Hati-hati, laluan semakin sukar. Bantu tikus sampai ke keju!", src:"" }, // TODO (Level 3)
+
+  // MENANG + ARAHAN KUIZ (ikut skrip kau)
+  VO_WIN_L1:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.", src:"./assets/vogame1/g1_tahniahlevel2.mp3" }, // TODO
+  VO_WIN_L2:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 3.", src:"./assets/vogame1/g1tahniahkelevel akhir.mp3" }, // TODO (kau minta Level 3)
+  VO_WIN_FINAL: { text:"Tahniah, anda telah sampai ke keju! Untuk dikira sebagai pemenang, jawab dua soalan berikut.", src:"./assets/vogame1/g1tahniah.mp3" }, // TODO
+
+  // KUIZ (prompt ringkas)
+  VO_QUIZ_Q_GENERIC: { text:"Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1bunyi apa.mp3" }, // TODO
+  VO_QUIZ_TRAKTOR_Q: { text:"Traktor sedang bergerak. Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1traktor.mp3" }, // TODO
+};
+
+// Player untuk VO (reuse satu audio)
+const voPlayer = new Audio();
+voPlayer.preload = 'auto';
+voPlayer.volume  = 1.0;
+
+let voQueue = [];
+let voBusy  = false;
+let voMotivIv = null;
+let audioUnlocked = false;
+
+// Unlock audio on first user interaction (browser policy)
+function unlockAudioOnce(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  try {
+    // "prime" HTMLAudio
+    voPlayer.muted = true;
+    voPlayer.play().then(()=>{ voPlayer.pause(); voPlayer.currentTime=0; voPlayer.muted=false; }).catch(()=>{ voPlayer.muted=false; });
+  } catch(e){}
+  try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); audioCtx.resume(); } catch(e){}
+}
+window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
+window.addEventListener('keydown', unlockAudioOnce, { once:true });
+
+// Show text banner too (so even if mp3 belum isi, still align)
+function showVO(text){
+  const b=document.getElementById('vo-banner');
+  b.textContent=text; b.style.display='block';
+  if(voTimer) clearTimeout(voTimer);
+  voTimer=setTimeout(()=>{ b.style.display='none'; },6000);
+}
+
+function stopMotivationLoop(){
+  if(voMotivIv){ clearInterval(voMotivIv); voMotivIv=null; }
+}
+
+// Queue helpers
+function playVOById(id){
+  const line = VO_LINES[id];
+  if(!line) return;
+  enqueueVO(line.text, line.src, id);
+}
+function playVOQueue(ids){
+  ids.forEach(id=>playVOById(id));
+}
+function enqueueVO(text, src, id){
+  // Respect audio toggle
+  if(!audioOn){
+    // Still show banner for guidance (optional)
+    showVO(text);
+    return;
+  }
+  voQueue.push({text, src, id});
+  pumpVO();
+}
+function pumpVO(){
+  if(voBusy) return;
+  const item = voQueue.shift();
+  if(!item) return;
+  voBusy = true;
+
+  // Always show the VO banner (align with script)
+  showVO(item.text);
+
+  // If src not provided yet, simulate duration then continue
+  if(!item.src){
+    // PLACEHOLDER: bila mp3 dah ada, isi src untuk auto play
+    setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+    return;
+  }
+
+  try{
+    voPlayer.pause();
+    voPlayer.currentTime = 0;
+    voPlayer.src = item.src;
+    const p = voPlayer.play();
+    if(p && typeof p.catch === 'function'){
+      p.catch(()=>{ // if blocked, just continue
+        setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+      });
+    }
+    voPlayer.onended = ()=>{
+      voBusy=false;
+      pumpVO();
+    };
+  } catch(e){
+    setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+  }
+}
+/* ═══════════════════════════════════════════════════════════ */
 
 function getCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -585,10 +701,8 @@ function sndChime()   {
 }
 function sndWin()     {
   // sndWin.currentTime=0; sndWin.play(); // ← MP3 PLACEHOLDER (MUZIK KEMENANGAN CERIA)
-  // Urutan nada ceria naik + arpeggio
   const pattern=[523,587,659,698,784,880,988,1047];
   pattern.forEach((f,i)=>tone(f,'sine',.35,.32,i*.09));
-  // tambahan troli double note
   setTimeout(()=>{
     [1047,1319,1568,1047,784,1047,1319,2093].forEach((f,i)=>tone(f,'triangle',.4,.26,i*.1));
   }, 900);
@@ -606,7 +720,6 @@ function sndMeow() {
     }
     return;
   } catch (e) {
-    // if mp3 fails, use fallback
     fallbackMeow();
   }
 }
@@ -661,7 +774,6 @@ function toggleAudio() {
    MAZE DATA
 ═══════════════════════════════════════════════════════════ */
 const MAZES = [
-  // ── Level 1 : 9×9 ──────────────────────────────────
   {
     cols:9, rows:9,
     grid:[
@@ -677,7 +789,6 @@ const MAZES = [
     ],
     mula:{r:1,c:1}, tamat:{r:7,c:7}, kucing:null,
   },
-  // ── Level 2 : 11×11 ─────────────────────────────────
   {
     cols:11, rows:11,
     grid:[
@@ -695,7 +806,6 @@ const MAZES = [
     ],
     mula:{r:1,c:1}, tamat:{r:9,c:9}, kucing:null,
   },
-  // ── Level 3 : 13×13 + moving cat ─────────────────────
   {
     cols:13, rows:13,
     grid:[
@@ -725,7 +835,6 @@ const MAZES = [
    QUIZ DATA
 ═══════════════════════════════════════════════════════════ */
 const QUIZ = [
-  // Level 1 Quiz
   {
     tajuk: '📚 Kuiz Level 1',
     vo: 'Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.',
@@ -741,7 +850,6 @@ const QUIZ = [
       },
     ],
   },
-  // Level 2 Quiz
   {
     tajuk: '📚 Kuiz Level 2',
     vo: 'Hebat! Anda menyelesaikan Level 2! Jawab dua soalan untuk ke Level Akhir.',
@@ -757,7 +865,6 @@ const QUIZ = [
       },
     ],
   },
-  // Level 3 Final Quiz
   {
     tajuk: '📚 Kuiz Akhir',
     vo: 'Luar biasa! Anda telah menyelesaikan semua level! Jawab soalan terakhir.',
@@ -769,7 +876,7 @@ const QUIZ = [
       {
         s:'Apakah bentuk huruf Arab seperti objek ini?',
         opts:['د','ب','ج'],
-        betul:0,            // ✅ index untuk 'د'
+        betul:0,
         visual:'cacing',
         isArab:true,
       },
@@ -783,14 +890,14 @@ const QUIZ = [
 const G = {
   level:0, skor:0, jatuhan:0, tick:0,
   timerRef:null, animRef:null,
-  sedang:false,          // timer/gameplay running
-  dimulakan:false,       // Mula button has been pressed (show mouse)
-  levelMenang:false,     // cheese reached — show BIG glow
+  sedang:false,
+  dimulakan:false,
+  levelMenang:false,
   pemR:1, pemC:1,
   kucingIdx:0, kucingTick:0, kucingAnim:0,
   kejuFasa:0,
   kuizLevel:0, kuizSoalan:0, kuizBetulCount:0,
-  kuizSelesai:false,     // both questions answered correctly
+  kuizSelesai:false,
 };
 
 /* ═══════════════════════════════════════════════════════════
@@ -798,7 +905,7 @@ const G = {
 ═══════════════════════════════════════════════════════════ */
 const cv  = document.getElementById('cv');
 const ctx = cv.getContext('2d');
-let TS    = 32; // tile size
+let TS    = 32;
 
 function hitungTS() {
   const tb  = document.getElementById('topbar');
@@ -820,29 +927,22 @@ function setupCanvas() {
 /* ─── Drawing primitives ──────────────────────────────── */
 function drawMouse(x, y, r) {
   const c=ctx;
-  // Badan
   c.fillStyle='#BDBDBD'; c.beginPath(); c.ellipse(x,y,r,r*.8,0,0,Math.PI*2); c.fill();
-  // Kepala
   c.fillStyle='#9E9E9E'; c.beginPath(); c.ellipse(x,y-r*.58,r*.65,r*.6,0,0,Math.PI*2); c.fill();
-  // Telinga
   c.fillStyle='#F48FB1';
   c.beginPath(); c.ellipse(x-r*.45,y-r*1.08,r*.29,r*.31,0,0,Math.PI*2); c.fill();
   c.beginPath(); c.ellipse(x+r*.45,y-r*1.08,r*.29,r*.31,0,0,Math.PI*2); c.fill();
-  // Mata
   c.fillStyle='#212121';
   c.beginPath(); c.ellipse(x-r*.22,y-r*.63,r*.11,r*.11,0,0,Math.PI*2); c.fill();
   c.beginPath(); c.ellipse(x+r*.22,y-r*.63,r*.11,r*.11,0,0,Math.PI*2); c.fill();
   c.fillStyle='white';
   c.beginPath(); c.arc(x-r*.18,y-r*.66,r*.04,0,Math.PI*2); c.fill();
   c.beginPath(); c.arc(x+r*.26,y-r*.66,r*.04,0,Math.PI*2); c.fill();
-  // Hidung
   c.fillStyle='#FF80AB'; c.beginPath(); c.ellipse(x,y-r*.44,r*.1,r*.08,0,0,Math.PI*2); c.fill();
-  // Misai
   c.strokeStyle='rgba(100,100,100,.6)'; c.lineWidth=Math.max(.5,r*.045);
   [[-1,-.42],[-.65,-.38],[-.3,-.36],[1,-.42],[.65,-.38],[.3,-.36]].forEach(([dx,dy])=>{
     c.beginPath(); c.moveTo(x,y-r*.44); c.lineTo(x+dx*r*.55,y+dy*r); c.stroke();
   });
-  // Ekor
   c.strokeStyle='#BDBDBD'; c.lineWidth=Math.max(1,r*.12);
   c.beginPath(); c.moveTo(x+r*.58,y+r*.28); c.quadraticCurveTo(x+r*1.4,y+r*.9,x+r*1.1,y+r*1.3); c.stroke();
 }
@@ -852,7 +952,6 @@ function drawCheese(x, y, r, fasa, bigGlow) {
   const gv = bigGlow ? 1.0 : (0.55 + 0.45*Math.sin(fasa*.1));
   const gR = r * (bigGlow ? 3.5+Math.sin(fasa*.08) : 2.2+.7*Math.sin(fasa*.1));
 
-  // Glow halo
   const grad = ctx.createRadialGradient(x,y-r*.15,r*.15,x,y-r*.15,gR);
   grad.addColorStop(0, `rgba(255,240,0,${bigGlow?0.85:0.55*gv})`);
   grad.addColorStop(.3, `rgba(255,190,0,${bigGlow?0.6:0.3*gv})`);
@@ -861,7 +960,6 @@ function drawCheese(x, y, r, fasa, bigGlow) {
   c.fillStyle=grad;
   c.beginPath(); c.ellipse(x,y-r*.15,gR,gR,0,0,Math.PI*2); c.fill();
 
-  // Sparkle stars
   const nStars = bigGlow ? 8 : 5;
   for(let i=0;i<nStars;i++){
     const ang  = fasa*.065 + (i/nStars)*Math.PI*2;
@@ -879,18 +977,15 @@ function drawCheese(x, y, r, fasa, bigGlow) {
     c.restore();
   }
 
-  // Cheese triangle body
   c.fillStyle='#FFD600';
   c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1.5,r*.18);
   c.beginPath();
   c.moveTo(x,y-r*1.15); c.lineTo(x+r*1.15,y+r*.65); c.lineTo(x-r*1.15,y+r*.65);
   c.closePath(); c.fill(); c.stroke();
 
-  // Shine
   c.fillStyle='rgba(255,255,200,.45)';
   c.beginPath(); c.ellipse(x-r*.18,y-r*.48,r*.32,r*.17,-0.5,0,Math.PI*2); c.fill();
 
-  // Holes
   [[-.28,.1,.2],[.32,-.08,.15],[.02,.38,.12]].forEach(([dx,dy,rh])=>{
     c.fillStyle='#E65100';
     c.beginPath(); c.ellipse(x+dx*r,y+dy*r,rh*r,rh*r*.8,0,0,Math.PI*2); c.fill();
@@ -898,7 +993,6 @@ function drawCheese(x, y, r, fasa, bigGlow) {
     c.beginPath(); c.ellipse(x+dx*r+rh*r*.18,y+dy*r+rh*r*.18,rh*r*.58,rh*r*.48,0,0,Math.PI*2); c.fill();
   });
 
-  // Sparkle on tip
   if(bigGlow){
     const kd = .5+.5*Math.abs(Math.sin(fasa*.22));
     c.fillStyle=`rgba(255,255,200,${kd*.8})`;
@@ -908,32 +1002,25 @@ function drawCheese(x, y, r, fasa, bigGlow) {
 
 function drawCat(x, y, r, fasa) {
   const c=ctx;
-  // Warning glow
   const wg=ctx.createRadialGradient(x,y,r*.2,x,y,r*2.2);
   const pw=.38+.28*Math.sin(fasa*.1);
   wg.addColorStop(0,`rgba(255,80,0,${pw})`); wg.addColorStop(1,'rgba(255,80,0,0)');
   c.fillStyle=wg; c.beginPath(); c.ellipse(x,y,r*2.2,r*2.2,0,0,Math.PI*2); c.fill();
-  // Body
   c.fillStyle='#FF8F00'; c.beginPath(); c.ellipse(x,y,r*.7,r*.55,0,0,Math.PI*2); c.fill();
-  // Head
   c.fillStyle='#FFA726'; c.beginPath(); c.ellipse(x,y-r*.56,r*.5,r*.46,0,0,Math.PI*2); c.fill();
-  // Ears
   c.fillStyle='#FF8F00';
   c.beginPath(); c.moveTo(x-r*.4,y-r*.78); c.lineTo(x-r*.6,y-r*1.2); c.lineTo(x-r*.14,y-r*.95); c.fill();
   c.beginPath(); c.moveTo(x+r*.4,y-r*.78); c.lineTo(x+r*.6,y-r*1.2); c.lineTo(x+r*.14,y-r*.95); c.fill();
   c.fillStyle='#FFCCBC';
   c.beginPath(); c.moveTo(x-r*.38,y-r*.8); c.lineTo(x-r*.54,y-r*1.12); c.lineTo(x-r*.17,y-r*.93); c.fill();
   c.beginPath(); c.moveTo(x+r*.38,y-r*.8); c.lineTo(x+r*.54,y-r*1.12); c.lineTo(x+r*.17,y-r*.93); c.fill();
-  // Eyes
   c.fillStyle='#00E676';
   c.beginPath(); c.ellipse(x-r*.19,y-r*.57,r*.13,r*.11,0,0,Math.PI*2); c.fill();
   c.beginPath(); c.ellipse(x+r*.19,y-r*.57,r*.13,r*.11,0,0,Math.PI*2); c.fill();
   c.fillStyle='#111';
   c.beginPath(); c.ellipse(x-r*.19,y-r*.57,r*.055,r*.1,0,0,Math.PI*2); c.fill();
   c.beginPath(); c.ellipse(x+r*.19,y-r*.57,r*.055,r*.1,0,0,Math.PI*2); c.fill();
-  // Nose
   c.fillStyle='#FF80AB'; c.beginPath(); c.ellipse(x,y-r*.38,r*.09,r*.07,0,0,Math.PI*2); c.fill();
-  // Tail
   c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1,r*.15);
   c.beginPath(); c.moveTo(x+r*.65,y+r*.4); c.quadraticCurveTo(x+r*1.5,y+r*.2,x+r*1.2,y-r*.3); c.stroke();
 }
@@ -943,7 +1030,6 @@ function drawScene() {
   const ts=TS;
   ctx.clearRect(0,0,cv.width,cv.height);
 
-  // Tiles
   for(let r=0;r<mz.rows;r++){
     for(let c=0;c<mz.cols;c++){
       if(mz.grid[r][c]===1){
@@ -964,31 +1050,27 @@ function drawScene() {
     }
   }
 
-  // Start marker
   const s=mz.mula;
   ctx.fillStyle='rgba(0,200,80,.28)';
   ctx.fillRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
   ctx.strokeStyle='rgba(0,180,60,.5)'; ctx.lineWidth=2;
   ctx.strokeRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
 
-  // Cheese (with BIG glow when level won)
   const e=mz.tamat;
   drawCheese(e.c*ts+ts/2, e.r*ts+ts/2, ts*.38, G.kejuFasa, G.levelMenang);
 
-  // Cat (level 3)
   if(mz.kucing){
     const cp=mz.kucing.laluan[G.kucingIdx % mz.kucing.laluan.length];
     drawCat(cp.c*ts+ts/2, cp.r*ts+ts/2, ts*.36, G.kucingAnim);
   }
 
-  // Mouse — ONLY drawn after Mula pressed
   if(G.dimulakan){
     drawMouse(G.pemC*ts+ts/2, G.pemR*ts+ts/2, ts*.38);
   }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ANIMATION LOOP (always runs for cheese glow; logic only when sedang=true)
+   ANIMATION LOOP
 ═══════════════════════════════════════════════════════════ */
 function animLoop() {
   G.kejuFasa++;
@@ -997,7 +1079,6 @@ function animLoop() {
   if(G.sedang && !G.levelMenang){
     G.tick++;
 
-    // Move cat
     const mz=MAZES[G.level];
     if(mz.kucing){
       G.kucingTick++;
@@ -1044,7 +1125,6 @@ function gerak(dr,dc){
   if(nr===mz.tamat.r && nc===mz.tamat.c) padaMenang();
 }
 
-// Keyboard
 document.addEventListener('keydown', e=>{
   const map={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
   if(map[e.key]){e.preventDefault(); gerak(...map[e.key]);}
@@ -1067,8 +1147,8 @@ function cekKucing(){
   if(!mz.kucing) return;
   const cp=mz.kucing.laluan[G.kucingIdx%mz.kucing.laluan.length];
   if(G.pemR===cp.r && G.pemC===cp.c){
-    sndMeow(); // play meow (mp3 or fallback)
-    G.skor=Math.max(0,G.skor-50); G.tick+=180; // +3 saat
+    sndMeow();
+    G.skor=Math.max(0,G.skor-50); G.tick+=180;
     const dirs=[[-1,0],[1,0],[0,-1],[0,1]];
     let ok=false;
     for(const [dr,dc] of dirs){
@@ -1084,27 +1164,30 @@ function cekKucing(){
 ═══════════════════════════════════════════════════════════ */
 function padaMenang(){
   G.sedang     = false;
-  G.levelMenang = true;  // ← triggers BIG cheese glow
+  G.levelMenang = true;
 
-  // Bonus score
+  stopMotivationLoop(); // stop motivasi semasa menang
+
   const bonusMasa=Math.max(0,500-Math.floor(G.tick/60)*5);
   G.skor += bonusMasa;
   updateTopBar();
 
-  // Win sounds
   sndChime();
   setTimeout(sndWin, 400);
 
-  // Flash overlay
   const fl=document.getElementById('win-flash');
   fl.classList.add('show');
   setTimeout(()=>fl.classList.remove('show'),1200);
 
-  // Show VO banner
+  // ✅ VO: gunakan skrip kau (lebih prioriti daripada text QUIZ.vo)
+  if(G.level===0) playVOById('VO_WIN_L1');
+  else if(G.level===1) playVOById('VO_WIN_L2');
+  else if(G.level===2) playVOById('VO_WIN_FINAL');
+
+  // Existing VO banner from quiz data (kekal)
   const quiz=QUIZ[G.level];
   showVO(quiz.vo);
 
-  // After 1.8s — show Level Complete panel (NOT a win screen, just next-step choices)
   setTimeout(()=>{ showLevelComplete(G.level); }, 1800);
 }
 
@@ -1129,7 +1212,6 @@ function showLevelComplete(lvl){
     <button class="mbtn amber"  onclick="keluarPermainan()">🚪 Keluar</button>
   `;
 
-  // re-trigger animation
   const box=document.getElementById('lc-box-inner');
   box.classList.remove('pop-in');
   void box.offsetWidth;
@@ -1140,9 +1222,6 @@ function showLevelComplete(lvl){
 
 /* ═══════════════════════════════════════════════════════════
    QUIZ SYSTEM
-   Rule: BOTH questions must be answered correctly.
-   Wrong → "Cuba Lagi" (stay in quiz, retry SAME question)
-   Both correct → show "Next Level" nav
 ═══════════════════════════════════════════════════════════ */
 function bukKuiz(lvl){
   document.getElementById('lc-panel').classList.remove('show');
@@ -1153,6 +1232,8 @@ function bukKuiz(lvl){
   renderKuiz();
   document.getElementById('kuiz-nav').style.display='none';
   document.getElementById('mod-kuiz').style.display='flex';
+
+  stopMotivationLoop(); // stop motivasi bila masuk kuiz
 }
 
 // startQuiz — PLACEHOLDER (called by bukKuiz, replaceable externally)
@@ -1168,6 +1249,16 @@ function renderKuiz(){
 
   document.getElementById('kuiz-title').textContent =
     `${qd.tajuk} — Soalan ${G.kuizSoalan+1} / ${total}`;
+
+  // ✅ VO prompt ikut skrip kau (hanya untuk soalan yang berkaitan)
+  // Level 1 soalan 1: "Bunyi apakah yang dihasilkan?"
+  if(G.kuizLevel===0 && G.kuizSoalan===0){
+    playVOById('VO_QUIZ_Q_GENERIC');
+  }
+  // Level 2 soalan 1: "Traktor sedang bergerak..."
+  if(G.kuizLevel===1 && G.kuizSoalan===0){
+    playVOById('VO_QUIZ_TRAKTOR_Q');
+  }
 
   let html='';
   if(sq.visual) html+=`<div style="margin:8px auto;width:clamp(55px,18vw,95px)">${svgVisual(sq.visual)}</div>`;
@@ -1191,11 +1282,9 @@ function pilihJwp(idx){
   const sq  = qd.soalan[G.kuizSoalan];
   const fb  = document.getElementById('q-fb');
 
-  // Lock all options
   sq.opts.forEach((_,i)=>{ const b=document.getElementById('qopt'+i); if(b) b.onclick=null; });
 
   if(idx===sq.betul){
-    /* ── CORRECT ── */
     document.getElementById('qopt'+idx).classList.add('ok');
     fb.innerHTML='<span style="color:#2E7D32">✅ Betul! Bagus sekali!</span>';
     sndCorrect();
@@ -1204,10 +1293,8 @@ function pilihJwp(idx){
     setTimeout(()=>{
       G.kuizSoalan++;
       if(G.kuizSoalan < qd.soalan.length){
-        // More questions
         renderKuiz();
       } else {
-        // All questions answered correctly
         G.kuizSelesai=true;
         document.getElementById('kuiz-body').innerHTML=`
           <div style="font-size:clamp(1.4rem,4.5vw,2rem);margin:10px 0">🎊🎊🎊</div>
@@ -1216,7 +1303,6 @@ function pilihJwp(idx){
           </p>
         `;
         document.getElementById('kuiz-title').textContent='✅ Kuiz Selesai!';
-        // Show nav buttons
         const nav=document.getElementById('kuiz-nav');
         if(G.kuizLevel<2){
           document.getElementById('btn-next-level').textContent='▶️ Teruskan ke Level Seterusnya';
@@ -1226,13 +1312,11 @@ function pilihJwp(idx){
         }
         nav.style.display='block';
         sndWin();
-        // Auto show final result if last level
         if(G.kuizLevel===2) setTimeout(tunjukKeputusanAkhir, 800);
       }
     }, 900);
 
   } else {
-    /* ── WRONG — Cuba Lagi ── */
     document.getElementById('qopt'+idx).classList.add('bad');
     fb.innerHTML=`
       <div style="color:#C62828;font-size:clamp(.88rem,2.4vw,1.05rem)">
@@ -1240,7 +1324,6 @@ function pilihJwp(idx){
       </div>`;
     sndWrong();
 
-    // Re-enable after 1s (same question, same options)
     setTimeout(()=>{
       document.getElementById('qopt'+idx).classList.remove('bad');
       fb.innerHTML='';
@@ -1316,6 +1399,10 @@ function togglePause(){
   G.sedang = !G.sedang;
   document.getElementById('btn-berhenti').textContent =
     G.sedang ? '🛑 Berhenti' : '▶️ Sambung';
+
+  // stop/start motivasi ikut pause
+  if(G.sedang) startMotivationLoop();
+  else stopMotivationLoop();
 }
 
 function mulakanLevel(){
@@ -1325,6 +1412,27 @@ function mulakanLevel(){
   G.tick=0; G.kucingIdx=0; G.kucingTick=0;
   document.getElementById('btn-berhenti').textContent='🛑 Berhenti';
   setupCanvas(); updateProgress();
+
+  // ✅ Start motivasi loop bila gameplay start
+  startMotivationLoop();
+}
+
+function startMotivationLoop(){
+  stopMotivationLoop();
+  if(!G.sedang || G.levelMenang) return;
+
+  // VO motivasi (single version only)
+playVO('VO_MOTIVASI_01');
+
+  // tunggu sikit lepas level mula
+  setTimeout(()=>{
+    if(G.sedang && !G.levelMenang) playVOById(motId);
+  }, 1400);
+
+  // ulang setiap 12 saat (boleh ubah)
+  voMotivIv = setInterval(()=>{
+    if(G.sedang && !G.levelMenang) playVOById(motId);
+  }, 12000);
 }
 
 function mulaLevelBaru(lvl){
@@ -1339,6 +1447,8 @@ function mulaSemulaPermainan(){
   document.getElementById('mod-result').style.display='none';
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
+  stopMotivationLoop();
+
   Object.assign(G,{
     level:0,skor:0,jatuhan:0,tick:0,
     kucingIdx:0,kucingTick:0,
@@ -1356,22 +1466,10 @@ function keluarPermainan(){
 function sahKeluar(){
   document.getElementById('mod-keluar').style.display='none';
   mulaSemulaPermainan();
-  // Show intro again
   document.getElementById('mod-intro').style.display='flex';
 }
 function tutupKeluar(){
   document.getElementById('mod-keluar').style.display='none';
-}
-
-/* ═══════════════════════════════════════════════════════════
-   VO BANNER (Voice-Over text)
-═══════════════════════════════════════════════════════════ */
-let voTimer=null;
-function showVO(text){
-  const b=document.getElementById('vo-banner');
-  b.textContent=text; b.style.display='block';
-  if(voTimer) clearTimeout(voTimer);
-  voTimer=setTimeout(()=>{ b.style.display='none'; },6000);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1380,6 +1478,10 @@ function showVO(text){
 function tutupIntro(){
   document.getElementById('mod-intro').style.display='none';
   setupCanvas(); // draw idle maze (no mouse yet)
+
+  // ✅ VO INTRO ikut skrip kau (2 line)
+  // NOTE: ini akan main bila user tekan "Faham! Saya Bersedia"
+  playVOQueue(['VO_INTRO_02']);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1391,18 +1493,18 @@ function svgVisual(t){
     traktor:`<svg viewBox="0 0 100 70"><rect x="30" y="20" width="45" height="30" rx="4" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/><rect x="50" y="10" width="20" height="20" rx="3" fill="#81C784" stroke="#2E7D32" stroke-width="1.5"/><circle cx="20" cy="50" r="15" fill="#333" stroke="#111" stroke-width="2"/><circle cx="20" cy="50" r="8" fill="#666"/><circle cx="72" cy="55" r="10" fill="#333" stroke="#111" stroke-width="2"/><circle cx="72" cy="55" r="5" fill="#666"/><rect x="10" y="30" width="20" height="10" rx="2" fill="#FF8C00"/></svg>`,
     flamingo: `<div style="font-size:80px; line-height:80px;">🦩</div>`,
     cacing: `
-  <div style="
-    width:100px;
-    height:80px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  ">
-    <img 
-      src="assets/images/cacing2.png" 
-      style="max-width:100%; max-height:100%; object-fit:contain;"
-    />
-  </div>`,
+      <div style="
+        width:100px;
+        height:80px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      ">
+        <img
+          src="assets/images/cacing2.png"
+          style="max-width:100%; max-height:100%; object-fit:contain;"
+        />
+      </div>`,
   };
   return M[t]||'';
 }
@@ -1414,13 +1516,13 @@ window.addEventListener('resize',()=>{ setupCanvas(); });
 
 /* ═══════════════════════════════════════════════════════════
    BOOT — idle state, modal shown, animation loop starts
-   NO game logic runs until Mula is pressed
 ═══════════════════════════════════════════════════════════ */
+let voTimer=null;
 setupCanvas();
 updateTopBar();
 updateProgress();
-animLoop(); // starts animation loop (cheese glow only; gameplay gated by G.sedang)
-// Intro modal is already in HTML and visible by default
+animLoop();
+// Intro modal visible by default
 </script>
 </body>
 </html>
