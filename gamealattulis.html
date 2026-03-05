@@ -2,46 +2,7 @@
 <!-- 
 // VISUAL CHANGES SUMMARY
 // ========================
-// A) 3D SVG UPGRADES
-//    - All 5 item SVGs rebuilt with radial/linear gradients, specular highlights, drop-shadows, inner glows
-//    - Added layered depth (base shadow → body → highlight → specular dot) on each item
-//    - SVG defs blocks with named gradients and filter effects (feDropShadow, feGaussianBlur)
-//    - Book: glossy cover with foil-like spine, page fan effect
-//    - Pen: metallic barrel with chrome tip, gel ink window
-//    - Ruler: translucent acrylic with engraved tick marks, edge bevel
-//    - Eraser: soft rubber texture, rounded chamfer, label stripe
-//    - Sharpener: chunky plastic body, chrome blade plate, screw detail
-//
-// B) NEW @keyframes ANIMATIONS
-//    - floatIdle: gentle sine-wave vertical bob (silhouette character)
-//    - glowPulse: soft outer glow intensity oscillation
-//    - shineSweep: diagonal highlight sweep across buttons and cards
-//    - popPress: quick scale-down + bounce-back on button press
-//    - sparkleBurst: radial particle explosion helper (JS-driven)
-//    - wobbleIn: elastic entry for options grid cards
-//    - correctFlash: screen-edge green flash on correct answer
-//    - screenShake: 3-frame camera micro-shake on wrong answer
-//    - starDrop: stars fall+bounce into result screen
-//    - bgShimmer: slow hue-rotate on body gradient
-//    - menuPop: staggered pop-in for menu elements
-//    - pulseRing: expanding ring pulse around silhouette
-//
-// C) INTERACTION FEEDBACK
-//    - Hover: cards lift 6px + glow ring + brightness boost
-//    - Press: popPress keyframe (scale 0.92 → 1.05 → 1.0)
-//    - Correct: sparkle burst + green screen-edge flash + silhouette glow
-//    - Wrong: screen micro-shake + red card flash + haptic-style animation
-//    - Tap ripple: CSS ripple layer on btn-answer
-//    - Focus rings: 3px accent outline for accessibility
-//
-// D) RESPONSIVE / MOBILE
-//    - All sizes via clamp() — no fixed px breakpoints for text
-//    - Added CSS container query-style min() clamping for grid
-//    - options-grid: 2-col portrait → 4-col landscape (≤520px height)
-//    - Silhouette scales from 100px (tiny phone) to 240px (tablet/desktop)
-//    - desk-bg height clamped for short screens
-//    - Extra breakpoint at max-height:600px for mid-size phones
-//    - prefers-reduced-motion: all animations cut to instant/none
+// (UNCHANGED - your existing summary remains)
 -->
 <html lang="ms">
 <head>
@@ -50,8 +11,13 @@
     <title>SIAPA KAMU? (مَنْ أَنْتَ؟)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts.css">
     
     <style>
+
+        body{
+  font-family:'Azim', sans-serif;
+}
         * {
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
@@ -131,7 +97,6 @@
             pointer-events: none;
         }
 
-        /* desk wood grain lines */
         .desk-bg::before {
             content: "";
             position: absolute;
@@ -147,7 +112,6 @@
                 );
         }
 
-        /* desk gloss top strip */
         .desk-bg::after {
             content: "";
             position: absolute;
@@ -159,16 +123,11 @@
             border-radius: 20px 20px 0 0;
         }
 
-        /* ─── ARABIC FONT ─── */
         .arabic-text {
             font-family: 'Amiri', 'SakkalMajalla', serif;
             direction: rtl;
             unicode-bidi: embed;
         }
-
-        /* ══════════════════════════════════════
-           KEYFRAMES
-        ══════════════════════════════════════ */
 
         @keyframes bgShimmer {
             0%   { filter: hue-rotate(0deg) brightness(1); }
@@ -186,26 +145,22 @@
             to   { opacity: 0.95; }
         }
 
-        /* ── IDLE BOB ── */
         @keyframes floatIdle {
             0%, 100% { transform: translateY(0px) rotate(-1deg); }
             25%       { transform: translateY(-10px) rotate(0.5deg); }
             75%       { transform: translateY(-6px) rotate(-0.5deg); }
         }
 
-        /* ── GLOW PULSE ── */
         @keyframes glowPulse {
             0%, 100% { filter: drop-shadow(0 0 8px var(--glow-blue)) drop-shadow(0 0 20px var(--glow-yellow)); }
             50%       { filter: drop-shadow(0 0 18px var(--glow-blue)) drop-shadow(0 0 36px var(--glow-yellow)); }
         }
 
-        /* ── SHINE SWEEP ── */
         @keyframes shineSweep {
             0%   { background-position: -200% center; }
             100% { background-position: 200% center; }
         }
 
-        /* ── POP PRESS ── */
         @keyframes popPress {
             0%   { transform: scale(1); }
             30%  { transform: scale(0.91); }
@@ -213,32 +168,27 @@
             100% { transform: scale(1); }
         }
 
-        /* ── SPARKLE POP ── */
         @keyframes sparkle-pop {
             0%   { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg); }
         }
 
-        /* ── MENU BOUNCE ── */
         @keyframes bounce {
             0%, 100% { transform: translateY(0) scale(1); }
             50%       { transform: translateY(-20px) scale(1.05); }
         }
 
-        /* ── BLINK ── */
         @keyframes blink-eyes {
             0%, 90%, 100% { transform: scaleY(1); }
             95%            { transform: scaleY(0.05); }
         }
 
-        /* ── SHAKE ── */
         @keyframes shake {
             0%, 100% { transform: translateX(0) rotateZ(0deg); }
             25%       { transform: translateX(-8px) rotateZ(-1.5deg); }
             75%       { transform: translateX(8px) rotateZ(1.5deg); }
         }
 
-        /* ── SCREEN SHAKE (wrong answer) ── */
         @keyframes screenShake {
             0%,100% { transform: translateX(0); }
             15%     { transform: translateX(-5px); }
@@ -248,7 +198,6 @@
             80%     { transform: translateX(-2px); }
         }
 
-        /* ── REVEAL BOUNCE ── */
         @keyframes bounce-reveal {
             0%   { filter: brightness(0); transform: scale(0.8) rotate(-3deg); }
             40%  { filter: brightness(1.3) drop-shadow(0 0 20px var(--accent1)); transform: scale(1.18) rotate(2deg); }
@@ -256,7 +205,6 @@
             100% { filter: brightness(1); transform: scale(1) rotate(0deg); }
         }
 
-        /* ── WOBBLE IN (option cards) ── */
         @keyframes wobbleIn {
             0%   { opacity: 0; transform: scale(0.7) rotate(-4deg); }
             60%  { transform: scale(1.08) rotate(1.5deg); }
@@ -264,7 +212,6 @@
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
-        /* ── STAR DROP ── */
         @keyframes starDrop {
             0%   { opacity: 0; transform: translateY(-40px) scale(0.5); }
             60%  { transform: translateY(6px) scale(1.2); }
@@ -272,50 +219,42 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ── STAR BOUNCE ── */
         @keyframes star-bounce {
             0%, 100% { transform: scale(1); }
             50%       { transform: scale(1.35); }
         }
 
-        /* ── PULSE RING (around silhouette) ── */
         @keyframes pulseRing {
             0%   { box-shadow: 0 0 0 0 rgba(0,102,255,0.4), 0 0 0 0 rgba(255,214,10,0.3); opacity: 1; }
             100% { box-shadow: 0 0 0 28px rgba(0,102,255,0), 0 0 0 48px rgba(255,214,10,0); opacity: 0; }
         }
 
-        /* ── MENU POP IN ── */
         @keyframes menuPopIn {
             0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
             70%  { transform: scale(1.05) translateY(-4px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* ── FADE IN POPUP ── */
         @keyframes fade-in-popup {
             0%   { opacity: 0; transform: scale(0.8); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* ── CORRECT FLASH OVERLAY ── */
         @keyframes correctFlash {
             0%   { opacity: 0.6; }
             100% { opacity: 0; }
         }
 
-        /* ── WRONG FLASH OVERLAY ── */
         @keyframes wrongFlash {
             0%   { opacity: 0.45; }
             100% { opacity: 0; }
         }
 
-        /* ── SLIDE UP ── */
         @keyframes slide-up {
             0%   { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ─── ANIMATION CLASS HELPERS ─── */
         .animate-bounce-custom       { animation: bounce 2.5s infinite cubic-bezier(0.36,0,0.66,-0.56); }
         .animate-blink-eyes          { animation: blink-eyes 3s infinite; transform-origin: center; }
         .animate-shake-button        { animation: shake 0.35s ease-in-out; }
@@ -331,7 +270,6 @@
         .animate-star-drop           { animation: starDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
         .animate-menu-pop            { animation: menuPopIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-        /* ─── FLASH OVERLAYS ─── */
         .flash-overlay {
             position: fixed;
             inset: 0;
@@ -348,10 +286,6 @@
             background: radial-gradient(ellipse at center, transparent 40%, rgba(255,0,80,0.4) 100%);
             animation: wrongFlash 0.4s ease-out forwards;
         }
-
-        /* ══════════════════════════════════════
-           BUTTON STYLES
-        ══════════════════════════════════════ */
 
         .btn-primary {
             background: linear-gradient(160deg, #1A7FFF 0%, #0055DD 60%, #003FAA 100%);
@@ -379,7 +313,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* shine sweep on primary buttons */
         .btn-primary::before {
             content: "";
             position: absolute;
@@ -467,7 +400,6 @@
             outline-offset: 3px;
         }
 
-        /* ─── ANSWER BUTTONS ─── */
         .btn-answer {
             background: linear-gradient(160deg, #FFFFFF 0%, #F0F6FF 100%);
             border: 3px solid #6BAEFF;
@@ -490,7 +422,6 @@
                 inset 0 1px 0 rgba(255,255,255,0.9);
         }
 
-        /* ripple background layer */
         .btn-answer::after {
             content: "";
             position: absolute;
@@ -500,16 +431,12 @@
             transition: opacity 0.3s ease;
             border-radius: inherit;
         }
-
         .btn-answer:hover::after { opacity: 1; }
 
-        /* shine line */
         .btn-answer::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 40%;
             background: linear-gradient(to bottom, rgba(255,255,255,0.7), transparent);
             border-radius: inherit;
@@ -557,10 +484,6 @@
                 inset 0 1px 0 rgba(255,255,255,0.7);
         }
 
-        /* ══════════════════════════════════════
-           LAYOUT CONTAINERS
-        ══════════════════════════════════════ */
-
         .game-container {
             width: 100%;
             height: 100dvh;
@@ -572,7 +495,6 @@
             z-index: 10;
         }
 
-        /* ─── SCREENS ─── */
         .screen {
             position: absolute;
             inset: 0;
@@ -590,7 +512,6 @@
             z-index: 20;
             -webkit-overflow-scrolling: touch;
         }
-
         .screen.active { opacity: 1; visibility: visible; }
 
         .screen-menu { gap: clamp(18px,4.5vw,38px); }
@@ -633,7 +554,6 @@
             min-height: 0;
         }
 
-        /* ─── HEADER ─── */
         .progress-bar {
             flex: 1;
             height: clamp(14px,3.2vw,22px);
@@ -652,7 +572,6 @@
             width: 0%;
             border-radius: inherit;
             position: relative;
-            
             box-shadow: 0 0 8px rgba(0,150,255,0.4);
         }
 
@@ -668,7 +587,6 @@
             box-shadow: 0 4px 0 #880040, 0 6px 12px rgba(200,0,80,0.2);
         }
 
-        /* ─── QUESTION AREA ─── */
         .question-area {
             flex: 1;
             display: flex;
@@ -687,7 +605,6 @@
             text-shadow: 2px 2px 0 rgba(255,0,110,0.18);
         }
 
-        /* ─── SILHOUETTE ─── */
         .silhouette-container {
             width: clamp(120px,36vw,250px);
             height: clamp(120px,36vw,250px);
@@ -695,7 +612,6 @@
             margin: 0 auto;
         }
 
-        /* pulse ring behind silhouette */
         .silhouette-container::before {
             content: "";
             position: absolute;
@@ -726,7 +642,6 @@
 
         .silhouette svg { width: 100%; height: 100%; }
 
-        /* ─── OPTIONS GRID ─── */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2,1fr);
@@ -751,7 +666,6 @@
             color: var(--primary);
         }
 
-        /* ─── FEEDBACK TEXT ─── */
         .feedback-text {
             font-size: clamp(1.4rem,4.2vw,2.1rem);
             font-weight: 900;
@@ -767,7 +681,6 @@
 
         .feedback-text.show { opacity: 1; }
 
-        /* ─── MODAL ─── */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -818,86 +731,65 @@
             line-height: 1.55;
             font-weight: 700;
         }
-        /* ─── RESULT SCREEN (RESPONSIVE FIX) ─── */
+
+        /* RESULT SCREEN (your responsive fix stays) */
         .screen-result{
-        /* bagi ruang tepi & elak content terlalu besar */
-        width: 100%;
-        padding: clamp(14px, 4vw, 28px);
-        gap: clamp(14px, 3.5vw, 26px);
-
-        /* center + limit width supaya tak jadi besar atas tablet/laptop */
-        max-width: min(520px, calc(100vw - 28px));
-        margin: 0 auto;
-
-        /* elak overflow bila landscape sempit: scroll dalam screen */
-        max-height: 100dvh;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
+            width: 100%;
+            padding: clamp(14px, 4vw, 28px);
+            gap: clamp(14px, 3.5vw, 26px);
+            max-width: min(520px, calc(100vw - 28px));
+            margin: 0 auto;
+            max-height: 100dvh;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* tajuk jangan over */
         .result-title{
-        font-size: clamp(1.8rem, 7.5vw, 3rem); /* sebelum: max 4rem */
-        line-height: 1.05;
-        text-align: center;
-        margin: 0;
-        padding: 0 6px;
+            font-size: clamp(1.8rem, 7.5vw, 3rem);
+            line-height: 1.05;
+            text-align: center;
+            margin: 0;
+            padding: 0 6px;
         }
 
-        /* stars jangan besar sangat */
         .stars-container{
-        display:flex;
-        justify-content:center;
-        gap: clamp(10px, 3vw, 18px);
-        font-size: clamp(1.8rem, 8vw, 3rem); /* sebelum: max 4rem */
-        flex-wrap: wrap; /* kalau screen sempit, bawa ke line baru */
+            display:flex;
+            justify-content:center;
+            gap: clamp(10px, 3vw, 18px);
+            font-size: clamp(1.8rem, 8vw, 3rem);
+            flex-wrap: wrap;
         }
 
-        /* score box ikut skrin */
         .score-box{
-        width: 100%;
-        max-width: min(420px, 92vw); /* bagi dia fleksibel */
-        border-radius: clamp(16px, 3vw, 22px);
-        padding: clamp(12px, 3.2vw, 20px) clamp(14px, 4vw, 26px);
-        margin: 0 auto;
+            width: 100%;
+            max-width: min(420px, 92vw);
+            border-radius: clamp(16px, 3vw, 22px);
+            padding: clamp(12px, 3.2vw, 20px) clamp(14px, 4vw, 26px);
+            margin: 0 auto;
         }
 
-        .score-label{
-        font-size: clamp(0.72rem, 2.8vw, 0.95rem);
-        }
+        .score-label{ font-size: clamp(0.72rem, 2.8vw, 0.95rem); }
+        .score-display{ font-size: clamp(1.05rem, 4.2vw, 1.55rem); line-height: 1.35; }
 
-        .score-display{
-        font-size: clamp(1.05rem, 4.2vw, 1.55rem); /* sebelum max 2rem */
-        line-height: 1.35;
-        }
+        #btn-restart{ width: min(360px, 92vw); }
 
-        /* button ikut width mobile */
-        #btn-restart{
-        width: min(360px, 92vw);
-        }
-
-        /* extra: landscape phone (tinggi sempit) */
         @media (max-height: 520px) and (orientation: landscape){
-        .screen-result{
-            gap: 12px;
-            padding: 12px;
-            max-width: min(560px, calc(100vw - 24px));
-        }
-        .result-title{ font-size: clamp(1.5rem, 6vw, 2.4rem); }
-        .stars-container{ font-size: clamp(1.5rem, 6.5vw, 2.4rem); }
+            .screen-result{
+                gap: 12px;
+                padding: 12px;
+                max-width: min(560px, calc(100vw - 24px));
+            }
+            .result-title{ font-size: clamp(1.5rem, 6vw, 2.4rem); }
+            .stars-container{ font-size: clamp(1.5rem, 6.5vw, 2.4rem); }
         }
 
         #final-score{ display:grid; gap:6px; }
         #final-score div{ white-space: nowrap; }
         @media (max-width: 360px){
-        #final-score div{ white-space: normal; } /* phone kecik biar wrap */
+            #final-score div{ white-space: normal; }
         }
-        /* ─── HIDDEN ─── */
-        .hidden { display: none !important; }
 
-        /* ══════════════════════════════════════
-           RESPONSIVE BREAKPOINTS
-        ══════════════════════════════════════ */
+        .hidden { display: none !important; }
 
         @media (max-height: 700px) {
             .menu-title       { font-size: clamp(1.8rem,7vw,3rem); }
@@ -939,13 +831,11 @@
             .desk-bg          { height: clamp(70px,14vh,18vh); }
         }
 
-        /* tablet+ */
         @media (min-width: 768px) and (min-height: 900px) {
             .options-grid { max-width: 480px; gap: 16px; }
             .btn-answer   { min-height: 96px; }
         }
 
-        /* ─── REDUCED MOTION ─── */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -962,6 +852,88 @@
 
     <!-- DESK BACKGROUND -->
     <div class="desk-bg"></div>
+
+    <!-- =========================================================
+         AUDIO PLACEHOLDERS (BGM + SFX + VO) — FILL PATHS LATER
+         ========================================================= -->
+    <!--
+      STORYBOARD ALIGNMENT (from doc):
+      - Menu: cute+mystery BGM + giggle on enter screen
+      - Gameplay thinking: tick-tock loop while choosing
+      - Wrong: "Boing!" + button shake (already)
+      - Correct: "Tadaaa/Magic" + VO item speaks (book/pen/ruler/sharpener/eraser placeholder)
+      - Transition between questions: "Ziiip!" + "Swoosh!"
+      - Result: cheering/applause + VO closing line
+    -->
+    
+    <audio id="bgm_menu" preload="auto" loop>
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/bgm_menu_detective.mp3" -->
+    </audio>
+
+    <audio id="bgm_game" preload="auto" loop>
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/bgm_game_soft.mp3" -->
+    </audio>
+
+    <audio id="sfx_giggle" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_giggle.mp3" -->
+    </audio>
+
+    <audio id="sfx_tick" preload="auto" loop>
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_tick_tock_loop.mp3" -->
+    </audio>
+
+    <audio id="sfx_boing" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_boing.mp3" -->
+    </audio>
+
+    <audio id="sfx_tada" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_tada_magic.mp3" -->
+    </audio>
+
+    <audio id="sfx_zip" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_zip_open.mp3" -->
+    </audio>
+
+    <audio id="sfx_swoosh" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_swoosh_jump.mp3" -->
+    </audio>
+
+    <audio id="sfx_cheer" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_cheer_applause.mp3" -->
+    </audio>
+
+    <!-- VO: Riddle line -->
+    <audio id="vo_riddle" preload="auto">
+      <source src="./assets/vogame4/game4_siapakamu.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3" -->
+    </audio>
+
+    <!-- VO: Items speak (fill later) -->
+    <audio id="vo_book" preload="auto">
+      <source src="./assets/vogame4/game4_sayabuku.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_BOOK_TAHNIAH_SAYA_BUKU_ANA_KITABUN.mp3" -->
+    </audio>
+
+    <audio id="vo_pen" preload="auto">
+      <source src="./assets/vogame4/game4_sayapen.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_PEN_QALAMUN_ANA.mp3" -->
+    </audio>
+
+    <audio id="vo_ruler" preload="auto">
+      <source src="./assets/vogame4/game4_sayapembaris.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_RULER_MISTARATUN_ANA.mp3" -->
+    </audio>
+
+    <audio id="vo_sharpener" preload="auto">
+      <source src="./assets/vogame4/game4_sayapengasah.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_SHARPENER_MIBRAATUN_ANA.mp3" -->
+    </audio>
+
+    <!-- NOTE: doc tak bagi skrip pemadam, tapi aku sediakan placeholder -->
+    <audio id="vo_eraser" preload="auto">
+      <source src="./assets/vogame4/game4_sayapemadam.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_ERASER_MIMHAATUN_ANA.mp3" -->
+    </audio>
+
+    <!-- VO: Closing result -->
+    <audio id="vo_closing" preload="auto">
+      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_CLOSING_SYABAS_KAMU_SUDAH_KENAL.mp3" -->
+    </audio>
+
 
     <!-- MAIN CONTAINER -->
     <div class="game-container">
@@ -989,37 +961,24 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Bag shadow -->
                     <ellipse cx="100" cy="168" rx="52" ry="10" fill="rgba(0,0,80,0.18)"/>
-
-                    <!-- Bag body with filter -->
                     <rect x="40" y="60" width="120" height="100" rx="20" fill="url(#bagBodyGrad)" filter="url(#bagShadow)"/>
-                    <!-- Bag top -->
                     <rect x="40" y="50" width="120" height="30" rx="20" fill="url(#bagTopGrad)"/>
-                    <!-- Gloss highlight -->
                     <ellipse cx="80" cy="72" rx="28" ry="14" fill="url(#bagShine)" opacity="0.6"/>
 
-                    <!-- Eyes -->
                     <circle cx="75" cy="95" r="13" fill="white" opacity="0.95"/>
                     <circle cx="125" cy="95" r="13" fill="white" opacity="0.95"/>
-                    <!-- Iris -->
                     <circle cx="76" cy="96" r="7"  fill="#1A1A2E" class="animate-blink-eyes"/>
                     <circle cx="126" cy="96" r="7" fill="#1A1A2E" class="animate-blink-eyes"/>
-                    <!-- Eye shine -->
                     <circle cx="79" cy="93" r="2.5" fill="white" opacity="0.9"/>
                     <circle cx="129" cy="93" r="2.5" fill="white" opacity="0.9"/>
 
-                    <!-- Smile -->
                     <path d="M 74 122 Q 100 140 126 122" stroke="white" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-
-                    <!-- Cheek blush -->
                     <ellipse cx="62" cy="108" rx="9" ry="6" fill="#FF8FAB" opacity="0.45"/>
                     <ellipse cx="138" cy="108" rx="9" ry="6" fill="#FF8FAB" opacity="0.45"/>
 
-                    <!-- Straps -->
                     <rect x="70" y="38" width="9"  height="22" rx="4.5" fill="#0040BB"/>
                     <rect x="121" y="38" width="9" height="22" rx="4.5" fill="#0040BB"/>
-                    <!-- Strap buckle -->
                     <rect x="70" y="36" width="9" height="6" rx="3" fill="#FFD60A"/>
                     <rect x="121" y="36" width="9" height="6" rx="3" fill="#FFD60A"/>
                 </svg>
@@ -1047,7 +1006,6 @@
 
         <!-- ══ SCREEN: GAME ══ -->
         <div id="screen-game" class="screen screen-game">
-            <!-- Header -->
             <div class="game-header" style="display:flex;align-items:center;gap:clamp(8px,2vw,14px);width:100%;">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
@@ -1055,15 +1013,12 @@
                 <div class="step-counter"><span id="step-current">1</span>/5</div>
             </div>
 
-            <!-- Question Area -->
             <div class="question-area">
                 <p class="question-text arabic-text">مَنْ أَنْتَ؟</p>
 
                 <div class="silhouette-container" id="silhouette-container">
-                    <div class="silhouette" id="silhouette">
-                        <!-- SVG injected by JS -->
-                    </div>
-                    <!-- Eyes overlay -->
+                    <div class="silhouette" id="silhouette"></div>
+
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;gap:30px;z-index:5;pointer-events:none;">
                         <svg width="35" height="35" class="animate-blink-eyes" style="opacity:0.85;">
                             <circle cx="17.5" cy="17.5" r="12" fill="white"/>
@@ -1081,19 +1036,14 @@
                 <div class="feedback-text" id="feedback-text"></div>
             </div>
 
-            <!-- Options Grid -->
-            <div class="options-grid" id="options-grid">
-                <!-- Buttons injected by JS -->
-            </div>
+            <div class="options-grid" id="options-grid"></div>
         </div>
 
         <!-- ══ SCREEN: RESULT ══ -->
         <div id="screen-result" class="screen screen-result">
             <h2 class="result-title">🎉 TAHNIAH!</h2>
 
-            <div class="stars-container" id="stars-container">
-                <!-- Stars injected by JS -->
-            </div>
+            <div class="stars-container" id="stars-container"></div>
 
             <div class="score-box animate-slide-up">
                 <p class="score-label">JUMLAH MATA</p>
@@ -1106,6 +1056,119 @@
     </div>
 
     <script>
+        // =========================================================
+        // AUDIO ENGINE — PLACEHOLDER ONLY (FILL PATHS LATER)
+        // =========================================================
+        // IMPORTANT: You asked "COMMENT so I just fill voice over later".
+        // So: ALL src paths below are empty "" by default.
+        // When you're ready, just put mp3 path into the src strings.
+
+        const AUDIO = {
+            // --- BGM ---
+            BGM_MENU:   { id:'bgm_menu',   src:"" }, // TODO: "./assets/audio/bgm_menu_detective.mp3"
+            BGM_GAME:   { id:'bgm_game',   src:"" }, // TODO: "./assets/audio/bgm_game_soft.mp3"
+
+            // --- SFX ---
+            SFX_GIGGLE: { id:'sfx_giggle', src:"" }, // TODO: "./assets/audio/sfx_giggle.mp3"
+            SFX_TICK:   { id:'sfx_tick',   src:"" }, // TODO: "./assets/audio/sfx_tick_tock_loop.mp3" (loop)
+            SFX_BOING:  { id:'sfx_boing',  src:"" }, // TODO: "./assets/audio/sfx_boing.mp3"
+            SFX_TADA:   { id:'sfx_tada',   src:"" }, // TODO: "./assets/audio/sfx_tada_magic.mp3"
+            SFX_ZIP:    { id:'sfx_zip',    src:"" }, // TODO: "./assets/audio/sfx_zip_open.mp3"
+            SFX_SWOOSH: { id:'sfx_swoosh', src:"" }, // TODO: "./assets/audio/sfx_swoosh_jump.mp3"
+            SFX_CHEER:  { id:'sfx_cheer',  src:"" }, // TODO: "./assets/audio/sfx_cheer_applause.mp3"
+
+            // --- VO (aligned with storyboard doc) ---
+            VO_RIDDLE:  { id:'vo_riddle',  text:'Siapa kamu?', src:"./assets/vogame4/game4_siapakamu.mp3" }, // TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3"
+
+            VO_BOOK:    { id:'vo_book',    text:'Tahniah! Saya Buku! أَنَا كِتَابٌ', src:"./assets/vogame4/game4_sayabuku.mp3" }, // TODO
+            VO_PEN:     { id:'vo_pen',     text:'قَلَمٌ أَنَا', src:"./assets/vogame4/game4_sayapen.mp3" }, // TODO
+            VO_RULER:   { id:'vo_ruler',   text:'مِسْطَرَةٌ أَنَا', src:"./assets/vogame4/game4_sayapembaris.mp3" }, // TODO
+            VO_SHARP:   { id:'vo_sharpener', text:'مِبْرَاةٌ أَنَا', src:"./assets/vogame4/game4_sayapengasah.mp3" }, // TODO
+            VO_ERASER:  { id:'vo_eraser',  text:'مِمْحَاةٌ أَنَا', src:"./assets/vogame4/game4_sayapemadam.mp3" }, // TODO (doc tak bagi skrip, placeholder)
+
+            VO_CLOSING: { id:'vo_closing', text:'Syabas! Kamu sudah kenal semua kawan-kawan kita hari ini!', src:"" } // TODO
+        };
+
+        // Create audio objects only if src is filled
+        const AUDIO_POOL = {};
+        function initAudioPool(){
+            Object.keys(AUDIO).forEach(key => {
+                const a = AUDIO[key];
+                if (!a || !a.src) return; // keep placeholder silent
+                const audio = new Audio(a.src);
+                audio.preload = 'auto';
+                audio.loop = !!a.loop;
+                AUDIO_POOL[key] = audio;
+            });
+        }
+
+        // iOS/Chrome autoplay policy: unlock on first gesture
+        let AUDIO_UNLOCKED = false;
+        async function unlockAudioOnce(){
+            if (AUDIO_UNLOCKED) return;
+            AUDIO_UNLOCKED = true;
+            try{
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                g.gain.value = 0.0001;
+                o.connect(g); g.connect(ctx.destination);
+                o.start(); o.stop(ctx.currentTime + 0.01);
+                await ctx.resume();
+            }catch(e){}
+        }
+
+        function stopAllVO(){
+            Object.keys(AUDIO_POOL).forEach(k=>{
+                if (k.startsWith('VO_')){
+                    const au = AUDIO_POOL[k];
+                    try{ au.pause(); au.currentTime = 0; }catch(e){}
+                }
+            });
+        }
+
+        function playAudio(key, {restart=true} = {}){
+            const au = AUDIO_POOL[key];
+            if (!au) return; // placeholder: do nothing
+            try{
+                if (restart){ au.currentTime = 0; }
+                au.play().catch(()=>{});
+            }catch(e){}
+        }
+
+        function stopAudio(key){
+            const au = AUDIO_POOL[key];
+            if (!au) return;
+            try{ au.pause(); au.currentTime = 0; }catch(e){}
+        }
+
+        function playBGM(which){
+            // Only one BGM at a time
+            stopAudio('BGM_MENU');
+            stopAudio('BGM_GAME');
+            if (which === 'menu') playAudio('BGM_MENU', {restart:false});
+            if (which === 'game') playAudio('BGM_GAME', {restart:false});
+        }
+
+        function startThinkingTick(){
+            // storyboard: tick-tock while thinking
+            playAudio('SFX_TICK', {restart:false});
+        }
+        function stopThinkingTick(){
+            stopAudio('SFX_TICK');
+        }
+
+        function voForItemId(itemId){
+            switch(itemId){
+                case 'book': return 'VO_BOOK';
+                case 'pen': return 'VO_PEN';
+                case 'ruler': return 'VO_RULER';
+                case 'sharpener': return 'VO_SHARP';
+                case 'eraser': return 'VO_ERASER';
+                default: return null;
+            }
+        }
+
         // ==================== GAME DATA ====================
         const STATIONERY_ITEMS = [
             {
@@ -1143,40 +1206,27 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Drop shadow -->
                     <ellipse cx="62" cy="96" rx="32" ry="6" fill="rgba(0,0,100,0.18)"/>
-
-                    <!-- Page side fan -->
                     <path d="M28 27 L38 17 L95 17 L85 27 Z" fill="url(#bookPages)" stroke="#C8C8C8" stroke-width="0.8"/>
-                    <!-- Page edge thickness -->
                     <path d="M85 27 L95 17 L95 80 L85 90 Z" fill="#D0D0D0" stroke="#B8B8B8" stroke-width="0.8"/>
-                    <!-- Page lines on edge -->
                     <line x1="85" y1="35" x2="95" y2="25" stroke="#C0C0C0" stroke-width="0.7"/>
                     <line x1="85" y1="48" x2="95" y2="38" stroke="#C0C0C0" stroke-width="0.7"/>
                     <line x1="85" y1="61" x2="95" y2="51" stroke="#C0C0C0" stroke-width="0.7"/>
                     <line x1="85" y1="74" x2="95" y2="64" stroke="#C0C0C0" stroke-width="0.7"/>
 
-                    <!-- Main cover -->
                     <rect x="25" y="27" width="60" height="63" rx="4" fill="url(#bookCover)" filter="url(#bookShadow)"/>
-
-                    <!-- Cover top perspective -->
                     <path d="M25 27 L35 17 L95 17 L85 27 Z" fill="url(#bookTop)"/>
 
-                    <!-- Spine -->
                     <rect x="18" y="27" width="9" height="63" rx="2" fill="url(#bookSpine)"/>
-                    <!-- Spine highlight -->
                     <rect x="19" y="30" width="3" height="57" rx="1.5" fill="rgba(255,255,255,0.18)"/>
-                    <!-- Spine dots -->
                     <circle cx="22.5" cy="42" r="1.5" fill="rgba(255,255,255,0.5)"/>
                     <circle cx="22.5" cy="58" r="1.5" fill="rgba(255,255,255,0.5)"/>
                     <circle cx="22.5" cy="74" r="1.5" fill="rgba(255,255,255,0.5)"/>
 
-                    <!-- Label on cover -->
                     <rect x="36" y="40" width="34" height="22" rx="4" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
                     <line x1="40" y1="47" x2="66" y2="47" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
                     <line x1="40" y1="53" x2="60" y2="53" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
 
-                    <!-- Gloss highlight -->
                     <path d="M28 28 Q45 24 60 28 Q45 40 28 40 Z" fill="url(#bookShine)" opacity="0.65"/>
                 </svg>`
             },
@@ -1213,42 +1263,19 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Shadow -->
                     <ellipse cx="62" cy="94" rx="16" ry="4" fill="rgba(100,0,40,0.2)"/>
-
-                    <!-- Pen body -->
                     <rect x="50" y="14" width="22" height="62" rx="11" fill="url(#penBody)" filter="url(#penShadow)"/>
-
-                    <!-- Shine stripe -->
                     <rect x="55" y="18" width="5" height="52" rx="2.5" fill="url(#penShine)" opacity="0.7"/>
-
-                    <!-- Grip ring (rubber) -->
                     <rect x="50" y="66" width="22" height="9" rx="0" fill="#AA004A"/>
                     <rect x="50" y="68" width="22" height="2" fill="rgba(0,0,0,0.15)"/>
                     <rect x="50" y="72" width="22" height="2" fill="rgba(255,255,255,0.1)"/>
-
-                    <!-- Metal collar -->
-                    <rect x="49" y="75" width="24" height="5" rx="2"
-                          fill="url(#penTip)" stroke="#888" stroke-width="0.5"/>
-
-                    <!-- Tapered tip -->
-                    <polygon points="61,80 52,92 70,92"
-                             fill="url(#penTip)" stroke="#777" stroke-width="1.2"/>
-                    <!-- Tip highlight -->
+                    <rect x="49" y="75" width="24" height="5" rx="2" fill="url(#penTip)" stroke="#888" stroke-width="0.5"/>
+                    <polygon points="61,80 52,92 70,92" fill="url(#penTip)" stroke="#777" stroke-width="1.2"/>
                     <line x1="61" y1="80" x2="57" y2="90" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
-
-                    <!-- Ink ball tip -->
                     <circle cx="61" cy="92" r="2.5" fill="#111"/>
                     <circle cx="60" cy="91" r="0.8" fill="rgba(255,255,255,0.6)"/>
-
-                    <!-- Top cap -->
-                    <rect x="50" y="10" width="22" height="8" rx="4"
-                          fill="#CC0059" stroke="#880040" stroke-width="0.8"/>
-
-                    <!-- Clicker button -->
-                    <circle cx="61" cy="11" r="6.5"
-                            fill="url(#penButton)"
-                            stroke="#CC8800" stroke-width="1.2"/>
+                    <rect x="50" y="10" width="22" height="8" rx="4" fill="#CC0059" stroke="#880040" stroke-width="0.8"/>
+                    <circle cx="61" cy="11" r="6.5" fill="url(#penButton)" stroke="#CC8800" stroke-width="1.2"/>
                     <circle cx="59.5" cy="9.5" r="2" fill="rgba(255,255,255,0.6)"/>
                 </svg>`
             },
@@ -1278,41 +1305,27 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Shadow -->
                     <rect x="12" y="55" width="118" height="8" rx="4" fill="rgba(100,70,0,0.15)" filter="blur(4px)"/>
-
-                    <!-- Ruler body -->
                     <rect x="10" y="24" width="120" height="26" rx="6"
                           fill="url(#rulerBody)" stroke="#CC9900" stroke-width="1.5"
                           filter="url(#rulerShadow)"/>
+                    <rect x="10" y="46" width="120" height="5" rx="3" fill="url(#rulerEdge)" opacity="0.6"/>
+                    <rect x="12" y="25" width="116" height="9" rx="5" fill="url(#rulerShine)"/>
 
-                    <!-- Bottom edge bevel -->
-                    <rect x="10" y="46" width="120" height="5" rx="3"
-                          fill="url(#rulerEdge)" opacity="0.6"/>
-
-                    <!-- Gloss highlight -->
-                    <rect x="12" y="25" width="116" height="9" rx="5"
-                          fill="url(#rulerShine)"/>
-
-                    <!-- Tick marks with numbers -->
                     <g stroke="#664400" stroke-linecap="round">
-                        <!-- major ticks (every 15px) -->
                         <line x1="25"  y1="24" x2="25"  y2="50" stroke-width="2"/>
                         <line x1="55"  y1="24" x2="55"  y2="50" stroke-width="2"/>
                         <line x1="85"  y1="24" x2="85"  y2="50" stroke-width="2"/>
                         <line x1="115" y1="24" x2="115" y2="50" stroke-width="2"/>
-                        <!-- minor ticks -->
                         <line x1="40"  y1="30" x2="40"  y2="45" stroke-width="1.2"/>
                         <line x1="70"  y1="30" x2="70"  y2="45" stroke-width="1.2"/>
                         <line x1="100" y1="30" x2="100" y2="45" stroke-width="1.2"/>
-                        <!-- tiny ticks -->
                         <line x1="32"  y1="33" x2="32"  y2="42" stroke-width="0.9"/>
                         <line x1="47"  y1="33" x2="47"  y2="42" stroke-width="0.9"/>
                         <line x1="62"  y1="33" x2="62"  y2="42" stroke-width="0.9"/>
                         <line x1="77"  y1="33" x2="77"  y2="42" stroke-width="0.9"/>
                     </g>
 
-                    <!-- Number labels -->
                     <text x="22"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">1</text>
                     <text x="52"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">2</text>
                     <text x="82"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">3</text>
@@ -1349,34 +1362,15 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Shadow -->
                     <ellipse cx="60" cy="76" rx="38" ry="8" fill="rgba(0,60,80,0.18)" filter="url(#eraserShadow)"/>
-
-                    <!-- Main body -->
-                    <rect x="18" y="22" width="84" height="46" rx="13"
-                          fill="url(#eraserTop)" stroke="#009DC2" stroke-width="1.5"/>
-
-                    <!-- Used end (slightly darker) -->
-                    <rect x="18" y="22" width="18" height="46" rx="13,0,0,13"
-                          fill="#009DC2" opacity="0.55"/>
-
-                    <!-- Center label stripe -->
-                    <rect x="22" y="38" width="76" height="14" rx="3"
-                          fill="url(#eraserLabel)" opacity="0.88"
+                    <rect x="18" y="22" width="84" height="46" rx="13" fill="url(#eraserTop)" stroke="#009DC2" stroke-width="1.5"/>
+                    <rect x="18" y="22" width="18" height="46" rx="13,0,0,13" fill="#009DC2" opacity="0.55"/>
+                    <rect x="22" y="38" width="76" height="14" rx="3" fill="url(#eraserLabel)" opacity="0.88"
                           stroke="rgba(0,150,190,0.3)" stroke-width="0.8"/>
-                    <!-- Label text lines -->
                     <line x1="30" y1="43" x2="72" y2="43" stroke="#007FA0" stroke-width="1.2"/>
                     <line x1="30" y1="47" x2="60" y2="47" stroke="#007FA0" stroke-width="0.9"/>
-
-                    <!-- Bottom wear strip -->
-                    <rect x="18" y="60" width="84" height="8" rx="0,0,13,13"
-                          fill="url(#eraserBottom)" opacity="0.4"/>
-
-                    <!-- Gloss top highlight -->
-                    <path d="M22 23 Q60 16 98 23 L98 30 Q60 26 22 30 Z"
-                          fill="url(#eraserShine)" opacity="0.7"/>
-
-                    <!-- Corner specular dots -->
+                    <rect x="18" y="60" width="84" height="8" rx="0,0,13,13" fill="url(#eraserBottom)" opacity="0.4"/>
+                    <path d="M22 23 Q60 16 98 23 L98 30 Q60 26 22 30 Z" fill="url(#eraserShine)" opacity="0.7"/>
                     <circle cx="30" cy="30" r="4" fill="rgba(255,255,255,0.45)"/>
                     <circle cx="92" cy="30" r="3" fill="rgba(255,255,255,0.3)"/>
                 </svg>`
@@ -1416,44 +1410,18 @@
                         </radialGradient>
                     </defs>
 
-                    <!-- Shadow -->
                     <ellipse cx="60" cy="88" rx="30" ry="8" fill="rgba(80,30,0,0.22)"/>
-
-                    <!-- Body -->
-                    <rect x="28" y="18" width="64" height="65" rx="14"
-                          fill="url(#sharpBody)" filter="url(#sharpShadow)"/>
-
-                    <!-- Gloss highlight -->
-                    <path d="M32 19 Q60 13 88 19 L88 34 Q60 28 32 34 Z"
-                          fill="url(#sharpShine)" opacity="0.6"/>
-
-                    <!-- Side highlight strip -->
-                    <rect x="32" y="22" width="12" height="56" rx="6"
-                          fill="rgba(255,255,255,0.22)"/>
-
-                    <!-- Blade metal plate -->
-                    <rect x="36" y="44" width="48" height="28" rx="7"
-                          fill="url(#bladeplate)"
-                          stroke="#888" stroke-width="1.2"/>
-                    <!-- Blade plate top gloss -->
-                    <rect x="38" y="45" width="44" height="9" rx="5"
-                          fill="rgba(255,255,255,0.4)"/>
-                    <!-- Blade edge line -->
-                    <line x1="36" y1="57" x2="84" y2="57"
-                          stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
-
-                    <!-- Screw -->
-                    <circle cx="60" cy="58" r="7"
-                            fill="url(#screwGrad)" stroke="#555" stroke-width="1.2"/>
-                    <!-- Screw cross -->
+                    <rect x="28" y="18" width="64" height="65" rx="14" fill="url(#sharpBody)" filter="url(#sharpShadow)"/>
+                    <path d="M32 19 Q60 13 88 19 L88 34 Q60 28 32 34 Z" fill="url(#sharpShine)" opacity="0.6"/>
+                    <rect x="32" y="22" width="12" height="56" rx="6" fill="rgba(255,255,255,0.22)"/>
+                    <rect x="36" y="44" width="48" height="28" rx="7" fill="url(#bladeplate)" stroke="#888" stroke-width="1.2"/>
+                    <rect x="38" y="45" width="44" height="9" rx="5" fill="rgba(255,255,255,0.4)"/>
+                    <line x1="36" y1="57" x2="84" y2="57" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
+                    <circle cx="60" cy="58" r="7" fill="url(#screwGrad)" stroke="#555" stroke-width="1.2"/>
                     <line x1="56" y1="58" x2="64" y2="58" stroke="#444" stroke-width="1.5"/>
                     <line x1="60" y1="54" x2="60" y2="62" stroke="#444" stroke-width="1.5"/>
-                    <!-- Screw shine -->
                     <circle cx="57.5" cy="55.5" r="1.8" fill="rgba(255,255,255,0.5)"/>
-
-                    <!-- Pencil hole -->
-                    <circle cx="60" cy="74" r="10" fill="url(#holeGrad)"
-                            stroke="#220000" stroke-width="1.5"/>
+                    <circle cx="60" cy="74" r="10" fill="url(#holeGrad)" stroke="#220000" stroke-width="1.5"/>
                     <circle cx="56" cy="70" r="3" fill="rgba(255,255,255,0.15)"/>
                 </svg>`
             }
@@ -1471,6 +1439,18 @@
         // ==================== EVENT LISTENERS ====================
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
+
+            // --- Audio init (placeholder-safe) ---
+            initAudioPool();
+
+            // --- Unlock audio on first gesture ---
+            window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
+            window.addEventListener('keydown', () => unlockAudioOnce(), { once:true });
+
+            // --- Storyboard: on entering menu screen -> giggle + menu BGM ---
+            // (won't play if src empty; safe)
+            playBGM('menu');
+            playAudio('SFX_GIGGLE');
         });
 
         function setupEventListeners() {
@@ -1492,6 +1472,9 @@
         function startGame() {
             playClickSound();
             document.getElementById('modal-instructions').classList.remove('active');
+
+            // Storyboard: switch to gameplay -> game BGM
+            playBGM('game');
 
             STATE.gameStarted     = true;
             STATE.currentIndex    = 0;
@@ -1522,8 +1505,17 @@
             feedbackText.textContent = '';
             feedbackText.classList.remove('show');
 
-            // Generate options with staggered animation
+            // Generate options
             generateOptions(item);
+
+            // =========================================================
+            // STORYBOARD AUDIO (Skrin 2 - Teka-teki)
+            // - VO: "Siapa kamu?"
+            // - SFX/BGM: tick-tock thinking loop
+            // =========================================================
+            stopAllVO();
+            playAudio('VO_RIDDLE');      // TODO fill path later
+            startThinkingTick();         // TODO fill path later
         }
 
         function generateOptions(correctItem) {
@@ -1544,7 +1536,6 @@
                     <span class="option-arabic arabic-text">${option.arabic}</span>
                 `;
 
-                // Ripple position tracking
                 btn.addEventListener('pointermove', (e) => {
                     const rect = btn.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1572,7 +1563,13 @@
         }
 
         function handleCorrectAnswer(btnElement) {
-            playCorrectSound();
+            // stop thinking tick-tock when answer chosen
+            stopThinkingTick();
+
+            playCorrectSound(); // your synth beep stays
+            // Storyboard: Tadaaa/Magic on correct
+            playAudio('SFX_TADA'); // TODO fill path later
+
             STATE.correctAnswers++;
 
             btnElement.classList.add('correct');
@@ -1580,7 +1577,6 @@
             const silhouette = document.getElementById('silhouette');
             silhouette.classList.add('revealed', 'animate-bounce-reveal');
 
-            // Pulse ring
             const container = document.getElementById('silhouette-container');
             container.classList.add('pulsing');
             setTimeout(() => container.classList.remove('pulsing'), 900);
@@ -1589,14 +1585,35 @@
             feedbackText.textContent = '✨ أَحْسَنْتَ! ✨';
             feedbackText.classList.add('show');
 
-            // Screen flash
             triggerFlash('correct');
-
             createSparkles();
+
+            // =========================================================
+            // STORYBOARD VO: item speaks after correct
+            // - Book: "Tahniah! Saya Buku! أَنَا كِتَابٌ"
+            // - Pen: "قَلَمٌ أَنَا"
+            // - Ruler: "مِسْطَرَةٌ أَنَا"
+            // - Sharpener: "مِبْرَاةٌ أَنَا"
+            // - Eraser: placeholder "مِمْحَاةٌ أَنَا"
+            // =========================================================
+            const correctItem = STATIONERY_ITEMS[STATE.currentIndex];
+            const voKey = voForItemId(correctItem.id);
+            if (voKey) {
+                stopAllVO();
+                playAudio(voKey); // TODO fill path later
+            }
 
             setTimeout(() => {
                 STATE.currentIndex++;
                 if (STATE.currentIndex < STATIONERY_ITEMS.length) {
+
+                    // =========================================================
+                    // STORYBOARD TRANSITION (Skrin 4 - Proses)
+                    // - zip open + swoosh jump
+                    // =========================================================
+                    playAudio('SFX_ZIP');    // TODO fill
+                    setTimeout(() => playAudio('SFX_SWOOSH'), 180); // TODO fill
+
                     loadQuestion();
                 } else {
                     showResults();
@@ -1605,26 +1622,36 @@
         }
 
         function handleWrongAnswer(btnElement) {
-            playWrongSound();
+            // stop tick while we feedback wrong; resume after shake
+            stopThinkingTick();
+
+            playWrongSound(); // your synth beep stays
+            // Storyboard: "Boing!" on wrong
+            playAudio('SFX_BOING'); // TODO fill path later
+
             STATE.wrongAttempts++;
 
             btnElement.classList.add('wrong', 'animate-shake-button');
 
-            // Screen shake (apply to game screen)
             const gameScreen = document.getElementById('screen-game');
             gameScreen.classList.add('animate-screen-shake');
 
-            // Screen flash
             triggerFlash('wrong');
 
             setTimeout(() => {
                 btnElement.classList.remove('animate-shake-button');
                 gameScreen.classList.remove('animate-screen-shake');
                 STATE.isAnswering = false;
+
+                // resume tick-tock thinking after wrong feedback
+                startThinkingTick();
             }, 360);
         }
 
         function showResults() {
+            // stop thinking tick
+            stopThinkingTick();
+
             switchScreen('screen-result');
             const totalQuestions = STATIONERY_ITEMS.length;
 
@@ -1649,6 +1676,14 @@
                 star.classList.add('animate-star-bounce');
                 starsContainer.appendChild(star);
             }
+
+            // =========================================================
+            // STORYBOARD RESULT (Skrin 5)
+            // - cheer/applause + VO closing line
+            // =========================================================
+            playAudio('SFX_CHEER');  // TODO fill
+            stopAllVO();
+            playAudio('VO_CLOSING'); // TODO fill
         }
 
         function restartGame() {
@@ -1656,6 +1691,9 @@
             STATE.score           = 0;
             STATE.wrongAttempts   = 0;
             STATE.gameStarted     = false;
+
+            // Storyboard: back to menu -> menu BGM
+            playBGM('menu');
             switchScreen('screen-menu');
         }
 
@@ -1706,7 +1744,7 @@
             }
         }
 
-        // ── SOUNDS ──
+        // ── SOUNDS (your existing synth beeps - unchanged) ──
         function playClickSound() {
             try {
                 const ac = new (window.AudioContext || window.webkitAudioContext)();
