@@ -10,17 +10,19 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: {
-        waknan: ['WakNan', 'sans-serif'],
+        ui:      ['Azim', 'sans-serif'],
         rust: ['IntroRust', 'sans-serif'],
         arabic: ['SakkalMajalla', 'serif'],
       }
     }
   }
 }
+
+
 </script>
 
 <style>
-@font-face { font-family: 'WakNan'; src: url('./fonts/WakNan.ttf') format('truetype'); }
+@font-face { font-family:'Azim'; src:url('./fonts/Azim.otf') format('truetype'); }
 @font-face { font-family: 'IntroRust'; src: url('./fonts/introrustg-base2line.otf') format('opentype'); }
 @font-face { font-family: 'SakkalMajalla'; src: url('./fonts/Sakkal-Majalla-Regular.ttf') format('truetype'); }
 
@@ -28,7 +30,7 @@ tailwind.config = {
 html, body {
   width: 100%; height: 100dvh; overflow: hidden;
   background: #fdf6ee;
-  font-family: 'WakNan', sans-serif;
+  font-family: 'Azim', sans-serif;
   overscroll-behavior: none;
 }
 
@@ -74,11 +76,28 @@ html, body {
   background:linear-gradient(180deg, #78c840 0%, #5aaa28 100%);
   border-radius:60% 60% 0 0 / 30% 30% 0 0;
 }
+
 .flower{
   position:absolute;
-  width:clamp(18px,3vw,32px);
-  height:clamp(18px,3vw,32px);
-  border-radius:50%;
+  width:clamp(100px,2.2vw,190px);   /* kecil & responsive */
+  height:auto;
+  pointer-events:none;
+  animation: flowerFloat 3.5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.flower:nth-of-type(1){ animation-delay: 0s; }
+.flower:nth-of-type(2){ animation-delay: .6s; }
+.flower:nth-of-type(3){ animation-delay: 1.2s; }
+.flower:nth-of-type(4){ animation-delay: 1.8s; }
+
+/* Animasi terapung kecil */
+@keyframes flowerFloat{
+  0%   { transform: translateY(0px) rotate(0deg) scale(1); }
+  25%  { transform: translateY(-4px) rotate(-2deg) scale(1.03); }
+  50%  { transform: translateY(-7px) rotate(2deg) scale(1.05); }
+  75%  { transform: translateY(-4px) rotate(-1deg) scale(1.02); }
+  100% { transform: translateY(0px) rotate(0deg) scale(1); }
 }
 
 /* ── HOUSE ── */
@@ -448,26 +467,26 @@ html, body {
   </div>
 
   <div class="grass-strip"></div>
-  <div class="flower" style="bottom:9%;left:12%;background:#ff8a65;box-shadow:0 0 0 5px #ffcc80;"></div>
-  <div class="flower" style="bottom:11%;left:18%;background:#ec407a;box-shadow:0 0 0 5px #f8bbd0;"></div>
-  <div class="flower" style="bottom:8%;right:15%;background:#ab47bc;box-shadow:0 0 0 5px #e1bee7;"></div>
-  <div class="flower" style="bottom:12%;right:22%;background:#ffca28;box-shadow:0 0 0 5px #fff9c4;"></div>
+  <img class="flower" src="assets/images/game3_bungapasu.png" style="bottom:9%;left:12%;">
+  <img class="flower" src="assets/images/game3_bungapasu.png" style="bottom:11%;left:18%;">
+  <img class="flower" src="assets/images/game3_bungapasu.png" style="bottom:8%;right:15%;">
+  <img class="flower" src="assets/images/game3_bungapasu.png" style="bottom:12%;right:22%;">
 
   <div class="anim-bounce" style="position:absolute;top:14%;right:6%;font-size:clamp(48px,8vw,80px);z-index:5;">📷</div>
 
   <div class="title-box menu-3d" style="z-index:10;margin-bottom:clamp(10px,3vw,24px);">
-    <h1 style="font-family:'IntroRust',sans-serif;font-size:clamp(22px,5vw,52px);color:#e65100;text-shadow:2px 2px 0 rgba(0,0,0,0.1);line-height:1.1;">ALBUM KELUARGA</h1>
-    <p style="font-family:'SakkalMajalla',serif;font-size:clamp(18px,3.5vw,36px);color:#6d4c41;direction:rtl;margin-top:4px;">أَلْبُومُ عَائِلَتِي</p>
-    <p style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,15px);color:#7a5a4e;margin-top:6px;">✨ Tekan MULA untuk mula bermain! ✨</p>
+    <h1 style="font-family:'Azim',sans-serif;font-size:clamp(22px,5vw,52px);color:#e65100;text-shadow:2px 2px 0 rgba(0,0,0,0.1);line-height:1.1;">ALBUM KELUARGA</h1>
+    <p style="font-family:'Azim',serif;font-size:clamp(18px,3.5vw,36px);color:#6d4c41;direction:rtl;margin-top:4px;">أَلْبُومُ عَائِلَتِي</p>
+    <p style="font-family:'Azim',sans-serif;font-size:clamp(11px,1.8vw,15px);color:#7a5a4e;margin-top:6px;">✨ Tekan MULA untuk mula bermain! ✨</p>
   </div>
 
   <div style="display:flex;gap:clamp(10px,2.5vw,20px);flex-wrap:wrap;justify-content:center;z-index:10;">
     <button id="btn-mula" class="btn-main btn-green anim-pulse" type="button">
-      <span style="font-family:'IntroRust',sans-serif;">MULA</span>
+      <span style="font-family:'Azim',sans-serif;">MULA</span>
       <span style="font-family:'SakkalMajalla',serif;font-size:0.9em;direction:rtl;margin-right:6px;">  إِبْدَأ</span>
     </button>
     <button id="btn-arahan" class="btn-main btn-blue" type="button">
-      <span style="font-family:'WakNan',sans-serif;">Arahan</span>
+      <span style="font-family:'Azim',sans-serif;">Arahan</span>
     </button>
   </div>
 
@@ -482,7 +501,7 @@ html, body {
   <div class="grass-strip"></div>
 
   <div style="background:linear-gradient(135deg,#fff8e1,#ffe082);border:4px solid #f9a825;border-radius:16px;padding:clamp(12px,2vw,22px);width:min(96vw,700px);max-height:88dvh;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.18);position:relative;z-index:10;">
-    <h2 style="font-family:'IntroRust',sans-serif;font-size:clamp(16px,3vw,30px);color:#e65100;text-align:center;margin-bottom:clamp(6px,1.5vw,14px);">📚 ALBUM KELUARGA SAYA</h2>
+    <h2 style="font-family:'Azim',sans-serif;font-size:clamp(16px,3vw,30px);color:#e65100;text-align:center;margin-bottom:clamp(6px,1.5vw,14px);">📚 ALBUM KELUARGA SAYA</h2>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,1.5vw,14px);margin-bottom:clamp(8px,1.5vw,14px);">
       <div class="instr-frame" style="height:clamp(60px,10vw,100px);"><span style="font-size:clamp(20px,4vw,38px);">🕳️</span><span class="ar">أَبٌ</span></div>
@@ -494,21 +513,21 @@ html, body {
     </div>
 
     <div style="background:rgba(255,255,255,0.7);border-radius:12px;padding:clamp(8px,1.5vw,14px);text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">
-      <p style="font-family:'WakNan',sans-serif;font-size:clamp(12px,2vw,18px);color:#4e342e;line-height:1.4;">
+      <p style="font-family:'Azim',sans-serif;font-size:clamp(12px,2vw,18px);color:#4e342e;line-height:1.4;">
         🎙️ <em>Jom lengkapkan album keluarga ini!</em><br>
         Dengar nama yang disebut, cari mereka dan ambil gambar!
       </p>
-      <p style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,16px);color:#6d4c41;margin-top:6px;">
+      <p style="font-family:'Azim',sans-serif;font-size:clamp(11px,1.8vw,16px);color:#6d4c41;margin-top:6px;">
         📸 Dengar perkataan dan tangkap gambar ahli keluarga yang betul!
       </p>
     </div>
 
     <div style="text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button class="btn-main btn-orange" type="button" onclick="startGame()">
-        📷 <span style="font-family:'IntroRust',sans-serif;">Buka Kamera</span>
+        📷 <span style="font-family:'Azim',sans-serif;">Buka Kamera</span>
       </button>
       <button class="btn-main btn-blue" type="button" onclick="showScreen('screen-menu')">
-        ⬅️ <span style="font-family:'WakNan',sans-serif;">Kembali</span>
+        ⬅️ <span style="font-family:'Azim',sans-serif;">Kembali</span>
       </button>
     </div>
   </div>
@@ -526,10 +545,10 @@ html, body {
 
   <div style="position:absolute;top:clamp(8px,2vw,16px);left:50%;transform:translateX(-50%);width:min(90vw,460px);z-index:20;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-      <span style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,16px);color:white;text-shadow:0 1px 3px rgba(0,0,0,0.5);">📷 <span id="capture-count">0</span>/6</span>
+      <span style="font-family:'Azim',sans-serif;font-size:clamp(11px,1.8vw,16px);color:white;text-shadow:0 1px 3px rgba(0,0,0,0.5);">📷 <span id="capture-count">0</span>/6</span>
       <div id="target-label" style="background:rgba(0,0,0,0.55);border-radius:20px;padding:4px 14px;text-align:center;">
         <span style="font-family:'SakkalMajalla',serif;font-size:clamp(16px,3vw,28px);color:#ffeb3b;direction:rtl;" id="target-arabic"></span>
-        <span style="font-family:'WakNan',sans-serif;font-size:clamp(10px,1.6vw,14px);color:#fff;display:block;" id="target-malay"></span>
+        <span style="font-family:'Azim',sans-serif;font-size:clamp(10px,1.6vw,14px);color:#fff;display:block;" id="target-malay"></span>
       </div>
       <span style="font-size:clamp(14px,2.5vw,22px);">🌟</span>
     </div>
@@ -553,7 +572,7 @@ html, body {
 
   <div id="chars-container" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>
 
-  <div id="wrong-msg" style="position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:rgba(229,57,53,0.92);color:white;border-radius:20px;padding:8px 22px;font-family:'WakNan',sans-serif;font-size:clamp(13px,2vw,18px);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:150;">
+  <div id="wrong-msg" style="position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:rgba(229,57,53,0.92);color:white;border-radius:20px;padding:8px 22px;font-family:'Azim',sans-serif;font-size:clamp(13px,2vw,18px);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:150;">
     ❌ Cuba cari lagi!
   </div>
 </div>
@@ -563,8 +582,8 @@ html, body {
   <div id="polaroid-card" class="polaroid-card" style="animation:slideInUp 0.5s ease forwards;">
     <img id="polaroid-img" class="polaroid-img" src="" alt=""/>
     <div class="polaroid-label" id="polaroid-arabic"></div>
-    <div style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,15px);color:#8d6e63;margin-top:2px;" id="polaroid-malay"></div>
-    <div style="font-family:'WakNan',sans-serif;font-size:clamp(10px,1.5vw,14px);color:#a1887f;margin-top:4px;">✅ Mumtaz! 🌟</div>
+    <div style="font-family:'Azim',sans-serif;font-size:clamp(11px,1.8vw,15px);color:#8d6e63;margin-top:2px;" id="polaroid-malay"></div>
+    <div style="font-family:'Azim',sans-serif;font-size:clamp(10px,1.5vw,14px);color:#a1887f;margin-top:4px;">✅ Mumtaz! 🌟</div>
   </div>
 </div>
 
@@ -576,13 +595,13 @@ html, body {
   <div style="background:white;border:4px solid #f9a825;border-radius:20px;padding:clamp(12px,2.5vw,24px);width:min(96vw,700px);max-height:85dvh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,0.18);z-index:10;position:relative;">
     <h2 style="font-family:'IntroRust',sans-serif;font-size:clamp(18px,3.5vw,34px);color:#e65100;text-align:center;">🏆 Keluarga Saya Bahagia!</h2>
     <p style="font-family:'SakkalMajalla',serif;font-size:clamp(18px,3.5vw,32px);color:#6d4c41;direction:rtl;text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">أُسْرَتِي سَعِيدَةٌ 🌟</p>
-    <p style="font-family:'WakNan',sans-serif;font-size:clamp(11px,1.8vw,16px);color:#8d6e63;text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">Klik gambar untuk dengar semula! 🔊</p>
+    <p style="font-family:'Azim',sans-serif;font-size:clamp(11px,1.8vw,16px);color:#8d6e63;text-align:center;margin-bottom:clamp(8px,1.5vw,14px);">Klik gambar untuk dengar semula! 🔊</p>
 
     <div id="complete-album-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.8vw,16px);margin-bottom:clamp(12px,2vw,20px);"></div>
 
     <div style="text-align:center;">
       <button class="btn-main btn-orange" type="button" onclick="showScreen('screen-menu');resetGame();">
-        🏠 <span style="font-family:'WakNan',sans-serif;">Menu Utama</span>
+        🏠 <span style="font-family:'Azim',sans-serif;">Menu Utama</span>
       </button>
     </div>
   </div>
@@ -989,7 +1008,7 @@ function renderChars(){
     label.style.cssText = `
       position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
       background:rgba(0,0,0,0.6);color:white;border-radius:12px;
-      padding:2px 8px;font-family:'WakNan',sans-serif;
+      padding:2px 8px;font-family:'Azim',sans-serif;
       font-size:clamp(9px,1.4vw,13px);white-space:nowrap;pointer-events:none;
     `;
     label.textContent = char.activity;
@@ -1161,7 +1180,7 @@ function renderAlbumGrid(gridId, interactive){
       lbl.textContent=char.arabic;
 
       const mlbl=document.createElement('div');
-      mlbl.style.cssText='font-family:"WakNan",sans-serif;font-size:clamp(9px,1.4vw,13px);color:#8d6e63;';
+      mlbl.style.cssText='font-family:"Azim",sans-serif;font-size:clamp(9px,1.4vw,13px);color:#8d6e63;';
       mlbl.textContent=char.malay;
 
       frame.appendChild(img);

@@ -55,6 +55,36 @@
             animation: bgShimmer 18s ease-in-out infinite alternate;
         }
 
+        .home-btn{
+        position:fixed;
+        top:12px;
+        left:12px;
+        width:70px;
+        height:50px;
+        border-radius:50%;
+        background:linear-gradient(135deg,#FFD54F,#FF8F00);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:50px;
+        text-decoration:none;
+        box-shadow:0 4px 10px rgba(0,0,0,.25);
+        z-index:9999;
+        transition:transform .15s ease, box-shadow .15s ease;
+        }
+        .home-btn:hover{
+        transform:translateY(-2px) scale(1.08);
+        box-shadow:0 6px 14px rgba(0,0,0,.3);
+        }
+        .home-btn:active{
+        transform:scale(.92);
+        }
+        .home-btn img{
+        width:1000px;
+        height:1000px;
+        object-fit:contain;
+        }
+
         /* ─── BACKGROUND LAYERS ─── */
         body::before {
             content: "";
@@ -848,6 +878,9 @@
     </style>
 </head>
 <body>
+    <a href="index.html" class="home-btn" title="Ke Halaman Utama">
+  <img src="assets/images/homepage.png" alt="Home">
+</a>
     <!-- FLASH OVERLAYS (JS toggles) -->
     <div id="flash-correct" class="flash-overlay" style="display:none;"></div>
     <div id="flash-wrong"   class="flash-overlay" style="display:none;"></div>
@@ -1080,7 +1113,7 @@
             SFX_CHEER:  { id:'sfx_cheer',  src:"" }, // TODO: "./assets/audio/sfx_cheer_applause.mp3"
 
             // --- VO (aligned with storyboard doc) ---
-            VO_RIDDLE:  { id:'vo_riddle',  text:'Siapa kamu?', src:"./assets/vogame4/game4_siapakamu.mp3" }, // TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3"
+            VO_RIDDLE:  { id:'vo_riddle',  text:'Siapa kamu?', src:"./assets/vogame4/siapakamugame4.mp3" }, // TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3"
 
             VO_BOOK:    { id:'vo_book',    text:'Tahniah! Saya Buku! أَنَا كِتَابٌ', src:"./assets/vogame4/game4_sayabuku.mp3" }, // TODO
             VO_PEN:     { id:'vo_pen',     text:'قَلَمٌ أَنَا', src:"./assets/vogame4/game4_sayapen.mp3" }, // TODO

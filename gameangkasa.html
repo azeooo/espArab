@@ -11,14 +11,14 @@
   :root { --star-color: #fff; }
   * { box-sizing: border-box; }
   body {
-    font-family: 'Baloo 2', cursive;
+    font-family: 'Azim', 'Baloo 2', cursive;
     background: #050a1a;
     overflow: hidden;
     height: 100dvh;
     width: 100dvw;
   }
   .arabic-font { font-family: 'Baloo 2','Arial Unicode MS',serif; direction: rtl; }
-
+  @font-face { font-family:'Azim'; src:url('./fonts/Azim.otf') format('truetype'); }
   @keyframes twinkle { 0%,100% { opacity:.2; transform:scale(.8);} 50% { opacity:1; transform:scale(1.2);} }
   @keyframes floatUp { 0% {transform:translateY(0)} 50% {transform:translateY(-12px)} 100% {transform:translateY(0)} }
   @keyframes ufoFloat { 0% {transform:translateY(0)} 50% {transform:translateY(-18px)} 100% {transform:translateY(0)} }
@@ -76,6 +76,7 @@
   .btn-main{
     background:linear-gradient(135deg,#1e3a8a,#3b82f6);
     border:2px solid #60a5fa; color:#fff;
+    font-family:'Azim','Segoe UI',sans-serif;
     font-weight:800; font-size:1.2rem;
     padding:.75rem 2.5rem; border-radius:9999px;
     cursor:pointer; transition:all .2s;
@@ -138,7 +139,7 @@
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(30,58,138,0.4) 0%,transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(91,33,182,0.3) 0%,transparent 60%);pointer-events:none;"></div>
     <div class="slide-down text-center mb-2" style="z-index:2;">
       <div class="arabic-font text-yellow-300 font-bold" style="font-size:clamp(1.4rem,5vw,2.2rem);text-shadow:0 0 20px rgba(253,224,71,0.8);">مُهِمَّةُ الفَضَاءِ</div>
-      <div class="text-white font-black" style="font-family:'Fredoka One',cursive;font-size:clamp(2rem,8vw,3.5rem);text-shadow:0 0 30px rgba(100,200,255,0.9),0 4px 0 rgba(0,0,0,0.5);">MISI ANGKASA</div>
+      <div class="text-white font-black" style="font-family:'Azim','Fredoka One',cursive;font-size:clamp(2rem,8vw,3.5rem);text-shadow:0 0 30px rgba(100,200,255,0.9),0 4px 0 rgba(0,0,0,0.5);">MISI ANGKASA</div>
       <div class="text-cyan-300 text-sm mt-1" style="letter-spacing:3px;">✦ PERMAINAN BAHASA ARAB ✦</div>
     </div>
     <div class="float-anim my-4" style="z-index:2;font-size:5rem;">🚀</div>
@@ -156,7 +157,7 @@
   <div class="relative w-full h-full flex flex-col items-center justify-center p-6">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(30,58,138,0.5) 0%,transparent 70%);pointer-events:none;"></div>
     <div class="hologram rounded-2xl p-6 w-full max-w-sm text-center slide-down" style="z-index:2;">
-      <div class="text-yellow-300 font-black text-2xl mb-4" style="font-family:'Fredoka One',cursive;">🏆 REKOD TERTINGGI</div>
+      <div class="text-yellow-300 font-black text-2xl mb-4" style="font-family:'Azim','Fredoka One',cursive;">🏆 REKOD TERTINGGI</div>
       <div id="recordsList" class="text-white space-y-2 text-lg"></div>
       <div class="mt-4 text-cyan-300 text-sm">Skor terbaik anda disimpan di sini!</div>
     </div>
@@ -187,8 +188,8 @@
 <div id="screenGame" class="screen" style="z-index:10;background:linear-gradient(180deg,#020818 0%,#050a1a 50%,#0a0520 100%);">
   <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
     <div class="flex items-center gap-1">
-      <span class="text-yellow-300 font-black text-sm" style="font-family:'Fredoka One',cursive;">SKO</span>
-      <span id="scoreDisplay" class="text-white font-black text-lg" style="font-family:'Fredoka One',cursive;">0</span>
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKO</span>
+      <span id="scoreDisplay" class="text-white font-black text-lg" style="font-family:'Azim','Fredoka One',cursive;">0</span>
     </div>
     <div class="text-cyan-300 font-bold text-sm" id="levelDisplay" style="letter-spacing:1px;">LEVEL 1</div>
     <div class="flex gap-1" id="livesDisplay"><span>❤️</span><span>❤️</span><span>❤️</span></div>
@@ -223,7 +224,7 @@
 
   <div id="overlayFail" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
     <div class="text-6xl mb-3 wobble-anim">💥</div>
-    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">MISI GAGAL!</div>
+    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Azim','Fredoka One',cursive;">MISI GAGAL!</div>
     <div class="text-white text-sm mb-4">Jangan putus asa, cuba lagi!</div>
     <div class="flex gap-3">
       <button class="btn-main btn-yellow" onclick="retryLevel()">🔄 CUBA LAGI</button>
@@ -233,7 +234,7 @@
 
   <div id="overlayComplete" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
     <div class="text-6xl mb-3 float-anim">🌟</div>
-    <div class="text-yellow-300 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">TAHAP SELESAI!</div>
+    <div class="text-yellow-300 font-black text-3xl mb-1" style="font-family:'Azim','Fredoka One',cursive;">TAHAP SELESAI!</div>
     <div id="completeMsg" class="text-white text-sm mb-2"></div>
     <div id="completeBonusMsg" class="text-cyan-300 text-sm mb-4"></div>
     <button class="btn-main btn-green" onclick="nextLevel()">⏭ SETERUSNYA</button>
@@ -245,7 +246,7 @@
   <div class="relative w-full h-full flex flex-col items-center justify-center p-4">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(76,5,5,0.6) 0%,transparent 70%);pointer-events:none;"></div>
     <div class="float-anim text-center mb-3 slide-down" style="z-index:2;font-size:4rem;">👨‍🚀</div>
-    <div class="text-red-300 font-black text-2xl mb-3 wobble-anim" style="font-family:'Fredoka One',cursive;z-index:2;">⚠️ BOSS MUNCUL! ⚠️</div>
+    <div class="text-red-300 font-black text-2xl mb-3 wobble-anim" style="font-family:'Azim','Fredoka One',cursive;z-index:2;">⚠️ BOSS MUNCUL! ⚠️</div>
     <div class="hologram rounded-2xl p-4 max-w-xs w-full text-center mb-4 slide-down" style="z-index:2;">
       <div class="text-red-300 font-bold text-sm mb-2" style="letter-spacing:2px;">ARAHAN KOMANDER</div>
       <div class="text-white text-sm leading-relaxed">Perhatian juruterbang! Ini cabaran bonus. Tembak UFO yang membawa kalimah sampai musnah! Setiap UFO perlukan 10 tembakan. Kau boleh buat ni!</div>
@@ -264,8 +265,8 @@
 <div id="screenBoss" class="screen" style="z-index:10;background:linear-gradient(180deg,#1a0000 0%,#050010 50%,#000520 100%);">
   <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
     <div class="flex items-center gap-1">
-      <span class="text-yellow-300 font-black text-sm" style="font-family:'Fredoka One',cursive;">SKO</span>
-      <span id="bossScoreDisplay" class="text-white font-black text-lg" style="font-family:'Fredoka One',cursive;">0</span>
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKO</span>
+      <span id="bossScoreDisplay" class="text-white font-black text-lg" style="font-family:'Azim','Fredoka One',cursive;">0</span>
     </div>
     <div class="text-red-300 font-bold text-sm" id="bossWordDisplay" style="letter-spacing:1px;">Kalimah 1/7</div>
     <div class="flex gap-1" id="bossLivesDisplay">❤️❤️❤️</div>
@@ -305,7 +306,7 @@
 
   <div id="overlayBossFail" class="absolute inset-0 flex-col items-center justify-center" style="display:none;z-index:40;background:rgba(0,0,0,0.85);">
     <div class="text-6xl mb-3 wobble-anim">💥</div>
-    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Fredoka One',cursive;">MISI GAGAL!</div>
+    <div class="text-red-400 font-black text-3xl mb-1" style="font-family:'Azim','Fredoka One',cursive;">MISI GAGAL!</div>
     <div class="text-white text-sm mb-4">Hampir berjaya! Cuba lagi!</div>
     <div class="flex gap-3">
       <button class="btn-main btn-yellow" onclick="retryBoss()">🔄 CUBA LAGI</button>
@@ -319,11 +320,11 @@
   <div class="relative w-full h-full flex flex-col items-center justify-center p-6">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(120,53,15,0.5) 0%,transparent 70%);pointer-events:none;"></div>
     <div class="float-anim text-6xl mb-2" style="z-index:2;">🏆</div>
-    <div class="text-yellow-300 font-black text-3xl mb-1 text-center" style="font-family:'Fredoka One',cursive;z-index:2;text-shadow:0 0 20px rgba(253,224,71,0.8);">MISI SELESAI!</div>
+    <div class="text-yellow-300 font-black text-3xl mb-1 text-center" style="font-family:'Azim','Fredoka One',cursive;z-index:2;text-shadow:0 0 20px rgba(253,224,71,0.8);">MISI SELESAI!</div>
     <div class="text-white text-sm mb-4" style="z-index:2;">Anda hebat, juruterbang!</div>
     <div class="hologram rounded-2xl p-5 w-full max-w-xs text-center slide-down" style="z-index:2;">
       <div class="text-cyan-300 text-sm mb-2" style="letter-spacing:2px;">KEPUTUSAN AKHIR</div>
-      <div class="text-yellow-300 font-black text-5xl mb-2" style="font-family:'Fredoka One',cursive;" id="finalScore">0</div>
+      <div class="text-yellow-300 font-black text-5xl mb-2" style="font-family:'Azim','Fredoka One',cursive;" id="finalScore">0</div>
       <div class="text-white text-sm mb-3">mata</div>
       <div id="rankBadge" class="text-2xl font-black mb-1"></div>
       <div id="rankName" class="text-yellow-300 font-bold text-lg"></div>

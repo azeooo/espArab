@@ -10,9 +10,9 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: {
-        'ui':      ['Waknan', 'sans-serif'],
+        'ui':      ['Azim', 'sans-serif'],
         'arab':    ['SakkalMajalla', 'serif'],
-        'display': ['IntroRust', 'sans-serif'],
+        'display': ['Azim', 'sans-serif'],
         'amiri':   ['Amiri', 'serif'],
       }
     }
@@ -23,17 +23,16 @@ tailwind.config = {
 /* ═══════════════════════════════════════════
    FONTS
 ═══════════════════════════════════════════ */
-@font-face { font-family:'Waknan';            src:url('./fonts/WakNan.ttf'); }
-@font-face { font-family:'SakkalMajalla';     src:url('./fonts/Sakkal-Majalla-Regular.ttf'); }
-@font-face { font-family:'IntroRust';         src:url('./fonts/introrustg-base2line.otf'); }
-@font-face { font-family:'Amiri';             src:url('./fonts/Amiri-Regular.ttf'); }
-@font-face { font-family:'Lateef';            src:url('./fonts/Lateef-Regular.ttf'); }
-@font-face { font-family:'TraditionalArabic'; src:url('./fonts/TraditionalArabic-Regular.ttf'); }
+@font-face { font-family:'Azim';             src:url('./fonts/Azim.otf') format('truetype'); }
+@font-face { font-family:'SakkalMajalla';    src:url('./fonts/Sakkal-Majalla-Regular.ttf'); }
+@font-face { font-family:'Amiri';            src:url('./fonts/Amiri-Regular.ttf'); }
+@font-face { font-family:'Lateef';           src:url('./fonts/Lateef-Regular.ttf'); }
+@font-face { font-family:'TraditionalArabic';src:url('./fonts/TraditionalArabic-Regular.ttf'); }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html, body {
   width:100%; height:100dvh; overflow:hidden;
-  font-family:'Waknan', 'Segoe UI', sans-serif;
+  font-family:'Azim', 'Segoe UI', sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -59,7 +58,6 @@ html, body {
               0 0 clamp(30px,6vw,70px) rgba(255,180,0,.4);
   animation: sunPulse 3.5s ease-in-out infinite;
 }
-/* Sun rays */
 .sun::before {
   content:'';
   position:absolute; inset:-clamp(6px,1.5vw,14px);
@@ -139,7 +137,7 @@ html, body {
   border:2px solid #FFD700; border-radius:999px;
   padding:clamp(2px,.7vh,6px) clamp(6px,1.4vw,12px);
   font-size:clamp(.6rem,1.8vw,.95rem);
-  font-family:'Waknan',sans-serif; font-weight:700; color:#444;
+  font-family:'Azim',sans-serif; font-weight:700; color:#444;
   white-space:nowrap; display:flex; align-items:center; gap:4px;
 }
 .tb-pill b { color:#C84000; font-size:clamp(.72rem,2.2vw,1.1rem); }
@@ -156,7 +154,7 @@ html, body {
 .pl { flex:1; height:4px; background:#ccc; border-radius:2px; transition:background .4s; }
 .pl.done { background:#43A047; }
 
-/* ── ACTION BAR (Mula / Berhenti) ── */
+/* ── ACTION BAR ── */
 #action-bar {
   display:flex; justify-content:center; align-items:center;
   gap:clamp(8px,2vw,16px);
@@ -164,7 +162,7 @@ html, body {
   flex-shrink:0;
 }
 .act-btn {
-  font-family:'Waknan',sans-serif; font-weight:700;
+  font-family:'Azim',sans-serif; font-weight:700;
   font-size:clamp(.75rem,2.2vw,1rem);
   padding:clamp(5px,1.2vh,10px) clamp(16px,3.5vw,30px);
   border-radius:999px; border:3px solid transparent;
@@ -192,7 +190,7 @@ canvas#cv {
   image-rendering:pixelated;
 }
 
-/* ── WIN FLASH OVERLAY (on canvas) ── */
+/* ── WIN FLASH OVERLAY ── */
 #win-flash {
   position:absolute; inset:0; border-radius:clamp(5px,1.3vw,11px);
   pointer-events:none; z-index:5; opacity:0;
@@ -245,10 +243,10 @@ canvas#cv {
   max-width:min(480px,96vw); width:100%;
   max-height:90dvh; overflow-y:auto;
   box-shadow:0 18px 56px rgba(0,0,0,.45);
-  font-family:'Waknan',sans-serif; text-align:center;
+  font-family:'Azim',sans-serif; text-align:center;
 }
 .m-title {
-  font-family:'IntroRust','Waknan',sans-serif;
+  font-family:'Azim','Segoe UI',sans-serif;
   font-size:clamp(1.1rem,3.8vw,1.9rem);
   color:#BF360C; margin-bottom:clamp(6px,1.5vh,14px);
   text-shadow:1px 2px 0 rgba(255,200,0,.5);
@@ -257,13 +255,12 @@ canvas#cv {
   font-size:clamp(.78rem,2.2vw,.98rem); color:#555;
   margin-bottom:clamp(8px,2vh,16px); line-height:1.75;
 }
-/* Buttons inside modals */
 .mbtn {
   display:inline-flex; align-items:center; justify-content:center; gap:6px;
   border:none; border-radius:999px;
   padding:clamp(7px,1.6vh,13px) clamp(14px,3.5vw,28px);
   font-size:clamp(.82rem,2.3vw,1.1rem);
-  font-family:'Waknan',sans-serif; font-weight:700;
+  font-family:'Azim',sans-serif; font-weight:700;
   cursor:pointer; touch-action:manipulation;
   box-shadow:0 4px 12px rgba(0,0,0,.28);
   transition:transform .14s, box-shadow .14s;
@@ -278,14 +275,13 @@ canvas#cv {
 .mbtn.purple { background:linear-gradient(135deg,#8E24AA,#4A148C); color:#fff; }
 .mbtn.teal   { background:linear-gradient(135deg,#00897B,#004D40); color:#fff; }
 
-/* Quiz option buttons */
 .qopt {
   display:block; width:100%;
   background:linear-gradient(135deg,#E3F2FD,#BBDEFB);
   border:3px solid #1E88E5; border-radius:clamp(7px,1.8vw,13px);
   padding:clamp(7px,1.8vh,13px); margin:clamp(4px,1vh,8px) 0;
   font-size:clamp(.95rem,2.8vw,1.35rem);
-  font-family:'SakkalMajalla','Waknan',sans-serif;
+  font-family:'SakkalMajalla','Azim',sans-serif;
   cursor:pointer; text-align:center;
   transition:all .14s; touch-action:manipulation;
 }
@@ -293,7 +289,6 @@ canvas#cv {
 .qopt.ok     { background:linear-gradient(135deg,#C8E6C9,#A5D6A7); border-color:#43A047; pointer-events:none; }
 .qopt.bad    { background:linear-gradient(135deg,#FFCDD2,#EF9A9A); border-color:#E53935; pointer-events:none; }
 
-/* Score display box */
 .score-box {
   background:rgba(255,255,255,.82);
   border:2px solid #FFD600; border-radius:12px;
@@ -304,10 +299,9 @@ canvas#cv {
 }
 .score-box .big-num { font-size:clamp(1.6rem,5vw,2.6rem); color:#BF360C; font-weight:900; }
 
-/* Star rating */
 .stars { font-size:clamp(1.6rem,5.5vw,2.8rem); letter-spacing:4px; }
 
-/* ── LEVEL COMPLETE PANEL (shown on canvas area, not modal) ── */
+/* ── LEVEL COMPLETE PANEL ── */
 #lc-panel {
   display:none; position:absolute; inset:0; z-index:150;
   background:rgba(0,0,0,.55);
@@ -320,13 +314,12 @@ canvas#cv {
   padding:clamp(14px,3.5vw,32px);
   max-width:min(430px,94vw); width:100%;
   text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.5);
-  font-family:'Waknan',sans-serif;
+  font-family:'Azim',sans-serif;
 }
-.lc-title { font-family:'IntroRust','Waknan',sans-serif; font-size:clamp(1.3rem,4.5vw,2rem); color:#BF360C; margin-bottom:6px; }
+.lc-title { font-family:'Azim','Segoe UI',sans-serif; font-size:clamp(1.3rem,4.5vw,2rem); color:#BF360C; margin-bottom:6px; }
 .lc-sub   { font-size:clamp(.78rem,2.2vw,.96rem); color:#555; margin-bottom:14px; }
 .lc-btns  { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
 
-/* Animations */
 .bump { animation:bumpShake .28s ease-out; }
 @keyframes bumpShake {
   0%{transform:translateX(0)} 30%{transform:translateX(-5px)} 70%{transform:translateX(5px)} 100%{transform:translateX(0)}
@@ -338,10 +331,8 @@ canvas#cv {
 }
 .pop-in { animation:popIn .4s cubic-bezier(.34,1.56,.64,1) forwards; }
 
-/* Feedback text */
 #q-fb { min-height:26px; font-size:clamp(.8rem,2.2vw,.96rem); font-weight:700; margin-top:6px; }
 
-/* VO banner */
 #vo-banner {
   display:none; position:fixed; bottom:clamp(60px,12vh,100px); left:50%;
   transform:translateX(-50%);
@@ -356,7 +347,6 @@ canvas#cv {
   100% { opacity:1; transform:translateX(-50%) translateY(0); }
 }
 
-/* Landscape compact */
 @media(orientation:landscape) and (max-height:480px) {
   #topbar   { padding:2px 8px; }
   .tb-pill  { font-size:.58rem; padding:2px 6px; }
@@ -369,13 +359,11 @@ canvas#cv {
 </head>
 <body>
 
-<!-- ══════════ BACKGROUND ══════════ -->
 <div id="bg">
   <div class="sun"></div>
   <div class="cloud c1"></div>
   <div class="cloud c2"></div>
   <div class="cloud c3"></div>
-  <!-- Flowers -->
   <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#388E3C" rx="2"/><circle cx="20" cy="18" r="10" fill="#F06292"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
   <div class="flower"><svg style="width:clamp(16px,3.2vw,34px);height:clamp(26px,5.5vw,50px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#2E7D32" rx="2"/><circle cx="20" cy="18" r="9" fill="#FF7043"/><circle cx="20" cy="18" r="4" fill="#FFF"/></svg></div>
   <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#43A047" rx="2"/><circle cx="20" cy="18" r="10" fill="#AB47BC"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
@@ -384,10 +372,8 @@ canvas#cv {
   <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#2E7D32" rx="2"/><circle cx="20" cy="18" r="10" fill="#FFCA28"/><circle cx="20" cy="18" r="5" fill="#EF5350"/></svg></div>
 </div>
 
-<!-- ══════════ GAME SHELL ══════════ -->
 <div id="shell">
 
-  <!-- TOP BAR -->
   <div id="topbar">
     <div class="tb-pill">⭐ <b id="skor-disp">0</b></div>
     <div class="tb-pill">⏱ <b id="masa-disp">0:00</b></div>
@@ -402,33 +388,28 @@ canvas#cv {
       style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:inherit;padding:0;font-weight:700">ON</button></div>
   </div>
 
-  <!-- ACTION BAR -->
   <div id="action-bar">
-    <button class="act-btn" id="btn-mula"     onclick="mulaPermainan()">🚀 Mula</button>
-    <button class="act-btn" id="btn-berhenti" onclick="togglePause()">🛑 Berhenti</button>
+    <button class="act-btn" id="btn-mula" onclick="mulaPermainan()">🚀 Mula</button>
+    <button class="act-btn" id="btn-berhenti" onclick="bukaPauseMenu()">🛑 Berhenti</button>
   </div>
 
-  <!-- MAZE -->
   <div id="maze-area">
     <div id="maze-wrap">
       <canvas id="cv"></canvas>
       <div id="win-flash"></div>
-      <!-- Level Complete Panel (inside maze-area, not a full-page modal) -->
       <div id="lc-panel">
         <div class="lc-box pop-in" id="lc-box-inner">
           <div class="lc-title" id="lc-title">🎉 Level Selesai!</div>
-          <div class="lc-sub"   id="lc-sub">Tahniah!</div>
-          <!-- Score summary -->
+          <div class="lc-sub" id="lc-sub">Tahniah!</div>
           <div class="score-box" id="lc-score-box">
             <div>Skor Semasa: <span class="big-num" id="lc-skor-num">0</span></div>
           </div>
-          <div class="lc-btns"  id="lc-btns"></div>
+          <div class="lc-btns" id="lc-btns"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- D-PAD -->
   <div id="ctrl-bar">
     <div class="dpad">
       <div></div>
@@ -452,12 +433,8 @@ canvas#cv {
   </div>
 </div>
 
-<!-- ══════════ VO BANNER ══════════ -->
 <div id="vo-banner"></div>
 
-<!-- ══════════════════════════════════════
-     MODAL: ARAHAN (Intro)
-══════════════════════════════════════ -->
 <div class="overlay" id="mod-intro">
   <div class="mbox">
     <div class="m-title">🐭 Mari Mulakan Cabaran Maze Tikus & Keju! 🧀</div>
@@ -478,25 +455,18 @@ canvas#cv {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: KUIZ
-══════════════════════════════════════ -->
 <div class="overlay" id="mod-kuiz" style="display:none">
   <div class="mbox">
     <div class="m-title" id="kuiz-title">📚 Kuiz</div>
     <div id="kuiz-body"></div>
-    <!-- Navigation after quiz complete -->
     <div id="kuiz-nav" style="display:none;margin-top:12px">
-      <button class="mbtn green"  id="btn-next-level" onclick="teruskanLevelSeterusnya()">▶️ Level Seterusnya</button>
-      <button class="mbtn red"    onclick="mulaSemulaPermainan()">🔄 Mula Semula</button>
-      <button class="mbtn amber"  onclick="keluarPermainan()">🚪 Keluar</button>
+      <button class="mbtn green" id="btn-next-level" onclick="teruskanLevelSeterusnya()">▶️ Level Seterusnya</button>
+      <button class="mbtn red" onclick="mulaSemulaPermainan()">🔄 Mula Semula</button>
+      <button class="mbtn amber" onclick="keluarPermainan()">🚪 Keluar</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: KEPUTUSAN AKHIR
-══════════════════════════════════════ -->
 <div class="overlay" id="mod-result" style="display:none">
   <div class="mbox">
     <div class="m-title" id="res-title">🏆 Tahniah!</div>
@@ -509,83 +479,59 @@ canvas#cv {
     <div id="res-msg" style="font-size:clamp(.8rem,2.2vw,.98rem);color:#333;margin-bottom:12px"></div>
     <div>
       <button class="mbtn green" onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
-      <button class="mbtn red"   onclick="keluarPermainan()">🚪 Keluar</button>
+      <button class="mbtn red" onclick="keluarPermainan()">🚪 Keluar</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: EXIT CONFIRMATION
-══════════════════════════════════════ -->
 <div class="overlay" id="mod-keluar" style="display:none">
   <div class="mbox">
     <div class="m-title">🚪 Keluar Permainan?</div>
     <div class="m-sub">Skor anda akan hilang. Pasti nak keluar?</div>
-    <button class="mbtn red"   onclick="sahKeluar()">Ya, Keluar</button>
+    <button class="mbtn red" onclick="sahKeluar()">Ya, Keluar</button>
     <button class="mbtn green" onclick="tutupKeluar()">Tidak, Sambung Main</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     AUDIO MP3 PLACEHOLDERS
-══════════════════════════════════════
-  Letakkan fail MP3 di ./audio/ dan nyahkomen:
-
-  const sndMeow    = new Audio('./audio/meow.mp3');
-  const sndChime   = new Audio('./audio/chime.mp3');
-  const sndBump    = new Audio('./audio/bump.mp3');
-  const sndDrum    = new Audio('./audio/drum.mp3');
-  const sndTraktor = new Audio('./audio/traktor.mp3');
-  const sndWin     = new Audio('./audio/win.mp3');
-
-  Gantikan pemanggilan WebAudio dengan:
-    sndMeow.currentTime=0;    sndMeow.play();
-    sndChime.currentTime=0;   sndChime.play();
-    sndBump.currentTime=0;    sndBump.play();
-    sndDrum.currentTime=0;    sndDrum.play();
-    sndTraktor.currentTime=0; sndTraktor.play();
-    sndWin.currentTime=0;     sndWin.play();
-
-══════════════════════════════════════ -->
+<!-- NEW: Pause Modal -->
+<div class="overlay" id="mod-pause" style="display:none">
+  <div class="mbox">
+    <div class="m-title">⏸️ Permainan Dihentikan</div>
+    <div class="m-sub">
+      Pilih sama ada mahu sambung permainan atau keluar ke menu utama.
+    </div>
+    <div>
+      <button class="mbtn green" onclick="sambungPermainan()">▶️ Sambung</button>
+      <button class="mbtn amber" onclick="keluarKeIndex()">🚪 Keluar ke Menu</button>
+    </div>
+  </div>
+</div>
 
 <script>
 'use strict';
+
 /* ═══════════════════════════════════════════════════════════
-   AUDIO ENGINE (WebAudio fallback — gantikan dengan MP3)
+   AUDIO ENGINE
 ═══════════════════════════════════════════════════════════ */
 let audioOn  = true;
 let audioCtx = null;
-// ===== MP3 SFX (ADD THIS) =====
 const meowMp3 = new Audio('./assets/audio/meow.mp3');
 meowMp3.preload = 'auto';
 meowMp3.volume = 0.9;
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ VOICE OVER (PLACEHOLDER) — ikut skrip yang kau bagi
-   Letak mp3 ElevenLabs kat folder contoh:
-     ./assets/vo/VO_INTRO_01.mp3
-   Lepas tu isi path dekat src: ""
+   VOICE OVER
 ═══════════════════════════════════════════════════════════ */
 const VO_LINES = {
-  // INTRO
-  //VO_INTRO_01: { text:"Mari Mulakan Cabaran Maze Tikus & Keju!", src:"" }, // TODO: "./assets/vo/VO_INTRO_01.mp3"
-  VO_INTRO_02: { text:"Kawal tikus, elakkan dinding, dan capai keju secepat mungkin.", src:"./assets/vogame1/g1_kawal tikus.mp3" }, // TODO
-
-  // MOTIVASI
-  VO_MOTIVASI_01: { text:"Cepat, bantu tikus cari keju!", src:"" }, // TODO
-  //VO_MOTIVASI_02: { text:"Hati-hati, laluan semakin sukar. Bantu tikus sampai ke keju!", src:"" }, // TODO (Level 3)
-
-  // MENANG + ARAHAN KUIZ (ikut skrip kau)
-  VO_WIN_L1:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.", src:"./assets/vogame1/g1_tahniahlevel2.mp3" }, // TODO
-  VO_WIN_L2:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 3.", src:"./assets/vogame1/g1tahniahkelevel akhir.mp3" }, // TODO (kau minta Level 3)
-  VO_WIN_FINAL: { text:"Tahniah, anda telah sampai ke keju! Untuk dikira sebagai pemenang, jawab dua soalan berikut.", src:"./assets/vogame1/g1tahniah.mp3" }, // TODO
-
-  // KUIZ (prompt ringkas)
-  VO_QUIZ_Q_GENERIC: { text:"Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1bunyi apa.mp3" }, // TODO
-  VO_QUIZ_TRAKTOR_Q: { text:"Traktor sedang bergerak. Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1traktor.mp3" }, // TODO
+  VO_INTRO_02: { text:"Kawal tikus, elakkan dinding, dan capai keju secepat mungkin.", src:"./assets/vogame1/g1_kawal tikus.mp3" },
+  VO_MOTIVASI_01: { text:"Cepat, bantu tikus cari keju!", src:"./assets/vogame1/g1_cepat.mp3" },
+  VO_WIN_L1:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.", src:"./assets/vogame1/g1_tahniahlevel2.mp3" },
+  VO_WIN_L2:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 3.", src:"./assets/vogame1/g1tahniahkelevel akhir.mp3" },
+  VO_WIN_FINAL: { text:"Tahniah, anda telah sampai ke keju! Untuk dikira sebagai pemenang, jawab dua soalan berikut.", src:"./assets/vogame1/g1tahniah.mp3" },
+  VO_QUIZ_Q_GENERIC: { text:"Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1bunyi apa.mp3" },
+  VO_QUIZ_TRAKTOR_Q: { text:"Traktor sedang bergerak. Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1traktor.mp3" },
 };
 
-// Player untuk VO (reuse satu audio)
 const voPlayer = new Audio();
 voPlayer.preload = 'auto';
 voPlayer.volume  = 1.0;
@@ -594,13 +540,12 @@ let voQueue = [];
 let voBusy  = false;
 let voMotivIv = null;
 let audioUnlocked = false;
+let voTimer = null;
 
-// Unlock audio on first user interaction (browser policy)
 function unlockAudioOnce(){
   if(audioUnlocked) return;
   audioUnlocked = true;
   try {
-    // "prime" HTMLAudio
     voPlayer.muted = true;
     voPlayer.play().then(()=>{ voPlayer.pause(); voPlayer.currentTime=0; voPlayer.muted=false; }).catch(()=>{ voPlayer.muted=false; });
   } catch(e){}
@@ -609,10 +554,10 @@ function unlockAudioOnce(){
 window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
 window.addEventListener('keydown', unlockAudioOnce, { once:true });
 
-// Show text banner too (so even if mp3 belum isi, still align)
 function showVO(text){
   const b=document.getElementById('vo-banner');
-  b.textContent=text; b.style.display='block';
+  b.textContent=text;
+  b.style.display='block';
   if(voTimer) clearTimeout(voTimer);
   voTimer=setTimeout(()=>{ b.style.display='none'; },6000);
 }
@@ -621,37 +566,34 @@ function stopMotivationLoop(){
   if(voMotivIv){ clearInterval(voMotivIv); voMotivIv=null; }
 }
 
-// Queue helpers
 function playVOById(id){
   const line = VO_LINES[id];
   if(!line) return;
   enqueueVO(line.text, line.src, id);
 }
+
 function playVOQueue(ids){
   ids.forEach(id=>playVOById(id));
 }
+
 function enqueueVO(text, src, id){
-  // Respect audio toggle
   if(!audioOn){
-    // Still show banner for guidance (optional)
     showVO(text);
     return;
   }
   voQueue.push({text, src, id});
   pumpVO();
 }
+
 function pumpVO(){
   if(voBusy) return;
   const item = voQueue.shift();
   if(!item) return;
   voBusy = true;
 
-  // Always show the VO banner (align with script)
   showVO(item.text);
 
-  // If src not provided yet, simulate duration then continue
   if(!item.src){
-    // PLACEHOLDER: bila mp3 dah ada, isi src untuk auto play
     setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
     return;
   }
@@ -662,7 +604,7 @@ function pumpVO(){
     voPlayer.src = item.src;
     const p = voPlayer.play();
     if(p && typeof p.catch === 'function'){
-      p.catch(()=>{ // if blocked, just continue
+      p.catch(()=>{
         setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
       });
     }
@@ -674,7 +616,6 @@ function pumpVO(){
     setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
   }
 }
-/* ═══════════════════════════════════════════════════════════ */
 
 function getCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -691,27 +632,17 @@ function tone(freq, type, dur, vol=.3, delay=0) {
     o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+dur);
   } catch(e){}
 }
-function sndBump()    {
-  // sndBump.currentTime=0; sndBump.play(); // ← MP3 PLACEHOLDER
-  tone(140,'square',.14,.45);
-}
-function sndChime()   {
-  // sndChime.currentTime=0; sndChime.play(); // ← MP3 PLACEHOLDER
-  [523,659,784,1047].forEach((f,i)=>tone(f,'sine',.4,.28,i*.11));
-}
-function sndWin()     {
-  // sndWin.currentTime=0; sndWin.play(); // ← MP3 PLACEHOLDER (MUZIK KEMENANGAN CERIA)
+function sndBump(){ tone(140,'square',.14,.45); }
+function sndChime(){ [523,659,784,1047].forEach((f,i)=>tone(f,'sine',.4,.28,i*.11)); }
+function sndWin(){
   const pattern=[523,587,659,698,784,880,988,1047];
   pattern.forEach((f,i)=>tone(f,'sine',.35,.32,i*.09));
   setTimeout(()=>{
     [1047,1319,1568,1047,784,1047,1319,2093].forEach((f,i)=>tone(f,'triangle',.4,.26,i*.1));
   }, 900);
 }
-
 function sndMeow() {
   if (!audioOn) return;
-
-  // 1) Try MP3 first
   try {
     meowMp3.currentTime = 0;
     const p = meowMp3.play();
@@ -723,8 +654,6 @@ function sndMeow() {
     fallbackMeow();
   }
 }
-
-// 2) WebAudio fallback (your original meow tone)
 function fallbackMeow() {
   if (!audioOn) return;
   try {
@@ -738,13 +667,8 @@ function fallbackMeow() {
     o.start(ctx.currentTime); o.stop(ctx.currentTime+.65);
   }catch(e){}
 }
-
-function sndDrum()    {
-  // sndDrum.currentTime=0; sndDrum.play(); // ← MP3 PLACEHOLDER
-  [0,.38,.76].forEach(t=>{tone(80,'sine',.28,.48,t); tone(105,'square',.14,.2,t);});
-}
+function sndDrum(){ [0,.38,.76].forEach(t=>{tone(80,'sine',.28,.48,t); tone(105,'square',.14,.2,t);}); }
 function sndTraktor() {
-  // sndTraktor.currentTime=0; sndTraktor.play(); // ← MP3 PLACEHOLDER
   if (!audioOn) return;
   try {
     const ctx=getCtx();
@@ -758,9 +682,7 @@ function sndTraktor() {
     }
   }catch(e){}
 }
-function sndCorrect() {
-  tone(659,'sine',.18,.28); tone(784,'sine',.18,.28,.15);
-}
+function sndCorrect() { tone(659,'sine',.18,.28); tone(784,'sine',.18,.28,.15); }
 function sndWrong()   { tone(200,'square',.3,.4); }
 
 function toggleAudio() {
@@ -900,9 +822,6 @@ const G = {
   kuizSelesai:false,
 };
 
-/* ═══════════════════════════════════════════════════════════
-   CANVAS
-═══════════════════════════════════════════════════════════ */
 const cv  = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 let TS    = 32;
@@ -924,7 +843,6 @@ function setupCanvas() {
   cv.height = mz.rows * TS;
 }
 
-/* ─── Drawing primitives ──────────────────────────────── */
 function drawMouse(x, y, r) {
   const c=ctx;
   c.fillStyle='#BDBDBD'; c.beginPath(); c.ellipse(x,y,r,r*.8,0,0,Math.PI*2); c.fill();
@@ -1069,9 +987,6 @@ function drawScene() {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ANIMATION LOOP
-═══════════════════════════════════════════════════════════ */
 function animLoop() {
   G.kejuFasa++;
   G.kucingAnim++;
@@ -1100,12 +1015,10 @@ function updateTopBar(){
   document.getElementById('masa-disp').textContent = fmtMasa(G.tick);
 }
 function fmtMasa(t){
-  const s=Math.floor(t/60); return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+  const s=Math.floor(t/60);
+  return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PLAYER MOVEMENT
-═══════════════════════════════════════════════════════════ */
 function isDinding(r,c){
   const mz=MAZES[G.level];
   return r<0||r>=mz.rows||c<0||c>=mz.cols||mz.grid[r][c]===1;
@@ -1128,9 +1041,9 @@ function gerak(dr,dc){
 document.addEventListener('keydown', e=>{
   const map={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
   if(map[e.key]){e.preventDefault(); gerak(...map[e.key]);}
+  if(e.key === 'Escape' && G.sedang){ bukaPauseMenu(); }
 });
 
-// D-Pad
 let dpIv=null;
 function dpStart(d,e){
   if(e) e.preventDefault();
@@ -1139,9 +1052,6 @@ function dpStart(d,e){
 }
 function dpEnd(){ if(dpIv){clearInterval(dpIv);dpIv=null;} }
 
-/* ═══════════════════════════════════════════════════════════
-   CAT COLLISION
-═══════════════════════════════════════════════════════════ */
 function cekKucing(){
   const mz=MAZES[G.level];
   if(!mz.kucing) return;
@@ -1159,14 +1069,10 @@ function cekKucing(){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   WIN — CHEESE REACHED
-═══════════════════════════════════════════════════════════ */
 function padaMenang(){
-  G.sedang     = false;
+  G.sedang = false;
   G.levelMenang = true;
-
-  stopMotivationLoop(); // stop motivasi semasa menang
+  stopMotivationLoop();
 
   const bonusMasa=Math.max(0,500-Math.floor(G.tick/60)*5);
   G.skor += bonusMasa;
@@ -1179,26 +1085,23 @@ function padaMenang(){
   fl.classList.add('show');
   setTimeout(()=>fl.classList.remove('show'),1200);
 
-  // ✅ VO: gunakan skrip kau (lebih prioriti daripada text QUIZ.vo)
   if(G.level===0) playVOById('VO_WIN_L1');
   else if(G.level===1) playVOById('VO_WIN_L2');
   else if(G.level===2) playVOById('VO_WIN_FINAL');
 
-  // Existing VO banner from quiz data (kekal)
   const quiz=QUIZ[G.level];
   showVO(quiz.vo);
 
   setTimeout(()=>{ showLevelComplete(G.level); }, 1800);
 }
 
-/* ─── Level Complete Panel ──────────────────────────────── */
 function showLevelComplete(lvl){
   const panel   = document.getElementById('lc-panel');
   const isAkhir = lvl===2;
 
   document.getElementById('lc-title').textContent =
     isAkhir ? '🏆 Semua Level Selesai!' : `🎉 Level ${lvl+1} Selesai!`;
-  document.getElementById('lc-sub').textContent   =
+  document.getElementById('lc-sub').textContent =
     isAkhir
       ? 'Tahniah! Anda berjaya tamat semua level!'
       : `Tahniah! Tikus berjaya mendapatkan keju Level ${lvl+1}!`;
@@ -1208,8 +1111,8 @@ function showLevelComplete(lvl){
   const btns=document.getElementById('lc-btns');
   btns.innerHTML=`
     <button class="mbtn purple" onclick="bukKuiz(${lvl})">📚 Jawab Kuiz</button>
-    <button class="mbtn red"    onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
-    <button class="mbtn amber"  onclick="keluarPermainan()">🚪 Keluar</button>
+    <button class="mbtn red" onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
+    <button class="mbtn amber" onclick="keluarPermainan()">🚪 Keluar</button>
   `;
 
   const box=document.getElementById('lc-box-inner');
@@ -1220,9 +1123,6 @@ function showLevelComplete(lvl){
   panel.classList.add('show');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   QUIZ SYSTEM
-═══════════════════════════════════════════════════════════ */
 function bukKuiz(lvl){
   document.getElementById('lc-panel').classList.remove('show');
   G.kuizLevel    = lvl;
@@ -1232,11 +1132,9 @@ function bukKuiz(lvl){
   renderKuiz();
   document.getElementById('kuiz-nav').style.display='none';
   document.getElementById('mod-kuiz').style.display='flex';
-
-  stopMotivationLoop(); // stop motivasi bila masuk kuiz
+  stopMotivationLoop();
 }
 
-// startQuiz — PLACEHOLDER (called by bukKuiz, replaceable externally)
 function startQuiz(level){
   console.log(`[startQuiz] Level ${level+1} quiz triggered`);
   bukKuiz(level);
@@ -1250,12 +1148,9 @@ function renderKuiz(){
   document.getElementById('kuiz-title').textContent =
     `${qd.tajuk} — Soalan ${G.kuizSoalan+1} / ${total}`;
 
-  // ✅ VO prompt ikut skrip kau (hanya untuk soalan yang berkaitan)
-  // Level 1 soalan 1: "Bunyi apakah yang dihasilkan?"
   if(G.kuizLevel===0 && G.kuizSoalan===0){
     playVOById('VO_QUIZ_Q_GENERIC');
   }
-  // Level 2 soalan 1: "Traktor sedang bergerak..."
   if(G.kuizLevel===1 && G.kuizSoalan===0){
     playVOById('VO_QUIZ_TRAKTOR_Q');
   }
@@ -1335,7 +1230,6 @@ function pilihJwp(idx){
   }
 }
 
-/* ─── Proceed after quiz ──────────────────────────────── */
 function teruskanLevelSeterusnya(){
   document.getElementById('mod-kuiz').style.display='none';
   if(G.kuizLevel<2){
@@ -1345,9 +1239,6 @@ function teruskanLevelSeterusnya(){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FINAL RESULT
-═══════════════════════════════════════════════════════════ */
 function tunjukKeputusanAkhir(){
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
@@ -1370,9 +1261,6 @@ function tunjukKeputusanAkhir(){
   sndWin();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PROGRESS BAR
-═══════════════════════════════════════════════════════════ */
 function updateProgress(){
   for(let i=1;i<=3;i++){
     const d=document.getElementById('pd'+i);
@@ -1385,24 +1273,34 @@ function updateProgress(){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════════════════ */
 function mulaPermainan(){
   if(G.sedang) return;
   G.dimulakan=true;
   mulakanLevel();
 }
 
-function togglePause(){
-  if(!G.dimulakan) return;
-  G.sedang = !G.sedang;
-  document.getElementById('btn-berhenti').textContent =
-    G.sedang ? '🛑 Berhenti' : '▶️ Sambung';
+/* NEW: stop button opens pause modal */
+function bukaPauseMenu(){
+  if(!G.dimulakan || !G.sedang || G.levelMenang) return;
+  G.sedang = false;
+  stopMotivationLoop();
+  document.getElementById('mod-pause').style.display='flex';
+}
 
-  // stop/start motivasi ikut pause
-  if(G.sedang) startMotivationLoop();
-  else stopMotivationLoop();
+function sambungPermainan(){
+  document.getElementById('mod-pause').style.display='none';
+  if(!G.levelMenang){
+    G.sedang = true;
+    startMotivationLoop();
+  }
+}
+
+function keluarKeIndex(){
+  window.location.href = 'index.html';
+}
+
+function togglePause(){
+  bukaPauseMenu();
 }
 
 function mulakanLevel(){
@@ -1410,10 +1308,7 @@ function mulakanLevel(){
   G.pemR=mz.mula.r; G.pemC=mz.mula.c;
   G.sedang=true; G.levelMenang=false;
   G.tick=0; G.kucingIdx=0; G.kucingTick=0;
-  document.getElementById('btn-berhenti').textContent='🛑 Berhenti';
   setupCanvas(); updateProgress();
-
-  // ✅ Start motivasi loop bila gameplay start
   startMotivationLoop();
 }
 
@@ -1421,17 +1316,14 @@ function startMotivationLoop(){
   stopMotivationLoop();
   if(!G.sedang || G.levelMenang) return;
 
-  // VO motivasi (single version only)
-playVO('VO_MOTIVASI_01');
+  playVOById('VO_MOTIVASI_01');
 
-  // tunggu sikit lepas level mula
   setTimeout(()=>{
-    if(G.sedang && !G.levelMenang) playVOById(motId);
+    if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01');
   }, 1400);
 
-  // ulang setiap 12 saat (boleh ubah)
   voMotivIv = setInterval(()=>{
-    if(G.sedang && !G.levelMenang) playVOById(motId);
+    if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01');
   }, 12000);
 }
 
@@ -1447,6 +1339,7 @@ function mulaSemulaPermainan(){
   document.getElementById('mod-result').style.display='none';
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
+  document.getElementById('mod-pause').style.display='none';
   stopMotivationLoop();
 
   Object.assign(G,{
@@ -1456,7 +1349,6 @@ function mulaSemulaPermainan(){
     kejuFasa:0,kucingAnim:0,
     kuizLevel:0,kuizSoalan:0,kuizBetulCount:0,kuizSelesai:false,
   });
-  document.getElementById('btn-berhenti').textContent='🛑 Berhenti';
   updateTopBar(); updateProgress(); setupCanvas();
 }
 
@@ -1465,28 +1357,18 @@ function keluarPermainan(){
 }
 function sahKeluar(){
   document.getElementById('mod-keluar').style.display='none';
-  mulaSemulaPermainan();
-  document.getElementById('mod-intro').style.display='flex';
+  window.location.href = 'index.html';
 }
 function tutupKeluar(){
   document.getElementById('mod-keluar').style.display='none';
 }
 
-/* ═══════════════════════════════════════════════════════════
-   INTRO MODAL
-═══════════════════════════════════════════════════════════ */
 function tutupIntro(){
   document.getElementById('mod-intro').style.display='none';
-  setupCanvas(); // draw idle maze (no mouse yet)
-
-  // ✅ VO INTRO ikut skrip kau (2 line)
-  // NOTE: ini akan main bila user tekan "Faham! Saya Bersedia"
+  setupCanvas();
   playVOQueue(['VO_INTRO_02']);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SVG VISUALS
-═══════════════════════════════════════════════════════════ */
 function svgVisual(t){
   const M={
     drum:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="25" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><rect x="10" y="25" width="60" height="30" fill="#A0522D" stroke="#5D2F0A" stroke-width="2"/><ellipse cx="40" cy="55" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><line x1="15" y1="25" x2="15" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="40" y1="25" x2="40" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="65" y1="25" x2="65" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="5" y1="15" x2="18" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/><line x1="75" y1="15" x2="62" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -1509,20 +1391,12 @@ function svgVisual(t){
   return M[t]||'';
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RESIZE
-═══════════════════════════════════════════════════════════ */
 window.addEventListener('resize',()=>{ setupCanvas(); });
 
-/* ═══════════════════════════════════════════════════════════
-   BOOT — idle state, modal shown, animation loop starts
-═══════════════════════════════════════════════════════════ */
-let voTimer=null;
 setupCanvas();
 updateTopBar();
 updateProgress();
 animLoop();
-// Intro modal visible by default
 </script>
 </body>
 </html>
