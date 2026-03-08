@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buku Interaktif Audio</title>
+
+  <style>
+    @font-face {
+      font-family: 'Azim';
+      src: url('../fonts/Azim.otf') format('opentype');
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg1: #dff4ff;
+      --bg2: #efe7ff;
+      --bg3: #fdf2ff;
+      --card: rgba(255,255,255,0.82);
+      --card-border: rgba(255,255,255,0.7);
+      --text: #31405f;
+      --muted: #6c7a96;
+      --blue: #74c8ff;
+      --purple: #b89cff;
+      --pink: #ffb8e8;
+      --green: #9fe3b0;
+      --shadow: 0 12px 30px rgba(114, 145, 190, 0.18);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: 'Azim', 'Baloo 2', cursive;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(116,200,255,0.35), transparent 22%),
+        radial-gradient(circle at top right, rgba(184,156,255,0.28), transparent 24%),
+        radial-gradient(circle at bottom center, rgba(255,184,232,0.25), transparent 25%),
+        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      min-height: 100dvh;
+      overflow-x: hidden;
+      padding: 14px;
+    }
+
+    .wrap {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn, .audio-btn, .hotspot, .jump-input {
+      font-family: inherit;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 900;
+      background: white;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .badge {
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, .88fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .visual {
+      position: relative;
+      min-height: 500px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #e9f7ff, #f4ecff);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .visual::before,
+    .visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: .5;
+      filter: blur(8px);
+    }
+
+    .visual::before {
+      width: 160px;
+      height: 160px;
+      background: rgba(116,200,255,0.28);
+      top: -30px;
+      left: -30px;
+    }
+
+    .visual::after {
+      width: 180px;
+      height: 180px;
+      background: rgba(184,156,255,0.22);
+      bottom: -40px;
+      right: -30px;
+    }
+
+    .main-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .image-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.6;
+      z-index: 1;
+    }
+
+    .placeholder-box {
+      background: rgba(255,255,255,.72);
+      border: 2px dashed #cfdcf6;
+      border-radius: 22px;
+      padding: 22px 18px;
+      max-width: 420px;
+    }
+
+    .hotspot-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .hotspot {
+      position: absolute;
+      display: none;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-size: .95rem;
+      font-weight: 900;
+      padding: 10px 13px;
+      min-width: 90px;
+      max-width: 170px;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(93, 109, 158, 0.2);
+      transition: transform .18s ease;
+    }
+
+    .hotspot:hover { transform: scale(1.04); }
+    .hotspot:active { transform: scale(.98); }
+
+    .hotspot[data-index="0"] { background: linear-gradient(135deg, #ff9fca, #ffb27d); }
+    .hotspot[data-index="1"] { background: linear-gradient(135deg, #79c8ff, #9b9cff); }
+    .hotspot[data-index="2"] { background: linear-gradient(135deg, #6fd8b2, #b7d96f); }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fff1a8, #ffd8ef);
+      font-size: .88rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: clamp(1.6rem, 4vw, 2.35rem);
+      line-height: 1.08;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .audio-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .audio-heading {
+      font-size: 1.05rem;
+      font-weight: 900;
+      margin-bottom: 2px;
+    }
+
+    .audio-btn {
+      width: 100%;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-size: .98rem;
+      font-weight: 900;
+      box-shadow: 0 10px 20px rgba(93, 109, 158, 0.2);
+      transition: transform .18s ease;
+    }
+
+    .audio-btn:hover { transform: translateY(-1px); }
+    .audio-btn:active { transform: scale(.985); }
+
+    .audio-btn[data-index="0"] { background: linear-gradient(135deg, #ff9fca, #ffb27d); }
+    .audio-btn[data-index="1"] { background: linear-gradient(135deg, #79c8ff, #9b9cff); }
+    .audio-btn[data-index="2"] { background: linear-gradient(135deg, #6fd8b2, #b7d96f); }
+
+    .status {
+      margin-top: 2px;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: #f7fbff;
+      color: var(--text);
+      font-weight: 900;
+      border: 1px solid #e3ecfb;
+      line-height: 1.45;
+    }
+
+    .note {
+      color: var(--muted);
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .jump-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .jump-text {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .jump-input {
+      width: 80px;
+      border: 1px solid #dbe7fb;
+      outline: none;
+      border-radius: 999px;
+      padding: 11px 12px;
+      background: white;
+      color: var(--text);
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .visual {
+        min-height: 380px;
+      }
+
+      .bottom {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .jump-group {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .visual {
+        min-height: 300px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .bottom {
+        grid-template-columns: 1fr;
+      }
+
+      .jump-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .jump-input {
+        width: 100%;
+      }
+
+      .hotspot {
+        min-width: 78px;
+        max-width: 130px;
+        font-size: .86rem;
+        padding: 9px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="btn" id="prevTop">← Sebelum</button>
+      <div class="badge" id="pageBadge">Halaman 1 / 70</div>
+      <button class="btn" id="nextTop">Seterusnya →</button>
+    </div>
+
+    <div class="panel">
+      <div class="layout">
+        <div class="visual" id="visualPanel">
+          <img id="mainImage" class="main-image" alt="Gambar halaman" />
+
+          <div class="image-placeholder" id="imagePlaceholder">
+            <div class="placeholder-box">
+              LETAK GAMBAR PAGE DI SINI<br><br>
+              Contoh:<br>
+              <strong>../assets/pages/page1.jpg</strong>
+            </div>
+          </div>
+
+          <div class="hotspot-layer">
+            <button class="hotspot" id="hotspot0" data-index="0" type="button">🔊 Audio 1</button>
+            <button class="hotspot" id="hotspot1" data-index="1" type="button">🔊 Audio 2</button>
+            <button class="hotspot" id="hotspot2" data-index="2" type="button">🔊 Audio 3</button>
+          </div>
+        </div>
+
+        <div class="side">
+          <div class="card">
+            <span class="tag">BUKU INTERAKTIF</span>
+            <div class="title" id="pageTitle">Tajuk Halaman 1</div>
+            <div class="subtitle" id="pageSubtitle">Tekan pada perkataan untuk dengar audio.</div>
+          </div>
+
+          <div class="card">
+            <div class="audio-heading">Senarai Audio</div>
+            <div class="audio-list">
+              <button class="audio-btn" id="audioBtn0" data-index="0" type="button">
+                <span>▶ Main Audio 1</span>
+                <span id="audioLabel0">Perkataan 1</span>
+              </button>
+
+              <button class="audio-btn" id="audioBtn1" data-index="1" type="button">
+                <span>▶ Main Audio 2</span>
+                <span id="audioLabel1">Perkataan 2</span>
+              </button>
+
+              <button class="audio-btn" id="audioBtn2" data-index="2" type="button">
+                <span>▶ Main Audio 3</span>
+                <span id="audioLabel2">Perkataan 3</span>
+              </button>
+            </div>
+
+            <div class="status" id="audioStatus">Belum main audio lagi.</div>
+          </div>
+
+          <div class="card note">
+            Edit semua page dalam <strong>BOOK_PAGES</strong> sahaja.
+            Setiap page boleh ada image, 1–3 audio, dan position hotspot sendiri.
+          </div>
+
+          <div class="bottom">
+            <button class="btn" id="prevBottom">← Page Sebelum</button>
+            <button class="btn" id="nextBottom">Page Seterusnya →</button>
+
+            <div class="jump-group">
+              <span class="jump-text">Pergi halaman:</span>
+              <input class="jump-input" id="jumpInput" type="number" min="1" max="70" placeholder="1-70">
+              <button class="btn" id="jumpBtn" type="button">Pergi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="player" preload="auto"></audio>
+
+  <script>
+    // EDIT DATA DI SINI SAHAJA
+    const BOOK_PAGES = Array.from({ length: 70 }, (_, i) => ({
+      pageNumber: i + 1,
+      title: `Tajuk Halaman ${i + 1}`,
+      subtitle: `Tekan pada perkataan untuk dengar audio bagi halaman ${i + 1}.`,
+      image: "", // contoh: "../assets/pages/page1.jpg"
+      audios: [
+        {
+          label: "Perkataan 1",
+          file: "", // contoh: "../assets/audiotext/page1-audio1.wav"
+          show: true,
+          x: "12%",
+          y: "18%"
+        },
+        {
+          label: "Perkataan 2",
+          file: "",
+          show: true,
+          x: "68%",
+          y: "45%"
+        },
+        {
+          label: "Perkataan 3",
+          file: "",
+          show: false,
+          x: "28%",
+          y: "78%"
+        }
+      ]
+    }));
+
+    let currentIndex = 0;
+
+    const mainImage = document.getElementById("mainImage");
+    const imagePlaceholder = document.getElementById("imagePlaceholder");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageSubtitle = document.getElementById("pageSubtitle");
+    const pageBadge = document.getElementById("pageBadge");
+    const audioStatus = document.getElementById("audioStatus");
+    const player = document.getElementById("player");
+
+    const hotspotEls = [
+      document.getElementById("hotspot0"),
+      document.getElementById("hotspot1"),
+      document.getElementById("hotspot2")
+    ];
+
+    const audioBtnEls = [
+      document.getElementById("audioBtn0"),
+      document.getElementById("audioBtn1"),
+      document.getElementById("audioBtn2")
+    ];
+
+    const audioLabelEls = [
+      document.getElementById("audioLabel0"),
+      document.getElementById("audioLabel1"),
+      document.getElementById("audioLabel2")
+    ];
+
+    const prevTop = document.getElementById("prevTop");
+    const nextTop = document.getElementById("nextTop");
+    const prevBottom = document.getElementById("prevBottom");
+    const nextBottom = document.getElementById("nextBottom");
+    const jumpInput = document.getElementById("jumpInput");
+    const jumpBtn = document.getElementById("jumpBtn");
+
+    function getPage() {
+      return BOOK_PAGES[currentIndex];
+    }
+
+    function stopAudio() {
+      player.pause();
+      player.currentTime = 0;
+    }
+
+    function renderPage() {
+      const page = getPage();
+      stopAudio();
+      audioStatus.textContent = "Belum main audio lagi.";
+
+      pageTitle.textContent = page.title || `Tajuk Halaman ${currentIndex + 1}`;
+      pageSubtitle.textContent = page.subtitle || "Tekan pada perkataan untuk dengar audio.";
+      pageBadge.textContent = `Halaman ${currentIndex + 1} / ${BOOK_PAGES.length}`;
+
+      if (page.image && page.image.trim() !== "") {
+        mainImage.src = page.image;
+        mainImage.style.display = "block";
+        imagePlaceholder.style.display = "none";
+
+        mainImage.onerror = () => {
+          mainImage.style.display = "none";
+          imagePlaceholder.style.display = "flex";
+          imagePlaceholder.innerHTML = `
+            <div class="placeholder-box">
+              GAMBAR TAK JUMPA<br><br>
+              Semak path image:<br>
+              <strong>${page.image}</strong>
+            </div>
+          `;
+        };
+      } else {
+        mainImage.removeAttribute("src");
+        mainImage.style.display = "none";
+        imagePlaceholder.style.display = "flex";
+        imagePlaceholder.innerHTML = `
+          <div class="placeholder-box">
+            LETAK GAMBAR PAGE ${currentIndex + 1} DI SINI<br><br>
+            Contoh:<br>
+            <strong>../assets/pages/page${currentIndex + 1}.jpg</strong>
+          </div>
+        `;
+      }
+
+      for (let i = 0; i < 3; i++) {
+        const item = page.audios?.[i];
+        const hotspot = hotspotEls[i];
+        const btn = audioBtnEls[i];
+        const labelEl = audioLabelEls[i];
+
+        if (item && item.show) {
+          const label = item.label || `Perkataan ${i + 1}`;
+          labelEl.textContent = label;
+          hotspot.textContent = `🔊 ${label}`;
+
+          hotspot.style.display = "inline-flex";
+          btn.style.display = "flex";
+
+          hotspot.style.left = item.x || "10%";
+          hotspot.style.top = item.y || "20%";
+
+          hotspot.dataset.file = item.file || "";
+          hotspot.dataset.label = label;
+          btn.dataset.file = item.file || "";
+          btn.dataset.label = label;
+        } else {
+          hotspot.style.display = "none";
+          btn.style.display = "none";
+          hotspot.dataset.file = "";
+          btn.dataset.file = "";
+        }
+      }
+
+      prevTop.disabled = currentIndex === 0;
+      prevBottom.disabled = currentIndex === 0;
+      nextTop.disabled = currentIndex === BOOK_PAGES.length - 1;
+      nextBottom.disabled = currentIndex === BOOK_PAGES.length - 1;
+    }
+
+    function playAudio(file, label) {
+      stopAudio();
+
+      if (!file || !file.trim()) {
+        audioStatus.textContent = `Audio untuk "${label}" belum diletakkan lagi.`;
+        return;
+      }
+
+      player.src = file;
+      player.load();
+
+      player.play()
+        .then(() => {
+          audioStatus.textContent = `Sedang main: ${label}`;
+        })
+        .catch(() => {
+          audioStatus.textContent = `Tak dapat main audio: ${label}`;
+        });
+
+      player.onended = () => {
+        audioStatus.textContent = `Selesai main: ${label}`;
+      };
+
+      player.onerror = () => {
+        audioStatus.textContent = `Audio tak jumpa / tak boleh load: ${label}`;
+      };
+    }
+
+    function bindPlayable(el) {
+      el.addEventListener("click", () => {
+        playAudio(el.dataset.file || "", el.dataset.label || "Audio");
+      });
+    }
+
+    hotspotEls.forEach(bindPlayable);
+    audioBtnEls.forEach(bindPlayable);
+
+    function goToPage(index) {
+      if (index < 0 || index >= BOOK_PAGES.length) return;
+      currentIndex = index;
+      renderPage();
+    }
+
+    function nextPage() {
+      goToPage(currentIndex + 1);
+    }
+
+    function prevPage() {
+      goToPage(currentIndex - 1);
+    }
+
+    prevTop.addEventListener("click", prevPage);
+    prevBottom.addEventListener("click", prevPage);
+    nextTop.addEventListener("click", nextPage);
+    nextBottom.addEventListener("click", nextPage);
+
+    jumpBtn.addEventListener("click", () => {
+      const val = Number(jumpInput.value);
+      if (!Number.isInteger(val) || val < 1 || val > BOOK_PAGES.length) {
+        audioStatus.textContent = `Masukkan nombor halaman antara 1 hingga ${BOOK_PAGES.length}.`;
+        return;
+      }
+      goToPage(val - 1);
+      jumpInput.value = "";
+    });
+
+    jumpInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") jumpBtn.click();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") nextPage();
+      if (e.key === "ArrowLeft") prevPage();
+    });
+
+    renderPage();
+  </script>
+</body>
+</html>

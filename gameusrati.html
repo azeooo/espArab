@@ -34,6 +34,41 @@ html, body {
   overscroll-behavior: none;
 }
 
+.home-btn{
+  position:fixed;
+  top:12px;
+  right:12px;   /* tukar dari left ke right */
+  left:auto;
+  width:65px;
+  height:65px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ffe68a,#f42040);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+  z-index:9999;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+
+.home-btn:hover{
+  transform:translateY(-2px) scale(1.08);
+  box-shadow:0 6px 14px rgba(0,0,0,.3);
+}
+
+.home-btn:active{
+  transform:scale(.92);
+}
+
+.home-btn img{
+  width:100px;
+  height:100px;
+  object-fit:contain;
+  display:block;
+}
+
+
 /* ── SCREENS ── */
 .screen{
   position:absolute; inset:0;
@@ -401,7 +436,7 @@ html, body {
 
 /* Sound button */
 .sound-btn{
-  position:absolute;
+  position: fixed;
   top:clamp(10px,2vw,16px);
   left:clamp(10px,2vw,16px);
   z-index:50;
@@ -435,6 +470,9 @@ html, body {
 
 <body>
 
+  <a href="index.html" class="home-btn" title="Ke Halaman Utama">
+        <img src="assets/images/homepage.png" alt="Home">
+    </a>
 <!-- ══════════════════════════════════════════
      SCREEN 1 — MAIN MENU
 ══════════════════════════════════════════ -->

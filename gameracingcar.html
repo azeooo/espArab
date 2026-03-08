@@ -12,6 +12,37 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-family:'Azim','Segoe UI',Tahoma,sans-serif;}
+
+        .home-btn{
+        position:fixed;
+        top:12px;
+        left:12px;
+        width:70px;
+        height:50px;
+        border-radius:50%;
+        background:linear-gradient(135deg,#FFD54F,#FF8F00);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:50px;
+        text-decoration:none;
+        box-shadow:0 4px 10px rgba(0,0,0,.25);
+        z-index:9999;
+        transition:transform .15s ease, box-shadow .15s ease;
+        }
+        .home-btn:hover{
+        transform:translateY(-2px) scale(1.08);
+        box-shadow:0 6px 14px rgba(0,0,0,.3);
+        }
+        .home-btn:active{
+        transform:scale(.92);
+        }
+        .home-btn img{
+        width:60px;
+        height:60px;
+        object-fit:contain;
+        }
+
 #app{width:100%;height:100dvh;position:relative;overflow:hidden;}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;}
 .screen.active{display:flex;}
@@ -135,8 +166,12 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 </style>
 </head>
 <body>
+
 <div id="app">
 
+  <a href="index.html" class="home-btn" title="Ke Halaman Utama">
+        <img src="assets/images/homepage.png" alt="Home">
+    </a>
 <!-- ══════════════════════════════════════
      SCREEN 1 — MAIN MENU  (blue sky theme)
 ══════════════════════════════════════ -->
