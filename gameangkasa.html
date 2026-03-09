@@ -10,50 +10,77 @@
 <style>
   :root { --star-color: #fff; }
   * { box-sizing: border-box; }
+
+  @font-face {
+    font-family:'Azim';
+    src:url('./fonts/Azim.otf') format('truetype');
+  }
+
   body {
     font-family: 'Azim', 'Baloo 2', cursive;
     background: #050a1a;
     overflow: hidden;
     height: 100dvh;
     width: 100dvw;
+    margin: 0;
   }
 
+  /* ================= HOME BUTTON FIXED ================= */
+  .home-btn{
+    position:fixed;
+    top:12px;
+    left:12px;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#020217,#120a33);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    box-shadow:0 4px 10px rgba(0,0,0,.25);
+    z-index:9999;
+    transition:transform .15s ease, box-shadow .15s ease;
+    flex-shrink:0;
+    overflow:hidden;
+  }
+  .home-btn:hover{
+    transform:translateY(-2px) scale(1.08);
+    box-shadow:0 6px 14px rgba(0,0,0,.3);
+  }
+  .home-btn:active{
+    transform:scale(.92);
+  }
+  .home-btn img{
+    width:40px;
+    height:40px;
+    object-fit:contain;
+    display:block;
+  }
 
-        .home-btn{
-        position:fixed;
-        top:12px;
-        left:12px;
-        width:70px;
-        height:50px;
-        border-radius:50%;
-        background:linear-gradient(135deg,#020217,#120a33);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:50px;
-        text-decoration:none;
-        box-shadow:0 4px 10px rgba(0,0,0,.25);
-        z-index:9999;
-        transition:transform .15s ease, box-shadow .15s ease;
-        }
-        .home-btn:hover{
-        transform:translateY(-2px) scale(1.08);
-        box-shadow:0 6px 14px rgba(0,0,0,.3);
-        }
-        .home-btn:active{
-        transform:scale(.92);
-        }
-        .home-btn img{
-        width:1000px;
-        height:1000px;
-        object-fit:contain;
-        }
+  /* bagi ruang untuk home button dalam top HUD */
+  .hud-top{
+    padding-left:74px !important;
+  }
 
-  
-
+  @media (max-width: 640px){
+    .home-btn{
+      width:46px;
+      height:46px;
+      top:10px;
+      left:10px;
+    }
+    .home-btn img{
+      width:21px;
+      height:21px;
+    }
+    .hud-top{
+      padding-left:64px !important;
+    }
+  }
 
   .arabic-font { font-family: 'Baloo 2','Arial Unicode MS',serif; direction: rtl; }
-  @font-face { font-family:'Azim'; src:url('./fonts/Azim.otf') format('truetype'); }
+
   @keyframes twinkle { 0%,100% { opacity:.2; transform:scale(.8);} 50% { opacity:1; transform:scale(1.2);} }
   @keyframes floatUp { 0% {transform:translateY(0)} 50% {transform:translateY(-12px)} 100% {transform:translateY(0)} }
   @keyframes ufoFloat { 0% {transform:translateY(0)} 50% {transform:translateY(-18px)} 100% {transform:translateY(0)} }
@@ -68,7 +95,6 @@
   @keyframes wobble { 0%,100% {transform:rotate(-3deg)} 50% {transform:rotate(3deg)} }
   @keyframes ufoShake { 0%,100% {transform:translateX(0)} 25% {transform:translateX(-8px)} 75% {transform:translateX(8px)} }
 
-  /* NEW: sparks */
   @keyframes sparkFly {
     0%   { transform:translate(0,0) scale(1); opacity:1; }
     100% { transform:translate(var(--sx), var(--sy)) scale(0); opacity:0; }
@@ -165,9 +191,11 @@
 </style>
 </head>
 <body>
+
 <a href="index.html" class="home-btn" title="Ke Halaman Utama">
-        <img src="assets/images/homepage.png" alt="Home">
-    </a>
+  <img src="assets/images/homepage.png" alt="Home">
+</a>
+
 <div id="starField" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
 
 <!-- SCREEN 1: MAIN MENU -->
@@ -223,9 +251,9 @@
 
 <!-- SCREEN 4: GAMEPLAY -->
 <div id="screenGame" class="screen" style="z-index:10;background:linear-gradient(180deg,#020818 0%,#050a1a 50%,#0a0520 100%);">
-  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2 hud-top" style="z-index:30;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
     <div class="flex items-center gap-1">
-      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKO</span>
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKOR</span>
       <span id="scoreDisplay" class="text-white font-black text-lg" style="font-family:'Azim','Fredoka One',cursive;">0</span>
     </div>
     <div class="text-cyan-300 font-bold text-sm" id="levelDisplay" style="letter-spacing:1px;">LEVEL 1</div>
@@ -300,9 +328,9 @@
 
 <!-- SCREEN 6: BOSS GAMEPLAY -->
 <div id="screenBoss" class="screen" style="z-index:10;background:linear-gradient(180deg,#1a0000 0%,#050010 50%,#000520 100%);">
-  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2" style="z-index:30;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
+  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-3 py-2 hud-top" style="z-index:30;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
     <div class="flex items-center gap-1">
-      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKO</span>
+      <span class="text-yellow-300 font-black text-sm" style="font-family:'Azim','Fredoka One',cursive;">SKOR</span>
       <span id="bossScoreDisplay" class="text-white font-black text-lg" style="font-family:'Azim','Fredoka One',cursive;">0</span>
     </div>
     <div class="text-red-300 font-bold text-sm" id="bossWordDisplay" style="letter-spacing:1px;">Kalimah 1/7</div>
@@ -381,15 +409,13 @@
 <audio id="audioBuzzer" preload="auto"><source src="assets/soundef/buzzer.mp3" type="audio/mpeg"></audio>
 <audio id="audioSuccess" preload="auto"><source src="assets/soundef/successsound.mp3" type="audio/mpeg"></audio>
 
-<!-- VO placeholders (isi src je) -->
-<audio id="vo_tutorial_1" preload="auto"><source src="assets/vogame2/game2_jim.mp3" type="audio/mpeg"> </audio>
+<!-- VO placeholders -->
+<audio id="vo_tutorial_1" preload="auto"><source src="assets/vogame2/game2_jim.mp3" type="audio/mpeg"></audio>
 <audio id="vo_tutorial_2" preload="auto"><source src="assets/vogame2/game2_alif.mp3" type="audio/mpeg"></audio>
-<audio id="vo_tutorial_3" preload="auto"><source src="assets/vogame2/game2_dal.mp3" type="audio/mpeg"> </audio>
-<audio id="vo_tutorial_4" preload="auto"><source src="assets/vogame2/game2_mim.mp3" type="audio/mpeg"> </audio>
-<audio id="vo_tutorial_5" preload="auto"><source src="assets/vogame2/game2_kaf.mp3" type="audio/mpeg"> </audio>
+<audio id="vo_tutorial_3" preload="auto"><source src="assets/vogame2/game2_dal.mp3" type="audio/mpeg"></audio>
+<audio id="vo_tutorial_4" preload="auto"><source src="assets/vogame2/game2_mim.mp3" type="audio/mpeg"></audio>
+<audio id="vo_tutorial_5" preload="auto"><source src="assets/vogame2/game2_kaf.mp3" type="audio/mpeg"></audio>
 <audio id="vo_tutorial_6" preload="auto"><source src="assets/vogame2/game2_ta.mp3" type="audio/mpeg"></audio>
-
-<!-- VO placeholders (isi src bila dah ada) -->
 
 <audio id="vo_tutorial_7" preload="auto">
   <!-- TODO: <source src="assets/vogame2/game2_nun.mp3" type="audio/mpeg"> -->
@@ -400,7 +426,7 @@
 </audio>
 
 <audio id="vo_results" preload="auto">
-  <source src="assets/vogame2/game2_hebat.mp3" type="audio/mpeg"> 
+  <source src="assets/vogame2/game2_hebat.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -449,34 +475,57 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+
 function playSound(id){
-  const a=document.getElementById(id); if(!a) return;
+  const a=document.getElementById(id);
+  if(!a) return;
   if(!a.currentSrc) a.load();
   try{a.currentTime=0}catch(e){}
-  const p=a.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});
+  const p=a.play();
+  if(p&&typeof p.catch==='function') p.catch(()=>{});
 }
+
 function stopVO(){
-  try{ if(currentVOEl){ currentVOEl.pause(); currentVOEl.currentTime=0; } }catch(e){}
+  try{
+    if(currentVOEl){
+      currentVOEl.pause();
+      currentVOEl.currentTime=0;
+    }
+  }catch(e){}
   currentVOEl=null;
 }
+
 function playVOById(id){
   stopVO();
-  const a=document.getElementById(id); if(!a) return;
+  const a=document.getElementById(id);
+  if(!a) return;
+
+  const sourceEl = a.querySelector('source');
+  const hasSrc = (a.currentSrc && a.currentSrc.trim().length > 0) ||
+                 (sourceEl && sourceEl.getAttribute('src') && sourceEl.getAttribute('src').trim().length > 0);
+
+  if(!hasSrc) return;
+
   if(!a.currentSrc) a.load();
   try{a.currentTime=0}catch(e){}
   currentVOEl=a;
-  const p=a.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});
+  const p=a.play();
+  if(p&&typeof p.catch==='function') p.catch(()=>{});
 }
+
 function startBgMusic(){
-  const bg=document.getElementById('audioBg'); if(!bg) return;
+  const bg=document.getElementById('audioBg');
+  if(!bg) return;
   if(!bg.currentSrc) bg.load();
   bg.volume=.35;
-  const p=bg.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});
+  const p=bg.play();
+  if(p&&typeof p.catch==='function') p.catch(()=>{});
 }
 
 // ===================== STARS =====================
 function generateStars(){
-  const sf=document.getElementById('starField'); sf.innerHTML='';
+  const sf=document.getElementById('starField');
+  sf.innerHTML='';
   for(let i=0;i<130;i++){
     const s=document.createElement('div');
     const z=Math.random()*3+1;
@@ -487,7 +536,11 @@ function generateStars(){
 }
 
 // ===================== RECORDS =====================
-function getRecords(){ try{return JSON.parse(localStorage.getItem('misiAngkasaRecords')||'[]')}catch(e){return[]} }
+function getRecords(){
+  try{return JSON.parse(localStorage.getItem('misiAngkasaRecords')||'[]')}
+  catch(e){return[]}
+}
+
 function saveRecord(s){
   let r=getRecords();
   r.push({score:s,date:new Date().toLocaleDateString('ms-MY')});
@@ -495,19 +548,24 @@ function saveRecord(s){
   r=r.slice(0,5);
   try{localStorage.setItem('misiAngkasaRecords',JSON.stringify(r))}catch(e){}
 }
+
 function showRecords(){
   const r=getRecords();
   const el=document.getElementById('recordsList');
-  if(!r.length) el.innerHTML='<div class="text-gray-400">Tiada rekod lagi. Main dulu!</div>';
-  else el.innerHTML=r.map((rec,i)=>{
-    const m=['🥇','🥈','🥉','⭐','⭐'];
-    return `<div class="flex justify-between items-center bg-blue-900 bg-opacity-40 rounded-lg px-3 py-1">
-      <span>${m[i]} Tempat ${i+1}</span>
-      <span class="text-yellow-300 font-black">${rec.score} mata</span>
-      <span class="text-gray-400 text-xs">${rec.date}</span></div>`;
-  }).join('');
+  if(!r.length){
+    el.innerHTML='<div class="text-gray-400">Tiada rekod lagi. Main dulu!</div>';
+  }else{
+    el.innerHTML=r.map((rec,i)=>{
+      const m=['🥇','🥈','🥉','⭐','⭐'];
+      return `<div class="flex justify-between items-center bg-blue-900 bg-opacity-40 rounded-lg px-3 py-1">
+        <span>${m[i]} Tempat ${i+1}</span>
+        <span class="text-yellow-300 font-black">${rec.score} mata</span>
+        <span class="text-gray-400 text-xs">${rec.date}</span></div>`;
+    }).join('');
+  }
   showScreen('screenRecords');
 }
+
 function showOverlay(id){ document.getElementById(id).style.display='flex'; }
 function hideOverlay(id){ document.getElementById(id).style.display='none'; }
 
@@ -516,21 +574,26 @@ let lastMenuBeepAt=0;
 function menuBeepTick(){
   if(!document.getElementById('screenMenu').classList.contains('active')) return;
   const now=performance.now();
-  if(now-lastMenuBeepAt>240){ lastMenuBeepAt=now; }
+  if(now-lastMenuBeepAt>240){
+    lastMenuBeepAt=now;
+  }
 }
 
 // ===================== MAIN MENU =====================
 function startGame(){
   unlockAudioOnce();
   startBgMusic();
-  currentLevel=0; score=0;
+  currentLevel=0;
+  score=0;
   showTutorial(0);
 }
 function restartAll(){ startGame(); }
 
 // ===================== TUTORIAL =====================
 function showTutorial(idx){
-  stopGame(); stopVO();
+  stopGame();
+  stopVO();
+
   const lv=LEVELS[idx];
   document.getElementById('tutorialLetter').textContent=lv.target;
   document.getElementById('tutorialLetterName').textContent=lv.targetName;
@@ -548,8 +611,12 @@ function showTutorial(idx){
 // ===================== LEVEL START =====================
 function startLevel(){
   stopGame();
-  lives=3; correctHits=0; rocketX=50; asteroids=[];
-  gameRunning=true; canShoot=true;
+  lives=3;
+  correctHits=0;
+  rocketX=50;
+  asteroids=[];
+  gameRunning=true;
+  canShoot=true;
 
   const lv=LEVELS[currentLevel];
   updateLivesDisplay('livesDisplay',lives);
@@ -557,7 +624,8 @@ function startLevel(){
   document.getElementById('levelDisplay').textContent=`LEVEL ${lv.level}`;
   document.getElementById('targetReminder').textContent=lv.target;
   document.getElementById('gameCanvas').innerHTML='';
-  hideOverlay('overlayFail'); hideOverlay('overlayComplete');
+  hideOverlay('overlayFail');
+  hideOverlay('overlayComplete');
 
   const rEl=document.getElementById('rocketEl');
   rEl.style.left=rocketX+'%';
@@ -567,23 +635,39 @@ function startLevel(){
   scheduleAsteroid();
   gameLoop();
 }
-function retryLevel(){ hideOverlay('overlayFail'); startLevel(); }
+
+function retryLevel(){
+  hideOverlay('overlayFail');
+  startLevel();
+}
+
 function nextLevel(){
   hideOverlay('overlayComplete');
   currentLevel++;
-  stopGame(); stopVO();
+  stopGame();
+  stopVO();
+
   if(currentLevel>=LEVELS.length){
     showScreen('screenBonusTutorial');
     playVOById(VO_MAP.bossIntro);
-  } else showTutorial(currentLevel);
+  } else {
+    showTutorial(currentLevel);
+  }
 }
 
 // ===================== STOP =====================
 function stopGame(){
   gameRunning=false;
-  if(asteroidTimer){ clearTimeout(asteroidTimer); asteroidTimer=null; }
-  if(animFrame){ cancelAnimationFrame(animFrame); animFrame=null; }
-  moveDir=0; asteroids=[];
+  if(asteroidTimer){
+    clearTimeout(asteroidTimer);
+    asteroidTimer=null;
+  }
+  if(animFrame){
+    cancelAnimationFrame(animFrame);
+    animFrame=null;
+  }
+  moveDir=0;
+  asteroids=[];
   const c=document.getElementById('gameCanvas');
   if(c) c.innerHTML='';
 }
@@ -602,6 +686,7 @@ function scheduleAsteroid(){
   spawnAsteroid();
   asteroidTimer=setTimeout(scheduleAsteroid,1600+Math.random()*1200);
 }
+
 function spawnAsteroid(){
   if(!gameRunning || asteroids.length>=4) return;
   const lv=LEVELS[currentLevel];
@@ -623,7 +708,6 @@ function spawnAsteroid(){
   el.className='game-asteroid';
   el.style.cssText=`left:${xPct}%;top:-80px;width:${size}px;height:${size}px;margin-left:-${size/2}px;`;
 
-  // ✅ no yellow hint
   el.innerHTML=
     `<div class="relative w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br ${clr} border-2 border-gray-500"
       style="box-shadow:0 0 10px rgba(0,0,0,0.55);">
@@ -649,13 +733,18 @@ function handleAsteroidHit(a){
 
   if(a.letter===lv.target){
     playSound('audioLaser');
-    score+=10; correctHits++;
+    score+=10;
+    correctHits++;
     document.getElementById('scoreDisplay').textContent=score;
     showGameExplosion(a.el,true);
     removeAsteroid(a);
+
     if(correctHits>=lv.quota){
       gameRunning=false;
-      if(asteroidTimer){ clearTimeout(asteroidTimer); asteroidTimer=null; }
+      if(asteroidTimer){
+        clearTimeout(asteroidTimer);
+        asteroidTimer=null;
+      }
       setTimeout(showLevelComplete,600);
     }
   } else {
@@ -665,17 +754,22 @@ function handleAsteroidHit(a){
     loseLife();
   }
 }
+
 function removeAsteroid(a){
   const i=asteroids.indexOf(a);
   if(i!==-1) asteroids.splice(i,1);
   if(a.el && a.el.parentNode) a.el.parentNode.removeChild(a.el);
 }
+
 function loseLife(){
   lives--;
   updateLivesDisplay('livesDisplay',lives);
   if(lives<=0){
     gameRunning=false;
-    if(asteroidTimer){ clearTimeout(asteroidTimer); asteroidTimer=null; }
+    if(asteroidTimer){
+      clearTimeout(asteroidTimer);
+      asteroidTimer=null;
+    }
     setTimeout(()=>showOverlay('overlayFail'),400);
   }
 }
@@ -735,7 +829,10 @@ function gameLoop(){
     const elapsed=now-a.startTime;
     const y=(elapsed/a.duration)*(cH+100)-80;
     a.el.style.top=y+'px';
-    if(y>cH+10){ a.alive=false; removeAsteroid(a); }
+    if(y>cH+10){
+      a.alive=false;
+      removeAsteroid(a);
+    }
   }
 
   if(moveDir!==0){
@@ -772,7 +869,10 @@ function shootLaser(){
     const asteroidPx=(a.xPct/100)*screenW;
     const dx=Math.abs(asteroidPx-rocketPx);
     const tol=a.size/2+14;
-    if(dx<tol && dx<bestDx){ bestDx=dx; best=a; }
+    if(dx<tol && dx<bestDx){
+      bestDx=dx;
+      best=a;
+    }
   }
   if(best) handleAsteroidHit(best);
 }
@@ -781,15 +881,18 @@ function shootLaser(){
 function startMove(dir){ moveDir = dir==='left' ? -1 : 1; }
 function stopMove(){ moveDir=0; }
 
-// ===================== NEW: Enter & Space Shoot (NO NEED CLICK BUTTON) =====================
+// ===================== ENTER & SPACE SHOOT =====================
 function shootNowForActiveScreen(){
   unlockAudioOnce();
   if(document.getElementById('screenGame').classList.contains('active')) shootLaser();
   if(document.getElementById('screenBoss').classList.contains('active')) shootBossLaser();
 }
+
 window.addEventListener('keydown', (e)=>{
-  // stop page scroll etc
-  if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); shootNowForActiveScreen(); }
+  if(e.key === 'Enter' || e.key === ' '){
+    e.preventDefault();
+    shootNowForActiveScreen();
+  }
 
   if(document.getElementById('screenGame').classList.contains('active')){
     if(e.key==='ArrowLeft' || e.key==='a' || e.key==='A') startMove('left');
@@ -802,7 +905,10 @@ window.addEventListener('keydown', (e)=>{
 }, { passive:false });
 
 window.addEventListener('keyup', (e)=>{
-  if(['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)){ stopMove(); stopBossMove(); }
+  if(['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)){
+    stopMove();
+    stopBossMove();
+  }
 });
 
 // ===================== BOSS MODE =====================
@@ -820,9 +926,19 @@ function lockUFOStatic(){
 
 function startBossMode(){
   stopVO();
-  bossWordIdx=0; bossLives=3; bossScore=score;
-  bossRocketX=50; bossGameRunning=true; bossCanShoot=true; bossHitLocked=false; bossMoveDir=0;
-  if(bossAnimFrame){ cancelAnimationFrame(bossAnimFrame); bossAnimFrame=null; }
+  bossWordIdx=0;
+  bossLives=3;
+  bossScore=score;
+  bossRocketX=50;
+  bossGameRunning=true;
+  bossCanShoot=true;
+  bossHitLocked=false;
+  bossMoveDir=0;
+
+  if(bossAnimFrame){
+    cancelAnimationFrame(bossAnimFrame);
+    bossAnimFrame=null;
+  }
 
   updateLivesDisplay('bossLivesDisplay',bossLives);
   document.getElementById('bossScoreDisplay').textContent=bossScore;
@@ -839,7 +955,10 @@ function startBossMode(){
 }
 
 function loadBossWord(){
-  if(bossWordIdx>=BOSS_WORDS.length){ endBossMode(); return; }
+  if(bossWordIdx>=BOSS_WORDS.length){
+    endBossMode();
+    return;
+  }
   bossHP=BOSS_HP_PER_UFO;
   bossMaxHP=BOSS_HP_PER_UFO;
   bossHitLocked=false;
@@ -859,7 +978,6 @@ function updateBossHP(){
   else bar.style.background='linear-gradient(to right,#ff0000,#ff4444)';
 }
 
-// NEW: spawn sparks near UFO on each shot (bonus feel)
 function spawnSparksAt(x, y, parent, n=10){
   for(let i=0;i<n;i++){
     const sp=document.createElement('div');
@@ -891,12 +1009,11 @@ function shootBossLaser(){
   screenEl.appendChild(laser);
   setTimeout(()=>{ if(laser.parentNode) laser.remove(); },480);
 
-  // 🔥 sparks near UFO whenever you shoot (looks like shot impact)
   const ufoEl=document.getElementById('bossUFOContainer');
   const ufoRect=ufoEl.getBoundingClientRect();
   const gRect=screenEl.getBoundingClientRect();
   const ufoCX=ufoRect.left-gRect.left+ufoRect.width/2;
-  const ufoCY=ufoRect.top-gRect.top+ufoRect.height*0.55; // slightly lower center
+  const ufoCY=ufoRect.top-gRect.top+ufoRect.height*0.55;
   spawnSparksAt(ufoCX, ufoCY, screenEl, 10);
 
   const dx=Math.abs(rocketPx-ufoCX);
@@ -913,7 +1030,10 @@ function hitBoss(){
   const ufoEl=document.getElementById('bossUFOContainer');
   ufoEl.style.filter='brightness(3) saturate(2)';
   ufoEl.classList.add('ufo-shake');
-  setTimeout(()=>{ ufoEl.style.filter=''; ufoEl.classList.remove('ufo-shake'); },200);
+  setTimeout(()=>{
+    ufoEl.style.filter='';
+    ufoEl.classList.remove('ufo-shake');
+  },200);
 
   if(bossHP<=0){
     bossHitLocked=true;
@@ -923,8 +1043,12 @@ function hitBoss(){
     setTimeout(()=>{
       bossWordIdx++;
       bossHitLocked=false;
-      if(bossWordIdx>=BOSS_WORDS.length){ bossGameRunning=false; endBossMode(); }
-      else loadBossWord();
+      if(bossWordIdx>=BOSS_WORDS.length){
+        bossGameRunning=false;
+        endBossMode();
+      } else {
+        loadBossWord();
+      }
     },900);
   }
 }
@@ -956,9 +1080,16 @@ function endBossMode(){
   document.getElementById('finalScore').textContent=score;
 
   let rank, rankEmoji;
-  if(score>=600){ rank='Komander'; rankEmoji='🌟 👨‍✈️ 🌟'; }
-  else if(score>=300){ rank='Kapten'; rankEmoji='⭐ 🧑‍✈️ ⭐'; }
-  else { rank='Leftenan'; rankEmoji='🎖️ 👨‍🚀 🎖️'; }
+  if(score>=600){
+    rank='Komander';
+    rankEmoji='🌟 👨‍✈️ 🌟';
+  } else if(score>=300){
+    rank='Kapten';
+    rankEmoji='⭐ 🧑‍✈️ ⭐';
+  } else {
+    rank='Leftenan';
+    rankEmoji='🎖️ 👨‍🚀 🎖️';
+  }
 
   document.getElementById('rankBadge').textContent=rankEmoji;
   document.getElementById('rankName').textContent=rank;
@@ -967,7 +1098,10 @@ function endBossMode(){
   playVOById(VO_MAP.results);
 }
 
-function retryBoss(){ hideOverlay('overlayBossFail'); startBossMode(); }
+function retryBoss(){
+  hideOverlay('overlayBossFail');
+  startBossMode();
+}
 function startBossMove(dir){ bossMoveDir = dir==='left' ? -1 : 1; }
 function stopBossMove(){ bossMoveDir=0; }
 
@@ -993,11 +1127,15 @@ function unlockAudioOnce(){
     'vo_tutorial_1','vo_tutorial_2','vo_tutorial_3','vo_tutorial_4','vo_tutorial_5','vo_tutorial_6','vo_tutorial_7',
     'vo_boss_intro','vo_results'
   ];
+
   ids.forEach(id=>{
     const a=document.getElementById(id);
     if(!a) return;
     a.volume = (id==='audioBg') ? 0.35 : 1;
-    a.play().then(()=>{ a.pause(); a.currentTime=0; }).catch(()=>{});
+    a.play().then(()=>{
+      a.pause();
+      a.currentTime=0;
+    }).catch(()=>{});
   });
 }
 
@@ -1005,7 +1143,9 @@ function unlockAudioOnce(){
 generateStars();
 window.addEventListener('resize', generateStars);
 
-function vib(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
+function vib(ms){
+  if(navigator.vibrate) navigator.vibrate(ms);
+}
 document.getElementById('btnShoot').addEventListener('pointerdown', ()=>vib(25));
 document.getElementById('btnBossShoot').addEventListener('pointerdown', ()=>vib(25));
 

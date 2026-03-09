@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buku Interaktif Audio</title>
+  <title>Halaman Interaktif Audio</title>
 
   <style>
     @font-face {
       font-family: 'Azim';
       src: url('../fonts/Azim.otf') format('opentype');
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'SakkalMajalla';
+      src: url('../fonts/Sakkal-Majalla-Regular.ttf') format('truetype');
       font-display: swap;
     }
 
@@ -19,145 +25,392 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    :root {
-      --bg1: #dff4ff;
-      --bg2: #efe7ff;
-      --bg3: #fdf2ff;
-      --card: rgba(255,255,255,0.82);
-      --card-border: rgba(255,255,255,0.7);
-      --text: #31405f;
-      --muted: #6c7a96;
-      --blue: #74c8ff;
-      --purple: #b89cff;
-      --pink: #ffb8e8;
-      --green: #9fe3b0;
-      --shadow: 0 12px 30px rgba(114, 145, 190, 0.18);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
+    :root{
+      --bg1:#7dd3fc;
+      --bg2:#c084fc;
+      --bg3:#f9a8d4;
+      --bg4:#fde68a;
+      --text:#24324a;
+      --shadow: 0 20px 50px rgba(31, 41, 55, 0.18);
+      --radius: 30px;
     }
 
     html, body {
       width: 100%;
       min-height: 100%;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3), var(--bg4));
+      background-size: 300% 300%;
+      animation: bgShift 14s ease infinite;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     body {
-      font-family: 'Azim', 'Baloo 2', cursive;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(116,200,255,0.35), transparent 22%),
-        radial-gradient(circle at top right, rgba(184,156,255,0.28), transparent 24%),
-        radial-gradient(circle at bottom center, rgba(255,184,232,0.25), transparent 25%),
-        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
-      min-height: 100dvh;
-      overflow-x: hidden;
-      padding: 14px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
     }
 
-    .wrap {
-      width: min(1100px, 100%);
-      margin: 0 auto;
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(16px);
+      opacity: 0.14;
+      pointer-events: none;
+      animation: floatBlob linear infinite;
+      z-index: 0;
+    }
+
+    .blob.b1 {
+      width: 220px;
+      height: 220px;
+      background: #ffffff;
+      top: 6%;
+      left: 4%;
+      animation-duration: 12s;
+    }
+
+    .blob.b2 {
+      width: 280px;
+      height: 280px;
+      background: #ffd6e8;
+      right: 4%;
+      top: 15%;
+      animation-duration: 16s;
+    }
+
+    .blob.b3 {
+      width: 180px;
+      height: 180px;
+      background: #d9f99d;
+      left: 10%;
+      bottom: 8%;
+      animation-duration: 14s;
+    }
+
+    .blob.b4 {
+      width: 240px;
+      height: 240px;
+      background: #bfdbfe;
+      right: 10%;
+      bottom: 6%;
+      animation-duration: 18s;
+    }
+
+    @keyframes floatBlob {
+      0%   { transform: translateY(0px) translateX(0px) scale(1); }
+      25%  { transform: translateY(-18px) translateX(12px) scale(1.04); }
+      50%  { transform: translateY(10px) translateX(-8px) scale(0.98); }
+      75%  { transform: translateY(-10px) translateX(10px) scale(1.03); }
+      100% { transform: translateY(0px) translateX(0px) scale(1); }
+    }
+
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      box-shadow:
+        0 0 10px rgba(255,255,255,0.9),
+        0 0 20px rgba(255,255,255,0.5);
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%,100% { transform: scale(0.4); opacity: 0.2; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .cloud-stage {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    .cloud {
+      position: absolute;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      filter: drop-shadow(0 8px 10px rgba(255,255,255,0.18));
+    }
+
+    .cloud img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .cloud-fallback {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      border: 2px dashed rgba(178, 205, 255, 0.85);
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #8ca6c7;
+      font-weight: 900;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      padding: 10px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .cloud-fallback::before,
+    .cloud-fallback::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.92);
+      border: 2px dashed rgba(178, 205, 255, 0.85);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .cloud-fallback::before {
+      width: 42%;
+      height: 80%;
+      left: 10%;
+      top: -20%;
+    }
+
+    .cloud-fallback::after {
+      width: 45%;
+      height: 85%;
+      right: 12%;
+      top: -25%;
+    }
+
+    .cloud1 {
+      width: 300px;
+      height: 180px;
+      top: 7%;
+      left: -22%;
+      animation: cloudMove1 28s linear infinite;
+    }
+
+    .cloud2 {
+      width: 200px;
+      height: 93px;
+      top: 18%;
+      left: -18%;
+      animation: cloudMove2 34s linear infinite;
+    }
+
+    .cloud3 {
+      width: 290px;
+      height: 150px;
+      top: 12%;
+      left: -26%;
+      animation: cloudMove3 40s linear infinite;
+    }
+
+    @keyframes cloudMove1 {
+      from { transform: translateX(0); }
+      to { transform: translateX(145vw); }
+    }
+
+    @keyframes cloudMove2 {
+      from { transform: translateX(0); }
+      to { transform: translateX(150vw); }
+    }
+
+    @keyframes cloudMove3 {
+      from { transform: translateX(0); }
+      to { transform: translateX(155vw); }
+    }
+
+    .app {
+      position: relative;
+      width: min(1120px, 100%);
+      z-index: 2;
     }
 
     .topbar {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 10px;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
     }
 
-    .btn, .audio-btn, .hotspot, .jump-input {
-      font-family: inherit;
+    .badge {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.45);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
     }
 
-    .btn {
+    .nav-btn {
       border: none;
       cursor: pointer;
+      padding: 12px 18px;
       border-radius: 999px;
-      padding: 12px 16px;
       font-size: 1rem;
       font-weight: 900;
-      background: white;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+      background: rgba(255,255,255,0.82);
       color: var(--text);
-      box-shadow: var(--shadow);
-      transition: transform .18s ease, opacity .18s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+      transition: transform .18s ease, box-shadow .18s ease;
     }
 
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: scale(.98); }
-    .btn:disabled {
-      opacity: .5;
+    .nav-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.98);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
 
-    .badge {
-      text-align: center;
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
+    .stage {
+      position: relative;
+      width: 100%;
+    }
+
+    .outer-character {
+      position: absolute;
+      bottom: 28px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .outer-character.left {
+      width: 350px;
+      height: 700px;
+      left: -260px;
+    }
+
+    .outer-character.right {
+      width: 240px;
+      height: 300px;
+      right: -210px;
+    }
+
+    .outer-character img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+      transform-origin: center bottom;
+      animation: characterAlive 2.8s ease-in-out infinite;
+    }
+
+    .outer-character.right img {
+      animation-delay: .8s;
+    }
+
+    .outer-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.46);
+      border: 2px dashed rgba(255,255,255,0.8);
+      color: #6b8eb7;
       font-weight: 900;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
     }
 
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-xl);
+    @keyframes characterAlive {
+      0%,100% { transform: translateY(0px); }
+      25% { transform: translateY(-2px); }
+      50% { transform: translateY(-6px); }
+      75% { transform: translateY(-3px); }
+    }
+
+    .page-card {
+      position: relative;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(14px);
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding: 14px;
+      overflow: hidden;
+      padding: clamp(16px, 3vw, 24px);
+      animation: pagePop .6s ease;
     }
 
-    .layout {
+    @keyframes pagePop {
+      from {
+        transform: translateY(18px) scale(.985);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .page-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.38), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.28), transparent 28%);
+      pointer-events: none;
+    }
+
+    .content {
       display: grid;
-      grid-template-columns: minmax(0, 1.12fr) minmax(300px, .88fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.88fr);
+      gap: 18px;
       align-items: stretch;
     }
 
-    .visual {
+    .visual-panel {
       position: relative;
-      min-height: 500px;
-      border-radius: 24px;
+      min-height: 520px;
+      border-radius: 28px;
       overflow: hidden;
-      background: linear-gradient(180deg, #e9f7ff, #f4ecff);
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    .visual::before,
-    .visual::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      pointer-events: none;
-      opacity: .5;
-      filter: blur(8px);
-    }
-
-    .visual::before {
-      width: 160px;
-      height: 160px;
-      background: rgba(116,200,255,0.28);
-      top: -30px;
-      left: -30px;
-    }
-
-    .visual::after {
-      width: 180px;
-      height: 180px;
-      background: rgba(184,156,255,0.22);
-      bottom: -40px;
-      right: -30px;
+      background:
+        linear-gradient(180deg, rgba(219,234,254,0.72) 0%, rgba(245,208,254,0.72) 100%);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .main-image {
@@ -165,8 +418,11 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
       display: none;
+      background: rgba(255,255,255,0.72);
+      padding: 14px;
     }
 
     .image-placeholder {
@@ -175,398 +431,850 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
       text-align: center;
-      color: var(--muted);
+      padding: 24px;
+      font-size: clamp(1rem, 2vw, 1.25rem);
       font-weight: 900;
-      line-height: 1.6;
-      z-index: 1;
+      color: #475569;
+      background: linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.05));
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
     }
 
     .placeholder-box {
-      background: rgba(255,255,255,.72);
-      border: 2px dashed #cfdcf6;
+      background: rgba(255,255,255,0.72);
+      border: 2px dashed #bfd6ff;
       border-radius: 22px;
       padding: 22px 18px;
       max-width: 420px;
+      line-height: 1.5;
     }
 
-    .hotspot-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
     }
 
-    .hotspot {
-      position: absolute;
-      display: none;
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-size: .95rem;
+    .title-box {
+      background: linear-gradient(135deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58));
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    .mini-label {
+      display: inline-block;
+      background: #fff1b8;
+      color: #8a5500;
       font-weight: 900;
-      padding: 10px 13px;
-      min-width: 90px;
-      max-width: 170px;
-      border-radius: 16px;
-      box-shadow: 0 10px 20px rgba(93, 109, 158, 0.2);
-      transition: transform .18s ease;
+      font-size: .85rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
     }
 
-    .hotspot:hover { transform: scale(1.04); }
-    .hotspot:active { transform: scale(.98); }
+    .page-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.7rem);
+      line-height: 1.1;
+      font-weight: 1000;
+      margin-bottom: 10px;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+    }
 
-    .hotspot[data-index="0"] { background: linear-gradient(135deg, #ff9fca, #ffb27d); }
-    .hotspot[data-index="1"] { background: linear-gradient(135deg, #79c8ff, #9b9cff); }
-    .hotspot[data-index="2"] { background: linear-gradient(135deg, #6fd8b2, #b7d96f); }
+    .page-subtitle {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #526179;
+      font-weight: 700;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+    }
 
-    .side {
+    .audio-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(248,250,252,0.72));
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
       gap: 12px;
-      min-height: 0;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.75);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #fff1a8, #ffd8ef);
-      font-size: .88rem;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .title {
-      font-size: clamp(1.6rem, 4vw, 2.35rem);
-      line-height: 1.08;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-size: 1rem;
-      line-height: 1.55;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .audio-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
     .audio-heading {
-      font-size: 1.05rem;
-      font-weight: 900;
-      margin-bottom: 2px;
+      font-size: 1.15rem;
+      font-weight: 1000;
+      margin-bottom: 4px;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    #audioList{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
     .audio-btn {
       width: 100%;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
       border: none;
       cursor: pointer;
+      border-radius: 18px;
+      padding: 15px 16px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 900;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
       color: white;
-      border-radius: 16px;
-      padding: 13px 14px;
-      font-size: .98rem;
-      font-weight: 900;
-      box-shadow: 0 10px 20px rgba(93, 109, 158, 0.2);
-      transition: transform .18s ease;
-    }
-
-    .audio-btn:hover { transform: translateY(-1px); }
-    .audio-btn:active { transform: scale(.985); }
-
-    .audio-btn[data-index="0"] { background: linear-gradient(135deg, #ff9fca, #ffb27d); }
-    .audio-btn[data-index="1"] { background: linear-gradient(135deg, #79c8ff, #9b9cff); }
-    .audio-btn[data-index="2"] { background: linear-gradient(135deg, #6fd8b2, #b7d96f); }
-
-    .status {
-      margin-top: 2px;
-      padding: 13px 14px;
-      border-radius: 16px;
-      background: #f7fbff;
-      color: var(--text);
-      font-weight: 900;
-      border: 1px solid #e3ecfb;
-      line-height: 1.45;
-    }
-
-    .note {
-      color: var(--muted);
-      line-height: 1.55;
-      font-weight: 700;
-    }
-
-    .bottom {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .jump-group {
+      transition: transform .18s ease, filter .18s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .audio-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .audio-btn:active {
+      transform: scale(0.985);
+    }
+
+    .audio-btn.a1 { background: linear-gradient(135deg, #ff7a59, #ffb347); }
+    .audio-btn.a2 { background: linear-gradient(135deg, #6d5efc, #4facfe); }
+    .audio-btn.a3 { background: linear-gradient(135deg, #22c55e, #84cc16); }
+    .audio-btn.a4 { background: linear-gradient(135deg, #f43f5e, #fb7185); }
+    .audio-btn.a5 { background: linear-gradient(135deg, #14b8a6, #2dd4bf); }
+    .audio-btn.a6 { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+    .audio-btn.playing {
+      outline: 3px solid rgba(255,255,255,0.7);
+      filter: brightness(1.06);
+    }
+
+    .audio-action {
+      flex-shrink: 0;
+      white-space: nowrap;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    .audio-label {
+      flex: 1;
+      text-align: right;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+      line-height: 1.35;
+    }
+
+    .audio-label.is-arabic {
+      font-family: 'SakkalMajalla', serif;
+      direction: rtl;
+      unicode-bidi: plaintext;
+      text-align: right;
+      font-size: 1.65rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.25;
+    }
+
+    .note-box {
+      background: linear-gradient(135deg, rgba(254,243,199,0.82), rgba(253,230,138,0.72));
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    .note-box h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .note-box p {
+      line-height: 1.6;
+      font-weight: 700;
+      color: #6b4f00;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .jump-text {
-      font-size: .95rem;
-      font-weight: 800;
-      color: var(--muted);
-    }
-
-    .jump-input {
-      width: 80px;
-      border: 1px solid #dbe7fb;
-      outline: none;
-      border-radius: 999px;
-      padding: 11px 12px;
-      background: white;
-      color: var(--text);
-      text-align: center;
+    .footer-btn {
+      flex: 1;
+      min-width: 140px;
+      border: none;
+      cursor: pointer;
+      border-radius: 20px;
+      padding: 15px 18px;
+      font-weight: 1000;
       font-size: 1rem;
-      font-weight: 900;
+      font-family: 'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+      color: white;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      transition: transform .18s ease;
     }
 
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
+    .footer-btn:hover { transform: translateY(-2px); }
+    .footer-btn.prev { background: linear-gradient(135deg, #64748b, #94a3b8); }
+    .footer-btn.next { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
+    .footer-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-      .visual {
-        min-height: 380px;
-      }
+    .page-jump{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:nowrap;
+    }
 
-      .bottom {
-        grid-template-columns: 1fr 1fr;
-      }
+    .page-input{
+      width:110px;
+      height:46px;
+      border:none;
+      outline:none;
+      border-radius:999px;
+      padding:0 16px;
+      font-size:1rem;
+      font-weight:900;
+      font-family:'Azim', "Trebuchet MS", "Segoe UI", sans-serif;
+      color:var(--text);
+      background:rgba(255,255,255,0.88);
+      box-shadow:0 10px 24px rgba(0,0,0,0.10);
+      text-align:center;
+    }
 
-      .jump-group {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-      }
+    .page-input::placeholder{
+      color:#7b8aa0;
+    }
+
+    .page-input:focus{
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.10),
+        0 0 0 3px rgba(255,255,255,0.65);
+    }
+
+    .jump-btn{
+      padding-left:16px;
+      padding-right:16px;
+    }
+
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    @media (max-width: 1280px) {
+      .outer-character.left { left: -68px; }
+      .outer-character.right { right: -68px; }
+      .outer-character { width: 64px; height: 126px; }
+    }
+
+    @media (max-width: 1100px) {
+      .app { width: min(1000px, 100%); }
+      .outer-character.left,
+      .outer-character.right { display: none; }
+    }
+
+    @media (max-width: 960px) {
+      .content { grid-template-columns: 1fr; }
+      .visual-panel { min-height: 400px; }
     }
 
     @media (max-width: 640px) {
-      body {
-        padding: 10px;
-      }
-
-      .topbar {
-        grid-template-columns: 1fr;
-      }
-
-      .visual {
-        min-height: 300px;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .bottom {
-        grid-template-columns: 1fr;
-      }
-
-      .jump-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .jump-input {
-        width: 100%;
-      }
-
-      .hotspot {
-        min-width: 78px;
-        max-width: 130px;
-        font-size: .86rem;
-        padding: 9px 10px;
-      }
+      body { padding: 12px; }
+      .topbar { justify-content: center; }
+      .badge, .nav-btn { width: 100%; text-align: center; }
+      .visual-panel { min-height: 280px; }
+      .main-image { padding: 10px; }
+      .footer-actions { flex-direction: column; }
+      .footer-btn { width: 100%; }
+      .audio-btn { font-size: .95rem; padding: 13px 12px; }
+      .audio-label.is-arabic { font-size: 1.45rem; }
+      .page-title { font-size: clamp(1.55rem, 6.8vw, 2rem); }
+      .page-jump{ width:100%; }
+      .page-input{ flex:1; width:auto; }
+      .jump-btn{ flex:0 0 auto; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+
+  <div class="sparkles">
+    <span class="sparkle" style="top:8%; left:14%; animation-delay:0s;"></span>
+    <span class="sparkle" style="top:16%; left:52%; animation-delay:.8s;"></span>
+    <span class="sparkle" style="top:28%; left:82%; animation-delay:1.2s;"></span>
+    <span class="sparkle" style="top:48%; left:8%; animation-delay:.6s;"></span>
+    <span class="sparkle" style="top:55%; left:62%; animation-delay:1.7s;"></span>
+    <span class="sparkle" style="top:72%; left:28%; animation-delay:.9s;"></span>
+    <span class="sparkle" style="top:84%; left:76%; animation-delay:1.4s;"></span>
+    <span class="sparkle" style="top:12%; left:92%; animation-delay:2s;"></span>
+  </div>
+
+  <div class="cloud-stage">
+    <div class="cloud cloud1">
+      <div class="cloud-fallback" id="cloudFallback1">LETAK<br>AWAN 1</div>
+      <img id="cloudImg1" alt="Awan 1">
+    </div>
+    <div class="cloud cloud2">
+      <div class="cloud-fallback" id="cloudFallback2">LETAK<br>AWAN 2</div>
+      <img id="cloudImg2" alt="Awan 2">
+    </div>
+    <div class="cloud cloud3">
+      <div class="cloud-fallback" id="cloudFallback3">LETAK<br>AWAN 3</div>
+      <img id="cloudImg3" alt="Awan 3">
+    </div>
+  </div>
+
+  <div class="app">
     <div class="topbar">
-      <button class="btn" id="prevTop">← Sebelum</button>
-      <div class="badge" id="pageBadge">Halaman 1 / 70</div>
-      <button class="btn" id="nextTop">Seterusnya →</button>
+      <button class="nav-btn" id="topPrevBtn" type="button">← Sebelum</button>
+      <div class="badge" id="pageBadge">Halaman 1 / 24</div>
+
+      <div class="page-jump">
+        <label for="pageInput" class="sr-only">Pergi ke halaman</label>
+        <input id="pageInput" class="page-input" type="number" min="1" max="24" inputmode="numeric" placeholder="Page" />
+        <button class="nav-btn jump-btn" id="jumpBtn" type="button">Pergi</button>
+      </div>
+
+      <button class="nav-btn" id="topNextBtn" type="button">Seterusnya →</button>
     </div>
 
-    <div class="panel">
-      <div class="layout">
-        <div class="visual" id="visualPanel">
-          <img id="mainImage" class="main-image" alt="Gambar halaman" />
-
-          <div class="image-placeholder" id="imagePlaceholder">
-            <div class="placeholder-box">
-              LETAK GAMBAR PAGE DI SINI<br><br>
-              Contoh:<br>
-              <strong>../assets/pages/page1.jpg</strong>
-            </div>
-          </div>
-
-          <div class="hotspot-layer">
-            <button class="hotspot" id="hotspot0" data-index="0" type="button">🔊 Audio 1</button>
-            <button class="hotspot" id="hotspot1" data-index="1" type="button">🔊 Audio 2</button>
-            <button class="hotspot" id="hotspot2" data-index="2" type="button">🔊 Audio 3</button>
-          </div>
-        </div>
-
-        <div class="side">
-          <div class="card">
-            <span class="tag">BUKU INTERAKTIF</span>
-            <div class="title" id="pageTitle">Tajuk Halaman 1</div>
-            <div class="subtitle" id="pageSubtitle">Tekan pada perkataan untuk dengar audio.</div>
-          </div>
-
-          <div class="card">
-            <div class="audio-heading">Senarai Audio</div>
-            <div class="audio-list">
-              <button class="audio-btn" id="audioBtn0" data-index="0" type="button">
-                <span>▶ Main Audio 1</span>
-                <span id="audioLabel0">Perkataan 1</span>
-              </button>
-
-              <button class="audio-btn" id="audioBtn1" data-index="1" type="button">
-                <span>▶ Main Audio 2</span>
-                <span id="audioLabel1">Perkataan 2</span>
-              </button>
-
-              <button class="audio-btn" id="audioBtn2" data-index="2" type="button">
-                <span>▶ Main Audio 3</span>
-                <span id="audioLabel2">Perkataan 3</span>
-              </button>
-            </div>
-
-            <div class="status" id="audioStatus">Belum main audio lagi.</div>
-          </div>
-
-          <div class="card note">
-            Edit semua page dalam <strong>BOOK_PAGES</strong> sahaja.
-            Setiap page boleh ada image, 1–3 audio, dan position hotspot sendiri.
-          </div>
-
-          <div class="bottom">
-            <button class="btn" id="prevBottom">← Page Sebelum</button>
-            <button class="btn" id="nextBottom">Page Seterusnya →</button>
-
-            <div class="jump-group">
-              <span class="jump-text">Pergi halaman:</span>
-              <input class="jump-input" id="jumpInput" type="number" min="1" max="70" placeholder="1-70">
-              <button class="btn" id="jumpBtn" type="button">Pergi</button>
-            </div>
-          </div>
-        </div>
+    <div class="stage">
+      <div class="outer-character left">
+        <div class="outer-placeholder" id="leftCharacterPlaceholder">LETAK<br>BOY</div>
+        <img id="leftCharacterImg" alt="Boy Character">
       </div>
+
+      <div class="outer-character right">
+        <div class="outer-placeholder" id="rightCharacterPlaceholder">LETAK<br>GIRL</div>
+        <img id="rightCharacterImg" alt="Girl Character">
+      </div>
+
+      <section class="page-card">
+        <div class="content">
+          <div class="visual-panel">
+            <img class="main-image" id="mainImage" alt="Gambar halaman">
+            <div class="image-placeholder" id="imagePlaceholder">
+              <div class="placeholder-box">
+                LETAK GAMBAR PAGE DI SINI<br><br>
+                Contoh: <strong>../assets/pages/page1.jpg</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <div class="title-box">
+              <span class="mini-label">INTERAKTIF AUDIO</span>
+              <h1 class="page-title" id="pageTitle">Tajuk Halaman 1</h1>
+              <p class="page-subtitle" id="pageSubtitle">
+                Tekan butang audio di sebelah untuk mula atau berhentikan audio.
+              </p>
+            </div>
+
+            <div class="audio-panel">
+              <div class="audio-heading">Senarai Audio</div>
+              <div id="audioList"></div>
+            </div>
+
+            <div class="note-box">
+              <h3>Nota untuk edit</h3>
+              <p>
+                Untuk page lain nanti, kau cuma isi <strong>title</strong>, <strong>subtitle</strong>,
+                <strong>image</strong>, <strong>leftCharacter</strong>, <strong>rightCharacter</strong>,
+                <strong>clouds</strong> dan <strong>audios</strong> dalam <strong>BOOK_PAGES</strong>.
+              </p>
+            </div>
+
+            <div class="footer-actions">
+              <button class="footer-btn prev" id="prevBtn" type="button">← Page Sebelum</button>
+              <button class="footer-btn next" id="nextBtn" type="button">Page Seterusnya →</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
   <audio id="player" preload="auto"></audio>
 
   <script>
-    // EDIT DATA DI SINI SAHAJA
-    const BOOK_PAGES = Array.from({ length: 70 }, (_, i) => ({
-      pageNumber: i + 1,
-      title: `Tajuk Halaman ${i + 1}`,
-      subtitle: `Tekan pada perkataan untuk dengar audio bagi halaman ${i + 1}.`,
-      image: "", // contoh: "../assets/pages/page1.jpg"
-      audios: [
-        {
-          label: "Perkataan 1",
-          file: "", // contoh: "../assets/audiotext/page1-audio1.wav"
-          show: true,
-          x: "12%",
-          y: "18%"
-        },
-        {
-          label: "Perkataan 2",
-          file: "",
-          show: true,
-          x: "68%",
-          y: "45%"
-        },
-        {
-          label: "Perkataan 3",
-          file: "",
-          show: false,
-          x: "28%",
-          y: "78%"
-        }
-      ]
-    }));
+    const BOOK_PAGES = [
+      {
+        pageNumber: 2,
+        title: "Muka Surat 2",
+        subtitle: "شكرا، عفوا",
+        image: "../assets/pages/ms2.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "شُكْرًا", file: "../assets/audiovo/ms2-syukran.mp3", show: true },
+          { label: "عَفْوًا", file: "../assets/audiovo/ms2-afwan.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 3,
+        title: "Muka Surat 3",
+        subtitle: "أم، جدة، أخت",
+        image: "../assets/pages/ms3.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "أُمٌّ", file: "../assets/audiovo/ms3-ummun.mp3", show: true },
+          { label: "جَدَّةٌ", file: "../assets/audiovo/ms3-jaddatun.mp3", show: true },
+          { label: "أُخْتٌ", file: "../assets/audiovo/ms3-ukhtun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 6,
+        title: "Muka Surat 6",
+        subtitle: "ج د",
+        image: "../assets/pages/ms6.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "ج د", file: "../assets/audiovo/ms6-kalimah-jimdal.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 13,
+        title: "Muka Surat 13",
+        subtitle: "هذا أخ، هذا أب، هذا جد",
+        image: "../assets/pages/ms13.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "هٰذَا أَبٌ", file: "../assets/audiovo/ms13-01-LK-1kali.mp3", show: true },
+          { label: "هٰذَا جَدٌّ", file: "../assets/audiovo/ms13-02-L-1kali.mp3", show: true },
+          { label: "هٰذَا أَخٌ", file: "../assets/audiovo/ms13-03-PR-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 14,
+        title: "Muka Surat 14",
+        subtitle: "هذه جدة، هذه أخت، هذه أم",
+        image: "../assets/pages/ms14.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "هَذِهِ أُمٌّ", file: "../assets/audiovo/ms14-01-PR-1kali.mp3", show: true },
+          { label: "هَذِهِ جَدَّةٌ", file: "../assets/audiovo/ms14-02-PR-1kali.mp3", show: true },
+          { label: "هَذِهِ أُخْتٌ", file: "../assets/audiovo/ms14-03-LK-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 17,
+        title: "Muka Surat 17",
+        subtitle: "واحد، اثنان",
+        image: "../assets/pages/ms17.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "وَاحِدٌ", file: "../assets/audiovo/ms17-wahidun.mp3", show: true },
+          { label: "اِثْنَانِ", file: "../assets/audiovo/ms17-isnani.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 24,
+        title: "Muka Surat 24",
+        subtitle: "قياما، معلم، تلميذ",
+        image: "../assets/pages/ms24.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "قِيَامًا", file: "../assets/audiovo/ms24-qiyam.mp3", show: true },
+          { label: "مُعَلِّمٌ", file: "../assets/audiovo/ms24-mualimun.mp3", show: true },
+          { label: "تِلْمِيذٌ", file: "../assets/audiovo/ms24-tilmizun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 25,
+        title: "Muka Surat 25",
+        subtitle: "جلوسا، معلمة، تلميذة",
+        image: "../assets/pages/ms25.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "جُلُوسًا", file: "../assets/audiovo/ms25-julusan.mp3", show: true },
+          { label: "مُعَلِّمَةٌ", file: "../assets/audiovo/ms25-mualimatun.mp3", show: true },
+          { label: "تِلْمِيذَةٌ", file: "../assets/audiovo/ms25-tilmizatun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 28,
+        title: "Muka Surat 28",
+        subtitle: "ا ت",
+        image: "../assets/pages/ms28.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "ا ت", file: "../assets/audiovo/ms28-kalimahaliftaa-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 46,
+        title: "Muka Surat 46",
+        subtitle: "انتبهوا، حسنا، كرسي، مكتب، باب",
+        image: "../assets/pages/ms46.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "اِنْتَبِهُوا، حَسَنًا", file: "../assets/audiovo/ms46-01.mp3", show: true },
+          { label: "كُرْسِيٌّ", file: "../assets/audiovo/ms46-kursiyyun.mp3", show: true },
+          { label: "مَكْتَبٌ", file: "../assets/audiovo/ms46-maktabun.mp3", show: true },
+          { label: "بَابٌ", file: "../assets/audiovo/ms46-baabun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 47,
+        title: "Muka Surat 47",
+        subtitle: "استمعوا جيدا، نافذة، سبورة، ممسحة",
+        image: "../assets/pages/ms47.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "اِسْتَمِعُوا جَيِّدًا", file: "../assets/audiovo/ms47-istamiujayyida.mp3", show: true },
+          { label: "نَافِذَةٌ", file: "../assets/audiovo/ms47-nafizatun.mp3", show: true },
+          { label: "سَبُّورَةٌ", file: "../assets/audiovo/ms47-sabburotun.mp3", show: true },
+          { label: "مِمْسَحَةٌ", file: "../assets/audiovo/ms47-mimsahatun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 50,
+        title: "Muka Surat 50",
+        subtitle: "ك ن",
+        image: "../assets/pages/ms50.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "ك ن", file: "../assets/audiovo/ms49-kalimahkafnun-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 57,
+        title: "Muka Surat 57",
+        subtitle: "هذا باب، هذا مكتب، هذا كرسي",
+        image: "../assets/pages/ms57.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "هٰذَا بَابٌ", file: "../assets/audiovo/ms57-01-hazaababun.mp3", show: true },
+          { label: "هٰذَا مَكْتَبٌ", file: "../assets/audiovo/ms57-02-hazamaktabun.mp3", show: true },
+          { label: "هٰذَا كُرْسِيٌّ", file: "../assets/audiovo/ms57-03-hazakursiyun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 58,
+        title: "Muka Surat 58",
+        subtitle: "هذه سبورة، هذه ممسحة، هذه نافذة",
+        image: "../assets/pages/ms58.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "هٰذِهِ سَبُّورَةٌ", file: "../assets/audiovo/ms58-01-hazisabburatun.mp3", show: true },
+          { label: "هٰذِهِ مِمْسَحَةٌ", file: "../assets/audiovo/ms58-02-hazihimimsahatun.mp3", show: true },
+          { label: "هٰذِهِ نَافِذَةٌ", file: "../assets/audiovo/ms58-03-hazihinaafizatun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 59,
+        title: "Muka Surat 59",
+        subtitle: "Dialog",
+        image: "../assets/pages/ms59.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "Dialog", file: "../assets/audiovo/ms59-01-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 60,
+        title: "Muka Surat 60",
+        subtitle: "Dialog",
+        image: "../assets/pages/ms60.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "Dialog", file: "../assets/audiovo/ms60-01-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 61,
+        title: "Muka Surat 61",
+        subtitle: "خمسة، ستة، سبعة",
+        image: "../assets/pages/ms61.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "خَمْسَةٌ", file: "../assets/audiovo/ms61-khomsah5.mp3", show: true },
+          { label: "سِتَّةٌ", file: "../assets/audiovo/ms61-sittatun6.mp3", show: true },
+          { label: "سَبْعَةٌ", file: "../assets/audiovo/ms61-sabatun7.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 68,
+        title: "Muka Surat 68",
+        subtitle: "مسطرة، مبراة، ممحاة",
+        image: "../assets/pages/ms68.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "مِسْطَرَةٌ", file: "../assets/audiovo/ms68-mistorotun.mp3", show: true },
+          { label: "مِبْرَاةٌ", file: "../assets/audiovo/ms68-mimbrotun.mp3", show: true },
+          { label: "مِمْحَاةٌ", file: "../assets/audiovo/ms68-mimhatun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 69,
+        title: "Muka Surat 69",
+        subtitle: "قلم، كتاب، حقيبة",
+        image: "../assets/pages/ms69.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "قَلَمٌ", file: "../assets/audiovo/ms69-kolamun.mp3", show: true },
+          { label: "كِتَابٌ", file: "../assets/audiovo/ms69-kitaabun.mp3", show: true },
+          { label: "حَقِيبَةٌ", file: "../assets/audiovo/ms69-haqibatun.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 79,
+        title: "Muka Surat 79",
+        subtitle: "هذا كتاب، هذه حقيبة",
+        image: "../assets/pages/ms79.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "هٰذَا كِتَابٌ، هٰذِهِ حَقِيبَةٌ", file: "../assets/audiovo/ms79-01-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 80,
+        title: "Muka Surat 80",
+        subtitle: "Dialog",
+        image: "../assets/pages/ms80.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "Dialog", file: "../assets/audiovo/ms80-01-1kali.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 81,
+        title: "Muka Surat 81",
+        subtitle: "Dialog",
+        image: "../assets/pages/ms81.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "Dialog", file: "../assets/audiovo/ms81-01.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 82,
+        title: "Muka Surat 82",
+        subtitle: "Dialog",
+        image: "../assets/pages/ms82.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "Dialog", file: "../assets/audiovo/ms82-01.mp3", show: true }
+        ]
+      },
+      {
+        pageNumber: 83,
+        title: "Muka Surat 83",
+        subtitle: "ثمانية، تسعة، عشرة",
+        image: "../assets/pages/ms83.jpg",
+        leftCharacter: "../assets/images/boy.png",
+        rightCharacter: "../assets/images/girl.png",
+        clouds: ["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
+        audios: [
+          { label: "ثَمَانِيَةٌ", file: "../assets/audiovo/ms83-samaaniatun8.mp3", show: true },
+          { label: "تِسْعَةٌ", file: "../assets/audiovo/ms83-tisaatun9.mp3", show: true },
+          { label: "عَشَرَةٌ", file: "../assets/audiovo/ms83-asyarotun10.mp3", show: true }
+        ]
+      }
+    ];
+
+    const TOTAL_PAGES = BOOK_PAGES.length;
+    BOOK_PAGES.forEach(page => page.totalPages = TOTAL_PAGES);
 
     let currentIndex = 0;
+    let currentAudioIndex = -1;
+    let isPaused = false;
 
-    const mainImage = document.getElementById("mainImage");
-    const imagePlaceholder = document.getElementById("imagePlaceholder");
     const pageTitle = document.getElementById("pageTitle");
     const pageSubtitle = document.getElementById("pageSubtitle");
     const pageBadge = document.getElementById("pageBadge");
-    const audioStatus = document.getElementById("audioStatus");
+    const mainImage = document.getElementById("mainImage");
+    const imagePlaceholder = document.getElementById("imagePlaceholder");
+
+    const leftCharacterImg = document.getElementById("leftCharacterImg");
+    const rightCharacterImg = document.getElementById("rightCharacterImg");
+    const leftCharacterPlaceholder = document.getElementById("leftCharacterPlaceholder");
+    const rightCharacterPlaceholder = document.getElementById("rightCharacterPlaceholder");
+
+    const cloudImgs = [
+      document.getElementById("cloudImg1"),
+      document.getElementById("cloudImg2"),
+      document.getElementById("cloudImg3")
+    ];
+
+    const cloudFallbacks = [
+      document.getElementById("cloudFallback1"),
+      document.getElementById("cloudFallback2"),
+      document.getElementById("cloudFallback3")
+    ];
+
+    const audioList = document.getElementById("audioList");
+    let audioButtons = [];
+
+    const topPrevBtn = document.getElementById("topPrevBtn");
+    const topNextBtn = document.getElementById("topNextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
     const player = document.getElementById("player");
-
-    const hotspotEls = [
-      document.getElementById("hotspot0"),
-      document.getElementById("hotspot1"),
-      document.getElementById("hotspot2")
-    ];
-
-    const audioBtnEls = [
-      document.getElementById("audioBtn0"),
-      document.getElementById("audioBtn1"),
-      document.getElementById("audioBtn2")
-    ];
-
-    const audioLabelEls = [
-      document.getElementById("audioLabel0"),
-      document.getElementById("audioLabel1"),
-      document.getElementById("audioLabel2")
-    ];
-
-    const prevTop = document.getElementById("prevTop");
-    const nextTop = document.getElementById("nextTop");
-    const prevBottom = document.getElementById("prevBottom");
-    const nextBottom = document.getElementById("nextBottom");
-    const jumpInput = document.getElementById("jumpInput");
+    const pageInput = document.getElementById("pageInput");
     const jumpBtn = document.getElementById("jumpBtn");
 
-    function getPage() {
+    function getCurrentPage() {
       return BOOK_PAGES[currentIndex];
+    }
+
+    function isArabicText(text = "") {
+      return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text);
+    }
+
+    function applyLabelLanguageStyle(labelEl, text) {
+      labelEl.textContent = text;
+      labelEl.classList.remove("is-arabic");
+
+      if (isArabicText(text)) {
+        labelEl.classList.add("is-arabic");
+        labelEl.setAttribute("dir", "rtl");
+        labelEl.setAttribute("lang", "ar");
+      } else {
+        labelEl.setAttribute("dir", "auto");
+        labelEl.setAttribute("lang", "ms");
+      }
+    }
+
+    function resetButtonStates() {
+      audioButtons.forEach((btn) => {
+        btn.classList.remove("playing");
+        const action = btn.querySelector(".audio-action");
+        if (action) action.textContent = "▶ Mula";
+      });
     }
 
     function stopAudio() {
       player.pause();
       player.currentTime = 0;
+      player.removeAttribute("src");
+      currentAudioIndex = -1;
+      isPaused = false;
+      resetButtonStates();
     }
 
-    function renderPage() {
-      const page = getPage();
-      stopAudio();
-      audioStatus.textContent = "Belum main audio lagi.";
+    function setupImageWithFallback(imgEl, fallbackEl, src) {
+      if (!imgEl) return;
 
-      pageTitle.textContent = page.title || `Tajuk Halaman ${currentIndex + 1}`;
-      pageSubtitle.textContent = page.subtitle || "Tekan pada perkataan untuk dengar audio.";
+      if (src && src.trim() !== "") {
+        imgEl.src = src;
+        imgEl.style.display = "block";
+        if (fallbackEl) fallbackEl.style.display = "none";
+
+        imgEl.onerror = () => {
+          imgEl.style.display = "none";
+          if (fallbackEl) fallbackEl.style.display = "flex";
+        };
+      } else {
+        imgEl.removeAttribute("src");
+        imgEl.style.display = "none";
+        if (fallbackEl) fallbackEl.style.display = "flex";
+      }
+    }
+
+    function renderAudioButtons(page) {
+      audioList.innerHTML = "";
+      audioButtons = [];
+
+      const visibleAudios = (page.audios || []).filter(item => item && item.show);
+
+      visibleAudios.forEach((item, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `audio-btn a${Math.min(index + 1, 6)}`;
+
+        btn.innerHTML = `
+          <span class="audio-action">▶ Mula</span>
+          <span class="audio-label"></span>
+        `;
+
+        const labelEl = btn.querySelector(".audio-label");
+        const label = item.label || `Perkataan ${index + 1}`;
+        applyLabelLanguageStyle(labelEl, label);
+
+        btn.dataset.file = item.file || "";
+        btn.dataset.label = label;
+        btn.dataset.index = index;
+
+        btn.addEventListener("click", () => toggleAudio(index));
+
+        audioList.appendChild(btn);
+        audioButtons.push(btn);
+      });
+    }
+
+    function setupPage() {
+      const page = getCurrentPage();
+
+      stopAudio();
+
+      pageTitle.textContent = page.title || `Tajuk Halaman ${page.pageNumber}`;
+      pageSubtitle.textContent = page.subtitle || "Tekan butang audio di sebelah untuk mula atau berhentikan audio.";
       pageBadge.textContent = `Halaman ${currentIndex + 1} / ${BOOK_PAGES.length}`;
+      pageInput.value = currentIndex + 1;
+      pageInput.max = BOOK_PAGES.length;
 
       if (page.image && page.image.trim() !== "") {
         mainImage.src = page.image;
@@ -591,88 +1299,91 @@
         imagePlaceholder.innerHTML = `
           <div class="placeholder-box">
             LETAK GAMBAR PAGE ${currentIndex + 1} DI SINI<br><br>
-            Contoh:<br>
-            <strong>../assets/pages/page${currentIndex + 1}.jpg</strong>
+            Contoh: <strong>../assets/pages/page${currentIndex + 1}.jpg</strong>
           </div>
         `;
       }
 
-      for (let i = 0; i < 3; i++) {
-        const item = page.audios?.[i];
-        const hotspot = hotspotEls[i];
-        const btn = audioBtnEls[i];
-        const labelEl = audioLabelEls[i];
+      setupImageWithFallback(leftCharacterImg, leftCharacterPlaceholder, page.leftCharacter || "");
+      setupImageWithFallback(rightCharacterImg, rightCharacterPlaceholder, page.rightCharacter || "");
 
-        if (item && item.show) {
-          const label = item.label || `Perkataan ${i + 1}`;
-          labelEl.textContent = label;
-          hotspot.textContent = `🔊 ${label}`;
-
-          hotspot.style.display = "inline-flex";
-          btn.style.display = "flex";
-
-          hotspot.style.left = item.x || "10%";
-          hotspot.style.top = item.y || "20%";
-
-          hotspot.dataset.file = item.file || "";
-          hotspot.dataset.label = label;
-          btn.dataset.file = item.file || "";
-          btn.dataset.label = label;
-        } else {
-          hotspot.style.display = "none";
-          btn.style.display = "none";
-          hotspot.dataset.file = "";
-          btn.dataset.file = "";
-        }
+      const clouds = Array.isArray(page.clouds) ? page.clouds : ["", "", ""];
+      for (let i = 0; i < cloudImgs.length; i++) {
+        setupImageWithFallback(cloudImgs[i], cloudFallbacks[i], clouds[i] || "");
       }
 
-      prevTop.disabled = currentIndex === 0;
-      prevBottom.disabled = currentIndex === 0;
-      nextTop.disabled = currentIndex === BOOK_PAGES.length - 1;
-      nextBottom.disabled = currentIndex === BOOK_PAGES.length - 1;
+      renderAudioButtons(page);
+
+      const isFirst = currentIndex === 0;
+      const isLast = currentIndex === BOOK_PAGES.length - 1;
+
+      topPrevBtn.disabled = isFirst;
+      prevBtn.disabled = isFirst;
+      topNextBtn.disabled = isLast;
+      nextBtn.disabled = isLast;
     }
 
-    function playAudio(file, label) {
-      stopAudio();
+    function toggleAudio(index) {
+      const btn = audioButtons[index];
+      if (!btn) return;
 
-      if (!file || !file.trim()) {
-        audioStatus.textContent = `Audio untuk "${label}" belum diletakkan lagi.`;
+      const file = btn.dataset.file || "";
+      const action = btn.querySelector(".audio-action");
+
+      if (!file.trim()) return;
+
+      if (currentAudioIndex === index) {
+        if (!player.paused) {
+          player.pause();
+          isPaused = true;
+          btn.classList.remove("playing");
+          action.textContent = "▶ Mula";
+        } else {
+          player.play().then(() => {
+            isPaused = false;
+            btn.classList.add("playing");
+            action.textContent = "⏸ Berhenti";
+          }).catch(() => {});
+        }
         return;
       }
+
+      stopAudio();
 
       player.src = file;
       player.load();
 
-      player.play()
-        .then(() => {
-          audioStatus.textContent = `Sedang main: ${label}`;
-        })
-        .catch(() => {
-          audioStatus.textContent = `Tak dapat main audio: ${label}`;
-        });
-
-      player.onended = () => {
-        audioStatus.textContent = `Selesai main: ${label}`;
-      };
-
-      player.onerror = () => {
-        audioStatus.textContent = `Audio tak jumpa / tak boleh load: ${label}`;
-      };
-    }
-
-    function bindPlayable(el) {
-      el.addEventListener("click", () => {
-        playAudio(el.dataset.file || "", el.dataset.label || "Audio");
+      player.play().then(() => {
+        currentAudioIndex = index;
+        isPaused = false;
+        btn.classList.add("playing");
+        action.textContent = "⏸ Berhenti";
+      }).catch(() => {
+        stopAudio();
       });
     }
 
-    hotspotEls.forEach(bindPlayable);
-    audioBtnEls.forEach(bindPlayable);
+    player.addEventListener("ended", () => {
+      resetButtonStates();
+      currentAudioIndex = -1;
+      isPaused = false;
+    });
+
+    player.addEventListener("pause", () => {
+      if (currentAudioIndex !== -1 && !player.ended && isPaused) {
+        const btn = audioButtons[currentAudioIndex];
+        if (btn) {
+          btn.classList.remove("playing");
+          const action = btn.querySelector(".audio-action");
+          if (action) action.textContent = "▶ Mula";
+        }
+      }
+    });
 
     function goToPage(index) {
       if (index < 0 || index >= BOOK_PAGES.length) return;
       currentIndex = index;
-      renderPage();
+      setupPage();
     }
 
     function nextPage() {
@@ -683,23 +1394,23 @@
       goToPage(currentIndex - 1);
     }
 
-    prevTop.addEventListener("click", prevPage);
-    prevBottom.addEventListener("click", prevPage);
-    nextTop.addEventListener("click", nextPage);
-    nextBottom.addEventListener("click", nextPage);
+    function jumpToPage() {
+      const value = Number(pageInput.value);
 
-    jumpBtn.addEventListener("click", () => {
-      const val = Number(jumpInput.value);
-      if (!Number.isInteger(val) || val < 1 || val > BOOK_PAGES.length) {
-        audioStatus.textContent = `Masukkan nombor halaman antara 1 hingga ${BOOK_PAGES.length}.`;
-        return;
-      }
-      goToPage(val - 1);
-      jumpInput.value = "";
-    });
+      if (!Number.isInteger(value)) return;
+      if (value < 1 || value > BOOK_PAGES.length) return;
 
-    jumpInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") jumpBtn.click();
+      goToPage(value - 1);
+    }
+
+    topPrevBtn.addEventListener("click", prevPage);
+    prevBtn.addEventListener("click", prevPage);
+    topNextBtn.addEventListener("click", nextPage);
+    nextBtn.addEventListener("click", nextPage);
+    jumpBtn.addEventListener("click", jumpToPage);
+
+    pageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") jumpToPage();
     });
 
     document.addEventListener("keydown", (e) => {
@@ -707,7 +1418,7 @@
       if (e.key === "ArrowLeft") prevPage();
     });
 
-    renderPage();
+    setupPage();
   </script>
 </body>
 </html>

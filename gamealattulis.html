@@ -889,6 +889,11 @@
     <div class="desk-bg"></div>
 
     <!-- =========================================================
+         BACKGROUND MUSIC
+         ========================================================= -->
+    <audio id="bgm_main" src="./assets/vogame5/bg_music.mp3" loop preload="auto"></audio>
+
+    <!-- =========================================================
          AUDIO PLACEHOLDERS (BGM + SFX + VO) — FILL PATHS LATER
          ========================================================= -->
     <!--
@@ -1091,6 +1096,25 @@
     </div>
 
     <script>
+        // =========================================================
+        // BACKGROUND MUSIC — bgmusic.mp3
+        // Plays on first user interaction, loops throughout the game
+        // =========================================================
+        const bgmMain = document.getElementById('bgm_main');
+        bgmMain.volume = 0.4; // comfortable background level
+
+        let bgmStarted = false;
+
+        function startBGM() {
+            if (bgmStarted) return;
+            bgmStarted = true;
+            bgmMain.play().catch(() => {});
+        }
+
+        // Start BGM on first user gesture (browser autoplay policy)
+        window.addEventListener('pointerdown', startBGM, { once: true });
+        window.addEventListener('keydown', startBGM, { once: true });
+
         // =========================================================
         // AUDIO ENGINE — PLACEHOLDER ONLY (FILL PATHS LATER)
         // =========================================================

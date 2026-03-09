@@ -673,7 +673,7 @@ html, body {
 /* ── AUDIO (SFX + MUSIC + AMBIENT) ───────────────────────────────────────── */
 const sounds = {
   // MUSIC
-  bgm_menu:   new Audio('assets/audio/bgm_menu.mp3'),     // TODO: muzik latar santai keluarga (Skrin 1-2)
+  bgm_menu:   new Audio('assets/audio/bgmm.mp3'),     // TODO: muzik latar santai keluarga (Skrin 1-2)
   bgm_win:    new Audio('assets/audio/bgm_victory.mp3'),  // TODO: muzik ceria kejayaan (Skrin 5)
 
   // SFX
@@ -1007,7 +1007,7 @@ function resetGame(){
   gameActive = false;
   stopVO();
   stopAllMusic();
-  bgmStartedOnce = false;
+  bgmStartedOnce = true;
   startMenuMusic();
 }
 
