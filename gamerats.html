@@ -36,8 +36,6 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
-
-
 /* ═══════════════════════════════════════════
    BACKGROUND SCENE
 ═══════════════════════════════════════════ */
@@ -286,6 +284,8 @@ canvas#cv {
   font-family:'SakkalMajalla','Azim',sans-serif;
   cursor:pointer; text-align:center;
   transition:all .14s; touch-action:manipulation;
+  word-break:break-word;
+  line-height:1.3;
 }
 .qopt:hover  { background:linear-gradient(135deg,#BBDEFB,#90CAF9); transform:scale(1.025); }
 .qopt.ok     { background:linear-gradient(135deg,#C8E6C9,#A5D6A7); border-color:#43A047; pointer-events:none; }
@@ -343,10 +343,70 @@ canvas#cv {
   font-size:clamp(.72rem,2vw,.92rem); white-space:nowrap;
   z-index:300; pointer-events:none;
   animation:voSlide .4s ease-out;
+  max-width:min(92vw,680px);
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 @keyframes voSlide {
   0%   { opacity:0; transform:translateX(-50%) translateY(16px); }
   100% { opacity:1; transform:translateX(-50%) translateY(0); }
+}
+
+/* NEW: quiz text mobile responsive */
+.quiz-visual-wrap{
+  margin:8px auto 12px;
+  width:min(100%, 120px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.quiz-question{
+  font-size:clamp(.88rem,2.8vw,1.08rem);
+  color:#1f1f1f;
+  margin-bottom:12px;
+  white-space:pre-line;
+  line-height:1.55;
+  text-align:center;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+  padding:0 clamp(2px,1vw,8px);
+}
+.quiz-done-msg{
+  font-size:clamp(.9rem,2.5vw,1.1rem);
+  color:#2E7D32;
+  font-weight:700;
+  margin-bottom:8px;
+  line-height:1.5;
+  word-break:break-word;
+}
+.visual-img-wrap{
+  width:min(100px, 30vw);
+  height:min(80px, 24vw);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.visual-img-wrap img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
+
+@media (max-width: 640px){
+  .mbox{
+    padding:14px 12px 18px;
+    max-width:min(96vw, 430px);
+  }
+  .mbtn{
+    width:100%;
+    margin:5px 0;
+  }
+  #kuiz-nav .mbtn{
+    width:100%;
+  }
+  .score-box{
+    min-width:100%;
+  }
 }
 
 @media(orientation:landscape) and (max-height:480px) {
@@ -361,7 +421,7 @@ canvas#cv {
 </head>
 <body>
 
-
+<audio id="bgm-rats" src="./assets/vogame1/bgmusicrats.mp3" autoplay loop preload="auto"></audio>
 
 <div id="bg">
   <div class="sun"></div>
@@ -497,7 +557,6 @@ canvas#cv {
   </div>
 </div>
 
-<!-- NEW: Pause Modal -->
 <div class="overlay" id="mod-pause" style="display:none">
   <div class="mbox">
     <div class="m-title">⏸️ Permainan Dihentikan</div>
@@ -522,6 +581,29 @@ let audioCtx = null;
 const meowMp3 = new Audio('./assets/audio/meow.mp3');
 meowMp3.preload = 'auto';
 meowMp3.volume = 0.9;
+meowMp3.load();
+
+const bgmRats = document.getElementById('bgm-rats');
+bgmRats.volume = 0.22;
+
+function tryPlayBgmRats(){
+  if(!audioOn) return;
+  try{
+    const p = bgmRats.play();
+    if(p && typeof p.catch === 'function'){
+      p.catch(()=>{});
+    }
+  }catch(e){}
+}
+
+/* NEW: ganti bunyi synth dengan mp3 */
+const drumMp3 = new Audio('./assets/vogame1/bunyi-gendangg.mp3');
+drumMp3.preload = 'auto';
+drumMp3.volume = 1.0;
+
+const enjinMp3 = new Audio('./assets/vogame1/bunyi-enjinn.mp3');
+enjinMp3.preload = 'auto';
+enjinMp3.volume = 1.0;
 
 /* ═══════════════════════════════════════════════════════════
    VOICE OVER
@@ -545,6 +627,8 @@ let voBusy  = false;
 let voMotivIv = null;
 let audioUnlocked = false;
 let voTimer = null;
+let quizAudioTimer = null;
+let lastVOEndedAt = 0;
 
 function unlockAudioOnce(){
   if(audioUnlocked) return;
@@ -553,21 +637,50 @@ function unlockAudioOnce(){
     voPlayer.muted = true;
     voPlayer.play().then(()=>{ voPlayer.pause(); voPlayer.currentTime=0; voPlayer.muted=false; }).catch(()=>{ voPlayer.muted=false; });
   } catch(e){}
+  try {
+    drumMp3.muted = true;
+    drumMp3.play().then(()=>{ drumMp3.pause(); drumMp3.currentTime=0; drumMp3.muted=false; }).catch(()=>{ drumMp3.muted=false; });
+  } catch(e){}
+  try {
+    enjinMp3.muted = true;
+    enjinMp3.play().then(()=>{ enjinMp3.pause(); enjinMp3.currentTime=0; enjinMp3.muted=false; }).catch(()=>{ enjinMp3.muted=false; });
+  } catch(e){}
+  try {
+    bgmRats.muted = true;
+    bgmRats.play().then(()=>{
+      bgmRats.pause();
+      bgmRats.currentTime = 0;
+      bgmRats.muted = false;
+      tryPlayBgmRats();
+    }).catch(()=>{
+      bgmRats.muted = false;
+      tryPlayBgmRats();
+    });
+  } catch(e){}
   try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); audioCtx.resume(); } catch(e){}
 }
 window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
 window.addEventListener('keydown', unlockAudioOnce, { once:true });
+window.addEventListener('load', tryPlayBgmRats);
 
 function showVO(text){
-  const b=document.getElementById('vo-banner');
-  b.textContent=text;
-  b.style.display='block';
-  if(voTimer) clearTimeout(voTimer);
-  voTimer=setTimeout(()=>{ b.style.display='none'; },6000);
+  // Caption disabled
 }
 
 function stopMotivationLoop(){
   if(voMotivIv){ clearInterval(voMotivIv); voMotivIv=null; }
+}
+
+function clearQuizAudioTimer(){
+  if(quizAudioTimer){
+    clearTimeout(quizAudioTimer);
+    quizAudioTimer = null;
+  }
+}
+
+function stopQuizSfx(){
+  try { drumMp3.pause(); drumMp3.currentTime = 0; } catch(e){}
+  try { enjinMp3.pause(); enjinMp3.currentTime = 0; } catch(e){}
 }
 
 function playVOById(id){
@@ -598,7 +711,11 @@ function pumpVO(){
   showVO(item.text);
 
   if(!item.src){
-    setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+    setTimeout(()=>{
+      voBusy=false;
+      lastVOEndedAt = Date.now();
+      pumpVO();
+    }, 1300);
     return;
   }
 
@@ -609,15 +726,65 @@ function pumpVO(){
     const p = voPlayer.play();
     if(p && typeof p.catch === 'function'){
       p.catch(()=>{
-        setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+        setTimeout(()=>{
+          voBusy=false;
+          lastVOEndedAt = Date.now();
+          pumpVO();
+        }, 1300);
       });
     }
     voPlayer.onended = ()=>{
       voBusy=false;
+      lastVOEndedAt = Date.now();
       pumpVO();
     };
   } catch(e){
-    setTimeout(()=>{ voBusy=false; pumpVO(); }, 1300);
+    setTimeout(()=>{
+      voBusy=false;
+      lastVOEndedAt = Date.now();
+      pumpVO();
+    }, 1300);
+  }
+}
+
+function estimateVODelayByText(text){
+  const base = 1600;
+  const perChar = 38;
+  return Math.min(5200, Math.max(1800, base + (text || '').length * perChar));
+}
+
+function playAudioWithDelay(audioEl, delayMs){
+  clearQuizAudioTimer();
+  stopQuizSfx();
+  if(!audioOn || !audioEl) return;
+  quizAudioTimer = setTimeout(()=>{
+    if(!audioOn) return;
+    try{
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      const p = audioEl.play();
+      if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
+    }catch(e){}
+  }, delayMs);
+}
+
+function scheduleQuizAudio(voId, soundType){
+  clearQuizAudioTimer();
+  stopQuizSfx();
+
+  let delayMs = 650;
+
+  if(voId && VO_LINES[voId]){
+    playVOById(voId);
+    delayMs = estimateVODelayByText(VO_LINES[voId].text) + 450;
+  } else if(voBusy){
+    delayMs = 1800;
+  }
+
+  if(soundType === 'drum'){
+    playAudioWithDelay(drumMp3, delayMs);
+  } else if(soundType === 'engine'){
+    playAudioWithDelay(enjinMp3, delayMs);
   }
 }
 
@@ -647,17 +814,22 @@ function sndWin(){
 }
 function sndMeow() {
   if (!audioOn) return;
+
   try {
+    meowMp3.pause();
     meowMp3.currentTime = 0;
+
     const p = meowMp3.play();
     if (p && typeof p.catch === "function") {
-      p.catch(() => fallbackMeow());
+      p.catch(() => {
+        fallbackMeow();
+      });
     }
-    return;
   } catch (e) {
     fallbackMeow();
   }
 }
+
 function fallbackMeow() {
   if (!audioOn) return;
   try {
@@ -671,21 +843,27 @@ function fallbackMeow() {
     o.start(ctx.currentTime); o.stop(ctx.currentTime+.65);
   }catch(e){}
 }
-function sndDrum(){ [0,.38,.76].forEach(t=>{tone(80,'sine',.28,.48,t); tone(105,'square',.14,.2,t);}); }
-function sndTraktor() {
+
+/* NEW: gendang & enjin guna mp3 */
+function sndDrum(){
   if (!audioOn) return;
-  try {
-    const ctx=getCtx();
-    for(let i=0;i<6;i++){
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.type='sawtooth'; o.frequency.value=58+i*4;
-      g.gain.setValueAtTime(.13,ctx.currentTime+i*.17);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.17+.22);
-      o.start(ctx.currentTime+i*.17); o.stop(ctx.currentTime+i*.17+.25);
-    }
+  try{
+    drumMp3.pause();
+    drumMp3.currentTime = 0;
+    const p = drumMp3.play();
+    if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
   }catch(e){}
 }
+function sndTraktor() {
+  if (!audioOn) return;
+  try{
+    enjinMp3.pause();
+    enjinMp3.currentTime = 0;
+    const p = enjinMp3.play();
+    if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
+  }catch(e){}
+}
+
 function sndCorrect() { tone(659,'sine',.18,.28); tone(784,'sine',.18,.28,.15); }
 function sndWrong()   { tone(200,'square',.3,.4); }
 
@@ -693,7 +871,18 @@ function toggleAudio() {
   audioOn=!audioOn;
   document.getElementById('audio-btn').textContent = audioOn?'ON':'OFF';
   document.getElementById('audio-lbl').textContent = audioOn?'ON':'OFF';
-  if (audioOn) try{getCtx().resume();}catch(e){}
+
+  if (!audioOn) {
+    clearQuizAudioTimer();
+    stopQuizSfx();
+    try { voPlayer.pause(); } catch(e){}
+    try { bgmRats.pause(); } catch(e){}
+  }
+
+  if (audioOn) {
+    try{getCtx().resume();}catch(e){}
+    tryPlayBgmRats();
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -768,7 +957,7 @@ const QUIZ = [
       {
         s:'Kanak-kanak lelaki sedang bermain drum.\nBunyi apakah yang dihasilkan?',
         opts:['Dum Dum','Ting Ting','Tok Tok'], betul:0,
-        visual:'drum', onShow:sndDrum,
+        visual:'drum', soundType:'drum',
       },
       {
         s:'Apakah huruf Arab yang sesuai dengan bunyi "Dum"?',
@@ -783,7 +972,7 @@ const QUIZ = [
       {
         s:'Apakah bunyi yang dihasilkan oleh traktor ini?',
         opts:['Jin Jin Jin','Dum Dum','Tok Tok'], betul:0,
-        visual:'traktor', onShow:sndTraktor,
+        visual:'traktor', soundType:'engine',
       },
       {
         s:'Apakah huruf Arab yang sesuai dengan bunyi "Jin"?',
@@ -1038,6 +1227,7 @@ function gerak(dr,dc){
     return;
   }
   G.pemR=nr; G.pemC=nc;
+  cekKucing();
   const mz=MAZES[G.level];
   if(nr===mz.tamat.r && nc===mz.tamat.c) padaMenang();
 }
@@ -1145,24 +1335,20 @@ function startQuiz(level){
 }
 
 function renderKuiz(){
+  clearQuizAudioTimer();
+  stopQuizSfx();
+
   const qd   = QUIZ[G.kuizLevel];
   const sq   = qd.soalan[G.kuizSoalan];
   const total= qd.soalan.length;
 
   document.getElementById('kuiz-title').textContent =
-    `${qd.tajuk} — Soalan ${G.kuizSoalan+1} / ${total}`;
-
-  if(G.kuizLevel===0 && G.kuizSoalan===0){
-    playVOById('VO_QUIZ_Q_GENERIC');
-  }
-  if(G.kuizLevel===1 && G.kuizSoalan===0){
-    playVOById('VO_QUIZ_TRAKTOR_Q');
-  }
+    `${qd.tajuk}- Soalan ${G.kuizSoalan+1} / ${total}`;
 
   let html='';
-  if(sq.visual) html+=`<div style="margin:8px auto;width:clamp(55px,18vw,95px)">${svgVisual(sq.visual)}</div>`;
+  if(sq.visual) html+=`<div class="quiz-visual-wrap">${svgVisual(sq.visual)}</div>`;
 
-  html+=`<p style="font-size:clamp(.82rem,2.3vw,1rem);color:#333;margin-bottom:10px;white-space:pre-line">${sq.s}</p>`;
+  html+=`<p class="quiz-question">${sq.s}</p>`;
 
   sq.opts.forEach((opt,i)=>{
     const arabSt = sq.isArab
@@ -1173,13 +1359,25 @@ function renderKuiz(){
   html+=`<div id="q-fb"></div>`;
 
   document.getElementById('kuiz-body').innerHTML=html;
-  if(sq.onShow) setTimeout(sq.onShow,350);
+
+  if(G.kuizLevel===0 && G.kuizSoalan===0){
+    scheduleQuizAudio('VO_QUIZ_Q_GENERIC', 'drum');
+  } else if(G.kuizLevel===1 && G.kuizSoalan===0){
+    scheduleQuizAudio('VO_QUIZ_TRAKTOR_Q', 'engine');
+  } else if(sq.soundType === 'drum'){
+    playAudioWithDelay(drumMp3, 700);
+  } else if(sq.soundType === 'engine'){
+    playAudioWithDelay(enjinMp3, 700);
+  }
 }
 
 function pilihJwp(idx){
   const qd  = QUIZ[G.kuizLevel];
   const sq  = qd.soalan[G.kuizSoalan];
   const fb  = document.getElementById('q-fb');
+
+  clearQuizAudioTimer();
+  stopQuizSfx();
 
   sq.opts.forEach((_,i)=>{ const b=document.getElementById('qopt'+i); if(b) b.onclick=null; });
 
@@ -1197,7 +1395,7 @@ function pilihJwp(idx){
         G.kuizSelesai=true;
         document.getElementById('kuiz-body').innerHTML=`
           <div style="font-size:clamp(1.4rem,4.5vw,2rem);margin:10px 0">🎊🎊🎊</div>
-          <p style="font-size:clamp(.9rem,2.5vw,1.1rem);color:#2E7D32;font-weight:700;margin-bottom:8px">
+          <p class="quiz-done-msg">
             Tahniah! Anda menjawab SEMUA soalan dengan betul!
           </p>
         `;
@@ -1235,6 +1433,8 @@ function pilihJwp(idx){
 }
 
 function teruskanLevelSeterusnya(){
+  clearQuizAudioTimer();
+  stopQuizSfx();
   document.getElementById('mod-kuiz').style.display='none';
   if(G.kuizLevel<2){
     mulaLevelBaru(G.kuizLevel+1);
@@ -1244,6 +1444,8 @@ function teruskanLevelSeterusnya(){
 }
 
 function tunjukKeputusanAkhir(){
+  clearQuizAudioTimer();
+  stopQuizSfx();
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
 
@@ -1283,7 +1485,6 @@ function mulaPermainan(){
   mulakanLevel();
 }
 
-/* NEW: stop button opens pause modal */
 function bukaPauseMenu(){
   if(!G.dimulakan || !G.sedang || G.levelMenang) return;
   G.sedang = false;
@@ -1340,6 +1541,9 @@ function mulaLevelBaru(lvl){
 }
 
 function mulaSemulaPermainan(){
+  clearQuizAudioTimer();
+  stopQuizSfx();
+
   document.getElementById('mod-result').style.display='none';
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
@@ -1360,6 +1564,8 @@ function keluarPermainan(){
   document.getElementById('mod-keluar').style.display='flex';
 }
 function sahKeluar(){
+  clearQuizAudioTimer();
+  stopQuizSfx();
   document.getElementById('mod-keluar').style.display='none';
   window.location.href = 'index.html';
 }
@@ -1379,16 +1585,10 @@ function svgVisual(t){
     traktor:`<svg viewBox="0 0 100 70"><rect x="30" y="20" width="45" height="30" rx="4" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/><rect x="50" y="10" width="20" height="20" rx="3" fill="#81C784" stroke="#2E7D32" stroke-width="1.5"/><circle cx="20" cy="50" r="15" fill="#333" stroke="#111" stroke-width="2"/><circle cx="20" cy="50" r="8" fill="#666"/><circle cx="72" cy="55" r="10" fill="#333" stroke="#111" stroke-width="2"/><circle cx="72" cy="55" r="5" fill="#666"/><rect x="10" y="30" width="20" height="10" rx="2" fill="#FF8C00"/></svg>`,
     flamingo: `<div style="font-size:80px; line-height:80px;">🦩</div>`,
     cacing: `
-      <div style="
-        width:100px;
-        height:80px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-      ">
+      <div class="visual-img-wrap">
         <img
           src="assets/images/cacing2.png"
-          style="max-width:100%; max-height:100%; object-fit:contain;"
+          alt="Cacing"
         />
       </div>`,
   };
