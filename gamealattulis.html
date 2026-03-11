@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!-- 
-// VISUAL CHANGES SUMMARY
-// ========================
-// (UNCHANGED - your existing summary remains)
--->
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
@@ -12,19 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fonts.css">
-    
-    <style>
 
-   @font-face {
-  font-family: 'Azim';
-  src: url('./fonts/Azim-Medium(MZR).otf') format('opentype');
-  font-display: swap;
-}
-        * {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
+    <style>
+        @font-face {
+            font-family: 'Azim';
+            src: url('./fonts/Azim-Medium(MZR).otf') format('opentype');
+            font-display: swap;
         }
+
+        * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
         *, *::before, *::after { box-sizing: border-box; }
 
         :root {
@@ -33,65 +24,47 @@
             --accent1: #FFD60A;
             --accent2: #00D9FF;
             --accent3: #FF6B35;
-            --bg-white: #FFFFFF;
-            --desk-brown: #8B4513;
             --glow-blue: rgba(0,102,255,0.35);
             --glow-yellow: rgba(255,214,10,0.5);
-            --glow-pink: rgba(255,0,110,0.35);
         }
 
         html, body {
-            width: 100%;
-            height: 100%;
-            min-height: 100svh;
-            min-height: 100dvh;
-            margin: 0;
-            padding: 0;
+            width: 100%; height: 100%;
+            min-height: 100svh; min-height: 100dvh;
+            margin: 0; padding: 0;
             overflow: hidden !important;
             overscroll-behavior: none;
             font-family: 'Azim', 'Nunito', 'Quicksand', sans-serif;
             position: relative;
             background: linear-gradient(160deg,#FFF9C4 0%,#FFF176 35%,#FFE082 70%,#FFCC40 100%);
-            animation: bgShimmer 18s ease-in-out infinite alternate;
         }
 
-        .home-btn{
-        position:fixed;
-        top:12px;
-        left:12px;
-        width:70px;
-        height:50px;
-        border-radius:50%;
-        background:linear-gradient(135deg,#FFD54F,#FF8F00);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:50px;
-        text-decoration:none;
-        box-shadow:0 4px 10px rgba(0,0,0,.25);
-        z-index:9999;
-        transition:transform .15s ease, box-shadow .15s ease;
-        }
-        .home-btn:hover{
-        transform:translateY(-2px) scale(1.08);
-        box-shadow:0 6px 14px rgba(0,0,0,.3);
-        }
-        .home-btn:active{
-        transform:scale(.92);
-        }
-        .home-btn img{
-        width:1000px;
-        height:1000px;
-        object-fit:contain;
+        #screen-menu {
+            background-image: url('./assets/images/bggamealattulis.jpg') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
         }
 
-        /* ─── BACKGROUND LAYERS ─── */
+        /* ── HOME BUTTON ── */
+        .home-btn {
+            position: fixed; top: 12px; left: 12px;
+            width: 70px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg,#FFD54F,#FF8F00);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 50px; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,.25);
+            z-index: 9999;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .home-btn:hover { transform: translateY(-2px) scale(1.08); box-shadow: 0 6px 14px rgba(0,0,0,.3); }
+        .home-btn:active { transform: scale(.92); }
+        .home-btn img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* ── BACKGROUND SPARKLES (body level, behind screens) ── */
         body::before {
             content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
+            position: absolute; inset: 0; pointer-events: none; z-index: 0;
             background-image:
                 radial-gradient(circle, rgba(255,255,255,0.95) 2px, transparent 3px),
                 radial-gradient(circle, rgba(255,255,255,0.7) 1.5px, transparent 3px),
@@ -99,776 +72,384 @@
             background-size: 120px 120px, 160px 160px, 200px 200px;
             animation: sparkleMove 28s linear infinite;
         }
-
         body::after {
             content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
+            position: absolute; inset: 0; pointer-events: none; z-index: 0;
             background-image: radial-gradient(circle, rgba(255,255,255,0.95) 3px, transparent 4px);
             background-size: 250px 250px;
             animation: twinkle 3s ease-in-out infinite alternate;
         }
 
-        /* ─── DESK ─── */
+        /* ── DESK ── */
         .desk-bg {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: clamp(90px, 18vh, 22vh);
-            background: linear-gradient(to bottom, #F6C667, #E6A93C);
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: clamp(90px,18vh,22vh);
+            background: linear-gradient(to bottom,#F6C667,#E6A93C);
             border-top: 8px solid #D68B00;
             border-radius: 20px 20px 0 0;
-            box-shadow:
-                0 -5px 20px rgba(0,0,0,0.12),
-                0 -1px 0 rgba(255,255,255,0.4) inset,
-                0 -30px 40px rgba(255,200,80,0.3) inset;
-            z-index: 0;
-            pointer-events: none;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.12), 0 -1px 0 rgba(255,255,255,0.4) inset, 0 -30px 40px rgba(255,200,80,0.3) inset;
+            z-index: 0; pointer-events: none;
         }
-
         .desk-bg::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background-image:
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 48px,
-                    rgba(180,110,0,0.08) 48px,
-                    rgba(180,110,0,0.08) 50px
-                );
+            content: ""; position: absolute; inset: 0; border-radius: inherit;
+            background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 48px, rgba(180,110,0,0.08) 48px, rgba(180,110,0,0.08) 50px);
         }
-
         .desk-bg::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 12px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent);
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 12px;
+            background: linear-gradient(to bottom,rgba(255,255,255,0.35),transparent);
             border-radius: 20px 20px 0 0;
         }
 
-        .arabic-text {
-            font-family: 'Amiri', 'SakkalMajalla', serif;
-            direction: rtl;
-            unicode-bidi: embed;
-        }
+        .arabic-text { font-family: 'Amiri','SakkalMajalla',serif; direction: rtl; unicode-bidi: embed; }
 
-        @keyframes bgShimmer {
-            0%   { filter: hue-rotate(0deg) brightness(1); }
-            50%  { filter: hue-rotate(8deg) brightness(1.03); }
-            100% { filter: hue-rotate(-4deg) brightness(1); }
-        }
+        /* ── KEYFRAMES ── */
+        @keyframes bgShimmer { 0%{filter:hue-rotate(0deg) brightness(1)} 50%{filter:hue-rotate(8deg) brightness(1.03)} 100%{filter:hue-rotate(-4deg) brightness(1)} }
+        @keyframes sparkleMove { from{background-position:0 0,50px 50px,100px 100px} to{background-position:0 500px,50px 550px,100px 600px} }
+        @keyframes twinkle { from{opacity:0.4} to{opacity:0.95} }
+        @keyframes floatIdle { 0%,100%{transform:translateY(0px) rotate(-1deg)} 25%{transform:translateY(-10px) rotate(0.5deg)} 75%{transform:translateY(-6px) rotate(-0.5deg)} }
+        @keyframes glowPulse { 0%,100%{filter:drop-shadow(0 0 8px var(--glow-blue)) drop-shadow(0 0 20px var(--glow-yellow))} 50%{filter:drop-shadow(0 0 18px var(--glow-blue)) drop-shadow(0 0 36px var(--glow-yellow))} }
+        @keyframes shineSweep { 0%{background-position:-200% center} 100%{background-position:200% center} }
+        @keyframes popPress { 0%{transform:scale(1)} 30%{transform:scale(0.91)} 65%{transform:scale(1.07)} 100%{transform:scale(1)} }
+        @keyframes sparkle-pop { 0%{opacity:1;transform:translate(0,0) scale(1) rotate(0deg)} 100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0) rotate(360deg)} }
+        @keyframes bounce { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-20px) scale(1.05)} }
+        @keyframes blink-eyes { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.05)} }
+        @keyframes shake { 0%,100%{transform:translateX(0) rotateZ(0deg)} 25%{transform:translateX(-8px) rotateZ(-1.5deg)} 75%{transform:translateX(8px) rotateZ(1.5deg)} }
+        @keyframes screenShake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-5px)} 30%{transform:translateX(5px)} 45%{transform:translateX(-4px)} 60%{transform:translateX(4px)} 80%{transform:translateX(-2px)} }
+        @keyframes bounce-reveal { 0%{transform:scale(0.8) rotate(-3deg)} 40%{transform:scale(1.18) rotate(2deg)} 70%{transform:scale(0.96) rotate(-1deg)} 100%{transform:scale(1) rotate(0deg)} }
+        @keyframes wobbleIn { 0%{opacity:0;transform:scale(0.7) rotate(-4deg)} 60%{transform:scale(1.08) rotate(1.5deg)} 80%{transform:scale(0.97) rotate(-0.5deg)} 100%{opacity:1;transform:scale(1) rotate(0deg)} }
+        @keyframes starDrop { 0%{opacity:0;transform:translateY(-40px) scale(0.5)} 60%{transform:translateY(6px) scale(1.2)} 80%{transform:translateY(-3px) scale(0.95)} 100%{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes star-bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+        @keyframes pulseRing { 0%{box-shadow:0 0 0 0 rgba(0,102,255,0.4),0 0 0 0 rgba(255,214,10,0.3);opacity:1} 100%{box-shadow:0 0 0 28px rgba(0,102,255,0),0 0 0 48px rgba(255,214,10,0);opacity:0} }
+        @keyframes menuPopIn { 0%{opacity:0;transform:scale(0.7) translateY(20px)} 70%{transform:scale(1.05) translateY(-4px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+        @keyframes correctFlash { 0%{opacity:0.6} 100%{opacity:0} }
+        @keyframes wrongFlash { 0%{opacity:0.45} 100%{opacity:0} }
+        @keyframes slide-up { 0%{opacity:0;transform:translateY(20px)} 100%{opacity:1;transform:translateY(0)} }
 
-        @keyframes sparkleMove {
-            from { background-position: 0 0, 50px 50px, 100px 100px; }
-            to   { background-position: 0 500px, 50px 550px, 100px 600px; }
-        }
+        /* ── ANIMATION CLASSES ── */
+        .animate-bounce-custom { animation: bounce 2.5s infinite cubic-bezier(0.36,0,0.66,-0.56); }
+        .animate-blink-eyes { animation: blink-eyes 3s infinite; transform-origin: center; }
+        .animate-shake-button { animation: shake 0.35s ease-in-out; }
+        .animate-screen-shake { animation: screenShake 0.35s ease-in-out; }
+        .animate-pop-sparkle { animation: sparkle-pop 0.8s ease-out forwards; }
+        .animate-slide-up { animation: slide-up 0.5s ease-out; }
+        .animate-bounce-reveal { animation: bounce-reveal 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+        .animate-star-bounce { animation: star-bounce 0.6s ease-in-out; }
+        .animate-float-idle { animation: floatIdle 3.2s ease-in-out infinite; }
+        .animate-glow-pulse { animation: glowPulse 2.5s ease-in-out infinite; }
+        .animate-wobble-in { animation: wobbleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .animate-star-drop { animation: starDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .animate-menu-pop { animation: menuPopIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-        @keyframes twinkle {
-            from { opacity: 0.4; }
-            to   { opacity: 0.95; }
-        }
+        /* ── FLASH OVERLAYS ── */
+        .flash-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0; }
+        .flash-correct { background: radial-gradient(ellipse at center,transparent 40%,rgba(0,220,120,0.45) 100%); animation: correctFlash 0.5s ease-out forwards; }
+        .flash-wrong { background: radial-gradient(ellipse at center,transparent 40%,rgba(255,0,80,0.4) 100%); animation: wrongFlash 0.4s ease-out forwards; }
 
-        @keyframes floatIdle {
-            0%, 100% { transform: translateY(0px) rotate(-1deg); }
-            25%       { transform: translateY(-10px) rotate(0.5deg); }
-            75%       { transform: translateY(-6px) rotate(-0.5deg); }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 8px var(--glow-blue)) drop-shadow(0 0 20px var(--glow-yellow)); }
-            50%       { filter: drop-shadow(0 0 18px var(--glow-blue)) drop-shadow(0 0 36px var(--glow-yellow)); }
-        }
-
-        @keyframes shineSweep {
-            0%   { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        @keyframes popPress {
-            0%   { transform: scale(1); }
-            30%  { transform: scale(0.91); }
-            65%  { transform: scale(1.07); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes sparkle-pop {
-            0%   { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50%       { transform: translateY(-20px) scale(1.05); }
-        }
-
-        @keyframes blink-eyes {
-            0%, 90%, 100% { transform: scaleY(1); }
-            95%            { transform: scaleY(0.05); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0) rotateZ(0deg); }
-            25%       { transform: translateX(-8px) rotateZ(-1.5deg); }
-            75%       { transform: translateX(8px) rotateZ(1.5deg); }
-        }
-
-        @keyframes screenShake {
-            0%,100% { transform: translateX(0); }
-            15%     { transform: translateX(-5px); }
-            30%     { transform: translateX(5px); }
-            45%     { transform: translateX(-4px); }
-            60%     { transform: translateX(4px); }
-            80%     { transform: translateX(-2px); }
-        }
-
-        @keyframes bounce-reveal {
-            0%   { filter: brightness(0); transform: scale(0.8) rotate(-3deg); }
-            40%  { filter: brightness(1.3) drop-shadow(0 0 20px var(--accent1)); transform: scale(1.18) rotate(2deg); }
-            70%  { transform: scale(0.96) rotate(-1deg); }
-            100% { filter: brightness(1); transform: scale(1) rotate(0deg); }
-        }
-
-        @keyframes wobbleIn {
-            0%   { opacity: 0; transform: scale(0.7) rotate(-4deg); }
-            60%  { transform: scale(1.08) rotate(1.5deg); }
-            80%  { transform: scale(0.97) rotate(-0.5deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-
-        @keyframes starDrop {
-            0%   { opacity: 0; transform: translateY(-40px) scale(0.5); }
-            60%  { transform: translateY(6px) scale(1.2); }
-            80%  { transform: translateY(-3px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes star-bounce {
-            0%, 100% { transform: scale(1); }
-            50%       { transform: scale(1.35); }
-        }
-
-        @keyframes pulseRing {
-            0%   { box-shadow: 0 0 0 0 rgba(0,102,255,0.4), 0 0 0 0 rgba(255,214,10,0.3); opacity: 1; }
-            100% { box-shadow: 0 0 0 28px rgba(0,102,255,0), 0 0 0 48px rgba(255,214,10,0); opacity: 0; }
-        }
-
-        @keyframes menuPopIn {
-            0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
-            70%  { transform: scale(1.05) translateY(-4px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes fade-in-popup {
-            0%   { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes correctFlash {
-            0%   { opacity: 0.6; }
-            100% { opacity: 0; }
-        }
-
-        @keyframes wrongFlash {
-            0%   { opacity: 0.45; }
-            100% { opacity: 0; }
-        }
-
-        @keyframes slide-up {
-            0%   { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-bounce-custom       { animation: bounce 2.5s infinite cubic-bezier(0.36,0,0.66,-0.56); }
-        .animate-blink-eyes          { animation: blink-eyes 3s infinite; transform-origin: center; }
-        .animate-shake-button        { animation: shake 0.35s ease-in-out; }
-        .animate-screen-shake        { animation: screenShake 0.35s ease-in-out; }
-        .animate-pop-sparkle         { animation: sparkle-pop 0.8s ease-out forwards; }
-        .animate-fade-popup          { animation: fade-in-popup 0.4s cubic-bezier(0.34,1.56,0.64,1); }
-        .animate-slide-up            { animation: slide-up 0.5s ease-out; }
-        .animate-bounce-reveal       { animation: bounce-reveal 0.7s cubic-bezier(0.34,1.56,0.64,1); }
-        .animate-star-bounce         { animation: star-bounce 0.6s ease-in-out; }
-        .animate-float-idle          { animation: floatIdle 3.2s ease-in-out infinite; }
-        .animate-glow-pulse          { animation: glowPulse 2.5s ease-in-out infinite; }
-        .animate-wobble-in           { animation: wobbleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
-        .animate-star-drop           { animation: starDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-        .animate-menu-pop            { animation: menuPopIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-
-        .flash-overlay {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 999;
-            border-radius: 0;
-            opacity: 0;
-        }
-        .flash-correct {
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,220,120,0.45) 100%);
-            animation: correctFlash 0.5s ease-out forwards;
-        }
-        .flash-wrong {
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(255,0,80,0.4) 100%);
-            animation: wrongFlash 0.4s ease-out forwards;
-        }
-
+        /* ── BUTTONS ── */
         .btn-primary {
-            background: linear-gradient(160deg, #1A7FFF 0%, #0055DD 60%, #003FAA 100%);
-            color: white;
-            border: none;
-            border-radius: clamp(14px, 4vw, 28px);
-            padding: clamp(13px, 3vw, 19px) clamp(28px, 7vw, 42px);
-            font-size: clamp(1.15rem, 3.2vw, 1.65rem);
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
-            cursor: pointer;
+            background: linear-gradient(160deg,#1addff 0%,#49c1c7 60%,#05fbff 100%);
+            color: white; border: none; border-radius: clamp(14px,4vw,28px);
+            padding: clamp(13px,3vw,19px) clamp(28px,7vw,42px);
+            font-size: clamp(1.15rem,3.2vw,1.65rem);
+            font-family: 'Nunito',sans-serif; font-weight: 900; cursor: pointer;
             transition: transform 0.18s ease, box-shadow 0.18s ease;
-            box-shadow:
-                0 7px 0 #003399,
-                0 10px 20px rgba(0,80,200,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            position: relative;
-            touch-action: manipulation;
-            min-width: 130px;
-            min-height: 52px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            letter-spacing: 0.5px;
+            box-shadow: 0 7px 0 #ffffff, 0 10px 20px rgb(86, 244, 255), inset 0 1px 0 rgba(255,255,255,0.3);
+            position: relative; touch-action: manipulation;
+            min-width: 130px; min-height: 52px;
+            display: inline-flex; align-items: center; justify-content: center;
+            overflow: hidden; letter-spacing: 0.5px;
         }
-
         .btn-primary::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(110deg,
-                transparent 20%,
-                rgba(255,255,255,0.35) 45%,
-                rgba(255,255,255,0.15) 55%,
-                transparent 70%
-            );
-            background-size: 200% 100%;
-            animation: shineSweep 2.8s ease-in-out infinite;
-            border-radius: inherit;
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(110deg,transparent 20%,rgba(255,255,255,0.35) 45%,rgba(255,255,255,0.15) 55%,transparent 70%);
+            background-size: 200% 100%; animation: shineSweep 2.8s ease-in-out infinite; border-radius: inherit;
         }
-
-        .btn-primary:hover:not(:active) {
-            transform: translateY(-3px);
-            box-shadow:
-                0 10px 0 #003399,
-                0 16px 30px rgba(0,80,200,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.35);
-        }
-        .btn-primary:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 #003399, 0 4px 8px rgba(0,80,200,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: popPress 0.25s ease-out;
-        }
-        .btn-primary:focus-visible {
-            outline: 3px solid var(--accent1);
-            outline-offset: 3px;
-        }
+        .btn-primary:hover:not(:active) { transform: translateY(-3px); box-shadow: 0 10px 0 #f3ff4d, 0 16px 30px rgba(0,80,200,0.45), inset 0 1px 0 rgba(255,255,255,0.35); }
+        .btn-primary:active { transform: translateY(5px); box-shadow: 0 2px 0 #003399, 0 4px 8px rgba(0,80,200,0.2); animation: popPress 0.25s ease-out; }
+        .btn-primary:focus-visible { outline: 3px solid var(--accent1); outline-offset: 3px; }
 
         .btn-secondary {
-            background: linear-gradient(160deg, #FF3D8A 0%, #E0005F 60%, #AA0048 100%);
-            color: white;
-            border: none;
-            border-radius: clamp(14px, 4vw, 28px);
-            padding: clamp(13px, 3vw, 19px) clamp(28px, 7vw, 42px);
-            font-size: clamp(1.15rem, 3.2vw, 1.65rem);
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
-            cursor: pointer;
+            background: linear-gradient(160deg,#FF3D8A 0%,#E0005F 60%,#AA0048 100%);
+            color: white; border: none; border-radius: clamp(14px,4vw,28px);
+            padding: clamp(13px,3vw,19px) clamp(28px,7vw,42px);
+            font-size: clamp(1.15rem,3.2vw,1.65rem);
+            font-family: 'Nunito',sans-serif; font-weight: 900; cursor: pointer;
             transition: transform 0.18s ease, box-shadow 0.18s ease;
-            box-shadow:
-                0 7px 0 #880040,
-                0 10px 20px rgba(200,0,80,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            position: relative;
-            touch-action: manipulation;
-            min-width: 130px;
-            min-height: 52px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            letter-spacing: 0.5px;
+            box-shadow: 0 7px 0 #880040, 0 10px 20px rgba(200,0,80,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            position: relative; touch-action: manipulation;
+            min-width: 130px; min-height: 52px;
+            display: inline-flex; align-items: center; justify-content: center;
+            overflow: hidden; letter-spacing: 0.5px;
         }
-
         .btn-secondary::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(110deg,
-                transparent 20%,
-                rgba(255,255,255,0.32) 45%,
-                rgba(255,255,255,0.12) 55%,
-                transparent 70%
-            );
-            background-size: 200% 100%;
-            animation: shineSweep 3.2s ease-in-out infinite;
-            border-radius: inherit;
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(110deg,transparent 20%,rgba(255,255,255,0.32) 45%,rgba(255,255,255,0.12) 55%,transparent 70%);
+            background-size: 200% 100%; animation: shineSweep 3.2s ease-in-out infinite; border-radius: inherit;
         }
+        .btn-secondary:hover:not(:active) { transform: translateY(-3px); box-shadow: 0 10px 0 #880040, 0 16px 30px rgba(200,0,80,0.4); }
+        .btn-secondary:active { transform: translateY(5px); animation: popPress 0.25s ease-out; }
+        .btn-secondary:focus-visible { outline: 3px solid var(--accent1); outline-offset: 3px; }
 
-        .btn-secondary:hover:not(:active) {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 0 #880040, 0 16px 30px rgba(200,0,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
-        }
-        .btn-secondary:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 #880040, 0 4px 8px rgba(200,0,80,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: popPress 0.25s ease-out;
-        }
-        .btn-secondary:focus-visible {
-            outline: 3px solid var(--accent1);
-            outline-offset: 3px;
-        }
-
+        /* ══════════════════════════════════════════════
+           ANSWER BUTTONS — with image + arabic + malay
+           Matches the reference screenshot style:
+           image on top, arabic text, malay in brackets
+        ══════════════════════════════════════════════ */
         .btn-answer {
-            background: linear-gradient(160deg, #FFFFFF 0%, #F0F6FF 100%);
+            background: linear-gradient(160deg,#FFFFFF 0%,#EEF6FF 100%);
             border: 3px solid #6BAEFF;
-            border-radius: clamp(12px, 3.5vw, 20px);
-            padding: clamp(10px, 2vw, 16px);
+            border-radius: clamp(14px,4vw,22px);
+            padding: clamp(6px,1.5vw,10px) clamp(6px,1.5vw,10px) clamp(8px,2vw,12px);
             cursor: pointer;
             transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, border-color 0.18s ease;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            position: relative;
-            touch-action: manipulation;
-            overflow: hidden;
-            box-shadow:
-                0 4px 0 rgba(0,100,220,0.2),
-                0 6px 16px rgba(0,80,200,0.1),
-                inset 0 1px 0 rgba(255,255,255,0.9);
+            min-height: clamp(90px,22vw,130px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            gap: 3px;
+            position: relative; touch-action: manipulation; overflow: hidden;
+            box-shadow: 0 4px 0 rgba(0,100,220,0.2), 0 6px 16px rgba(0,80,200,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
         }
-
         .btn-answer::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%), rgba(0,102,255,0.15) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: inherit;
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--rx,50%) var(--ry,50%),rgba(0,102,255,0.12) 0%,transparent 70%);
+            opacity: 0; transition: opacity 0.3s ease; border-radius: inherit;
         }
         .btn-answer:hover::after { opacity: 1; }
-
+        /* Top shine */
         .btn-answer::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 40%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.7), transparent);
-            border-radius: inherit;
-            pointer-events: none;
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 35%;
+            background: linear-gradient(to bottom,rgba(255,255,255,0.75),transparent);
+            border-radius: inherit; pointer-events: none; z-index: 1;
         }
-
         .btn-answer:hover:not(:active):not(.correct):not(.wrong) {
-            background: linear-gradient(160deg, #FFFBE6 0%, #FFF3B0 100%);
+            background: linear-gradient(160deg,#FFFBE6 0%,#FFF3B0 100%);
             border-color: var(--accent3);
             transform: translateY(-6px) scale(1.04);
-            box-shadow:
-                0 8px 0 rgba(220,120,0,0.2),
-                0 14px 28px rgba(255,140,0,0.25),
-                0 0 0 3px rgba(255,214,10,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.9);
+            box-shadow: 0 8px 0 rgba(220,120,0,0.2), 0 14px 28px rgba(255,140,0,0.25), 0 0 0 3px rgba(255,214,10,0.3), inset 0 1px 0 rgba(255,255,255,0.9);
         }
-
-        .btn-answer:active:not(.correct):not(.wrong) {
-            transform: translateY(0px) scale(0.95);
-            animation: popPress 0.2s ease-out;
-        }
-
-        .btn-answer:focus-visible {
-            outline: 3px solid var(--accent1);
-            outline-offset: 2px;
-        }
-
+        .btn-answer:active:not(.correct):not(.wrong) { transform: translateY(0px) scale(0.95); animation: popPress 0.2s ease-out; }
+        .btn-answer:focus-visible { outline: 3px solid var(--accent1); outline-offset: 2px; }
         .btn-answer.correct {
-            background: linear-gradient(160deg, #B8FFED 0%, #00D9A8 100%);
+            background: linear-gradient(160deg,#B8FFED 0%,#00D9A8 100%);
             border-color: #00B890;
-            box-shadow:
-                0 4px 0 #009970,
-                0 0 0 4px rgba(0,220,160,0.3),
-                0 12px 24px rgba(0,180,140,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.7);
+            box-shadow: 0 4px 0 #009970, 0 0 0 4px rgba(0,220,160,0.3), 0 12px 24px rgba(0,180,140,0.3);
             transform: scale(1.04);
         }
-
         .btn-answer.wrong {
-            background: linear-gradient(160deg, #FFE8EE 0%, #FFCCD8 100%);
+            background: linear-gradient(160deg,#FFE8EE 0%,#FFCCD8 100%);
             border-color: #FF4477;
-            box-shadow:
-                0 4px 0 rgba(220,0,60,0.2),
-                0 0 0 3px rgba(255,60,100,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.7);
+            box-shadow: 0 4px 0 rgba(220,0,60,0.2), 0 0 0 3px rgba(255,60,100,0.2);
         }
 
+        /* ── Image inside answer button ── */
+        .option-img-wrap {
+            width: clamp(38px,10vw,60px);
+            height: clamp(38px,10vw,60px);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 2;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .option-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: contain; display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+        }
+        /* Text area inside button */
+        .option-texts {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 1px;
+            position: relative; z-index: 2;
+            width: 100%;
+        }
+        .option-arabic {
+            font-size: clamp(0.95rem,2.8vw,1.3rem);
+            font-weight: 700; color: var(--primary);
+            line-height: 1.2;
+        }
+        .option-label {
+            font-size: clamp(0.7rem,2vw,0.9rem);
+            font-weight: 800; color: #2A3A5A;
+            line-height: 1.1;
+        }
+
+        /* ── LAYOUT ── */
         .game-container {
-            width: 100%;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            padding: clamp(12px,3vw,28px);
-            gap: clamp(10px,2.5vw,18px);
-            position: relative;
-            z-index: 10;
+            width: 100%; height: 100dvh;
+            display: flex; flex-direction: column;
+            padding: clamp(12px,3vw,28px); gap: clamp(10px,2.5vw,18px);
+            position: relative; z-index: 10;
         }
-
         .screen {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: clamp(10px,2.5vw,22px);
-            overflow: auto;
-            opacity: 0;
-            visibility: hidden;
+            position: absolute; inset: 0; width: 100%; height: 100dvh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: clamp(10px,2.5vw,22px); overflow: auto;
+            opacity: 0; visibility: hidden;
             transition: opacity 0.35s ease, visibility 0.35s ease;
-            z-index: 20;
-            -webkit-overflow-scrolling: touch;
+            z-index: 20; -webkit-overflow-scrolling: touch;
         }
         .screen.active { opacity: 1; visibility: visible; }
-
         .screen-menu { gap: clamp(18px,4.5vw,38px); }
-
         .menu-character {
-            width: clamp(140px,32vw,210px);
-            height: clamp(140px,32vw,210px);
+            width: clamp(300px,30vw,500px); height: clamp(200px,48vw,320px);
             filter: drop-shadow(0 12px 24px rgba(0,80,200,0.3)) drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+            margin-top: 40px;
         }
-
         .menu-title {
-            font-size: clamp(2.4rem,8.5vw,3.8rem);
-            font-weight: 900;
-            color: var(--primary);
-            text-align: center;
-            line-height: 1.1;
-            margin: 0;
-            text-shadow:
-                3px 3px 0 var(--accent1),
-                6px 6px 0 rgba(0,80,200,0.15),
-                0 0 30px rgba(0,102,255,0.2);
-            letter-spacing: -0.5px;
+            font-size: clamp(2.4rem,8.5vw,3.8rem); font-weight: 900; color: #000000;
+            text-align: center; line-height: 1.1; margin: 0;
+            text-shadow: 3px 3px 0 var(--accent1), 0 0 30px rgb(255, 255, 255), 2px 2px 8px rgba(0,0,0,0.4);
         }
-
         .menu-subtitle {
-            font-size: clamp(1.7rem,5.5vw,2.6rem);
-            color: var(--secondary);
-            margin: 0;
-            text-shadow: 2px 2px 0 rgba(255,0,110,0.2);
+            font-size: clamp(1.7rem,5.5vw,2.6rem); color: #000000; margin: 0;
+            text-shadow: 2px 2px 0 rgb(246, 255, 120), 0 2px 8px rgba(0,0,0,0.35);
         }
-
-        .screen-game {
-            justify-content: space-between;
-            gap: clamp(8px,2vw,14px);
-        }
-
-        .game-header,
-        .question-area {
-            width: 100%;
-            min-height: 0;
-        }
-
+        .screen-game { justify-content: space-between; gap: clamp(8px,2vw,14px); }
+        .game-header, .question-area { width: 100%; min-height: 0; }
         .progress-bar {
-            flex: 1;
-            height: clamp(14px,3.2vw,22px);
-            background: linear-gradient(to right, #D0E8FF, #E8F4FF);
-            border-radius: 12px;
-            overflow: hidden;
+            flex: 1; height: clamp(14px,3.2vw,22px);
+            background: linear-gradient(to right,#D0E8FF,#E8F4FF);
+            border-radius: 12px; overflow: hidden;
             border: 2px solid rgba(0,102,255,0.25);
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
         }
-
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #FFD60A, #FF9D00, #00D9FF, #0066FF);
-            background-size: 200% 100%;
-            transition: width 0.5s ease;
-            width: 0%;
-            border-radius: inherit;
-            position: relative;
-            box-shadow: 0 0 8px rgba(0,150,255,0.4);
+            background: linear-gradient(90deg,#FFD60A,#FF9D00,#00D9FF,#0066FF);
+            background-size: 200% 100%; transition: width 0.5s ease; width: 0%;
+            border-radius: inherit; box-shadow: 0 0 8px rgba(0,150,255,0.4);
         }
-
         .step-counter {
-            background: linear-gradient(135deg, #FF3D8A, #CC0055);
-            color: white;
-            padding: clamp(8px,2vw,12px) clamp(12px,3vw,18px);
-            border-radius: 10px;
-            font-weight: 900;
-            font-size: clamp(0.9rem,2.5vw,1.2rem);
-            min-width: 65px;
-            text-align: center;
+            background: linear-gradient(135deg,#FF3D8A,#CC0055); color: white;
+            padding: clamp(8px,2vw,12px) clamp(12px,3vw,18px); border-radius: 10px;
+            font-weight: 900; font-size: clamp(0.9rem,2.5vw,1.2rem);
+            min-width: 65px; text-align: center;
             box-shadow: 0 4px 0 #880040, 0 6px 12px rgba(200,0,80,0.2);
         }
-
         .question-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: clamp(14px,3.5vw,22px);
-            width: 100%;
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: clamp(14px,3.5vw,22px); width: 100%;
         }
+        .question-text { font-size: clamp(1.7rem,4.5vw,2.4rem); color: var(--secondary); font-weight: 900; margin: 0; text-shadow: 2px 2px 0 rgba(255,0,110,0.18); }
 
-        .question-text {
-            font-size: clamp(1.7rem,4.5vw,2.4rem);
-            color: var(--secondary);
-            font-weight: 900;
-            margin: 0;
-            text-shadow: 2px 2px 0 rgba(255,0,110,0.18);
-        }
-
+        /* ── SILHOUETTE ── */
         .silhouette-container {
-            width: clamp(120px,36vw,250px);
-            height: clamp(120px,36vw,250px);
-            position: relative;
-            margin: 0 auto;
+            width: clamp(120px,36vw,250px); height: clamp(120px,36vw,250px);
+            position: relative; margin: 0 auto;
         }
-
         .silhouette-container::before {
-            content: "";
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
+            content: ""; position: absolute; inset: -8px;
+            border-radius: 50%; pointer-events: none; z-index: 0;
         }
-
-        .silhouette-container.pulsing::before {
-            animation: pulseRing 0.8s ease-out forwards;
-        }
-
+        .silhouette-container.pulsing::before { animation: pulseRing 0.8s ease-out forwards; }
         .silhouette {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%; position: relative; z-index: 1;
             filter: brightness(0) contrast(1.2) drop-shadow(0 8px 16px rgba(0,0,0,0.3));
             transition: filter 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
             animation: floatIdle 3.2s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
+            background: transparent;
         }
-
+        .silhouette img {
+            width: 100%; height: 100%; object-fit: contain; display: block;
+        }
         .silhouette.revealed {
             filter: brightness(1) contrast(1) drop-shadow(0 10px 24px rgba(0,0,0,0.2));
-            animation: bounce-reveal 0.7s cubic-bezier(0.34,1.56,0.64,1), floatIdle 3.2s ease-in-out 0.7s infinite, glowPulse 2.5s ease-in-out 0.7s infinite;
+            animation: bounce-reveal 0.7s cubic-bezier(0.34,1.56,0.64,1),
+                       floatIdle 3.2s ease-in-out 0.7s infinite,
+                       glowPulse 2.5s ease-in-out 0.7s infinite;
         }
 
-        .silhouette svg { width: 100%; height: 100%; }
-
+        /* ── OPTIONS GRID ── */
         .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2,1fr);
-            gap: clamp(10px,2.5vw,14px);
-            width: 100%;
+            display: grid; grid-template-columns: repeat(2,1fr);
+            gap: clamp(8px,2vw,14px); width: 100%;
             max-width: min(420px,94vw);
-            max-height: min(44dvh,380px);
-            overflow: auto;
-            padding: 4px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .option-label {
-            font-size: clamp(0.85rem,2.5vw,1.1rem);
-            font-weight: 800;
-            color: #1A2A44;
-        }
-
-        .option-arabic {
-            font-size: clamp(1rem,3vw,1.45rem);
-            font-weight: 700;
-            color: var(--primary);
+            padding: 4px; -webkit-overflow-scrolling: touch;
         }
 
         .feedback-text {
-            font-size: clamp(1.4rem,4.2vw,2.1rem);
-            font-weight: 900;
-            color: #00B87A;
-            text-align: center;
-            margin: clamp(10px,2.5vw,18px) 0 0 0;
-            min-height: 40px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            text-shadow: 0 0 16px rgba(0,200,120,0.4);
-            letter-spacing: 1px;
+            font-size: clamp(1.4rem,4.2vw,2.1rem); font-weight: 900; color: #00B87A;
+            text-align: center; margin: clamp(6px,1.5vw,14px) 0 0 0;
+            min-height: 36px; opacity: 0; transition: opacity 0.4s ease;
+            text-shadow: 0 0 16px rgba(0,200,120,0.4); letter-spacing: 1px;
         }
-
         .feedback-text.show { opacity: 1; }
 
+        /* ── MODAL ── */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,20,60,0.55);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            padding: 16px;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,20,60,0.55); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; padding: 16px;
         }
-
         .modal-overlay.active { opacity: 1; visibility: visible; }
-
         .modal-content {
-            background: linear-gradient(160deg, #FFFFFF 0%, #F0F8FF 100%);
-            border-radius: clamp(18px,5.5vw,34px);
-            padding: clamp(24px,6vw,42px);
+            background: linear-gradient(160deg,#FFFFFF 0%,#F0F8FF 100%);
+            border-radius: clamp(18px,5.5vw,34px); padding: clamp(24px,6vw,42px);
             border: 5px solid var(--primary);
-            box-shadow:
-                0 24px 64px rgba(0,0,0,0.28),
-                0 0 0 8px rgba(0,102,255,0.1),
-                inset 0 1px 0 rgba(255,255,255,0.9);
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            transform: scale(0.82);
-            transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.28), 0 0 0 8px rgba(0,102,255,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+            max-width: 500px; width: 90%; text-align: center;
+            transform: scale(0.82); transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
         }
-
         .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h3 { font-size: clamp(1.8rem,5vw,2.5rem); font-weight: 900; color: var(--primary); margin: 0 0 clamp(12px,3vw,20px) 0; }
+        .modal-content p { font-size: clamp(1rem,3vw,1.3rem); color: #2A3A5A; margin: 0 0 clamp(14px,3vw,22px) 0; line-height: 1.55; font-weight: 700; }
 
-        .modal-content h3 {
-            font-size: clamp(1.8rem,5vw,2.5rem);
-            font-weight: 900;
-            color: var(--primary);
-            margin: 0 0 clamp(12px,3vw,20px) 0;
-            text-shadow: 2px 2px 0 rgba(0,102,255,0.15);
+        /* ── RESULT ── */
+        .screen-result {
+            width: 100%; padding: clamp(14px,4vw,28px); gap: clamp(14px,3.5vw,26px);
+            max-width: min(520px,calc(100vw - 28px)); margin: 0 auto;
+            max-height: 100dvh; overflow: auto; -webkit-overflow-scrolling: touch;
         }
-
-        .modal-content p {
-            font-size: clamp(1rem,3vw,1.3rem);
-            color: #2A3A5A;
-            margin: 0 0 clamp(14px,3vw,22px) 0;
-            line-height: 1.55;
-            font-weight: 700;
-        }
-
-        /* RESULT SCREEN (your responsive fix stays) */
-        .screen-result{
-            width: 100%;
-            padding: clamp(14px, 4vw, 28px);
-            gap: clamp(14px, 3.5vw, 26px);
-            max-width: min(520px, calc(100vw - 28px));
-            margin: 0 auto;
-            max-height: 100dvh;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .result-title{
-            font-size: clamp(1.8rem, 7.5vw, 3rem);
-            line-height: 1.05;
-            text-align: center;
-            margin: 0;
-            padding: 0 6px;
-        }
-
-        .stars-container{
-            display:flex;
-            justify-content:center;
-            gap: clamp(10px, 3vw, 18px);
-            font-size: clamp(1.8rem, 8vw, 3rem);
-            flex-wrap: wrap;
-        }
-
-        .score-box{
-            width: 100%;
-            max-width: min(420px, 92vw);
-            border-radius: clamp(16px, 3vw, 22px);
-            padding: clamp(12px, 3.2vw, 20px) clamp(14px, 4vw, 26px);
-            margin: 0 auto;
-        }
-
-        .score-label{ font-size: clamp(0.72rem, 2.8vw, 0.95rem); }
-        .score-display{ font-size: clamp(1.05rem, 4.2vw, 1.55rem); line-height: 1.35; }
-
-        #btn-restart{ width: min(360px, 92vw); }
-
-        @media (max-height: 520px) and (orientation: landscape){
-            .screen-result{
-                gap: 12px;
-                padding: 12px;
-                max-width: min(560px, calc(100vw - 24px));
-            }
-            .result-title{ font-size: clamp(1.5rem, 6vw, 2.4rem); }
-            .stars-container{ font-size: clamp(1.5rem, 6.5vw, 2.4rem); }
-        }
-
-        #final-score{ display:grid; gap:6px; }
-        #final-score div{ white-space: nowrap; }
-        @media (max-width: 360px){
-            #final-score div{ white-space: normal; }
-        }
-
+        .result-title { font-size: clamp(1.8rem,7.5vw,3rem); line-height: 1.05; text-align: center; margin: 0; padding: 0 6px; }
+        .stars-container { display: flex; justify-content: center; gap: clamp(10px,3vw,18px); font-size: clamp(1.8rem,8vw,3rem); flex-wrap: wrap; }
+        .score-box { width: 100%; max-width: min(420px,92vw); border-radius: clamp(16px,3vw,22px); padding: clamp(12px,3.2vw,20px) clamp(14px,4vw,26px); margin: 0 auto; }
+        .score-label { font-size: clamp(0.72rem,2.8vw,0.95rem); }
+        .score-display { font-size: clamp(1.05rem,4.2vw,1.55rem); line-height: 1.35; }
+        #btn-restart { width: min(360px,92vw); }
+        #final-score { display: grid; gap: 6px; }
+        #final-score div { white-space: nowrap; }
         .hidden { display: none !important; }
 
-        @media (max-height: 700px) {
-            .menu-title       { font-size: clamp(1.8rem,7vw,3rem); }
-            .menu-subtitle    { font-size: clamp(1.2rem,4.5vw,2rem); }
-            .menu-character   { width: clamp(110px,26vw,175px); height: clamp(110px,26vw,175px); }
+        /* ── RESPONSIVE ── */
+        @media (max-height:700px) {
+            .menu-title { font-size: clamp(1.8rem,7vw,3rem); }
+            .menu-subtitle { font-size: clamp(1.2rem,4.5vw,2rem); }
+            .menu-character { width: clamp(110px,26vw,175px); height: clamp(110px,26vw,175px); }
             .silhouette-container { width: clamp(100px,27vw,200px); height: clamp(100px,27vw,200px); }
-            .options-grid     { max-width: 370px; }
-            .btn-answer       { min-height: 72px; }
+            .options-grid { max-width: 370px; }
+            .btn-answer { min-height: clamp(80px,18vw,110px); }
         }
-
-        @media (max-height: 600px) and (orientation: portrait) {
-            .screen-menu      { gap: 10px; }
-            .menu-character   { width: clamp(90px,20vw,140px); height: clamp(90px,20vw,140px); }
-            .silhouette-container { width: clamp(90px,22vw,160px); height: clamp(90px,22vw,160px); }
-            .desk-bg          { height: clamp(60px,12vh,16vh); }
-        }
-
-        @media (max-height: 520px) and (orientation: landscape) {
+        @media (max-height:520px) and (orientation:landscape) {
             .screen { padding: 8px 14px; }
             .screen-menu { gap: 10px; }
-            .menu-character   { width: clamp(80px,16vw,130px); height: clamp(80px,16vw,130px); }
-            .question-text    { font-size: clamp(1.1rem,3vw,1.5rem); }
-            .options-grid {
-                grid-template-columns: repeat(4,1fr);
-                max-width: 94vw;
-                gap: 8px;
-            }
-            .btn-answer       { min-height: 58px; padding: 8px; }
-            .option-label     { font-size: clamp(0.72rem,1.9vw,0.9rem); }
-            .option-arabic    { font-size: clamp(0.88rem,2.2vw,1.1rem); }
+            .menu-character { width: clamp(80px,16vw,130px); height: clamp(80px,16vw,130px); }
+            .question-text { font-size: clamp(1.1rem,3vw,1.5rem); }
+            .options-grid { grid-template-columns: repeat(4,1fr); max-width: 94vw; gap: 8px; }
+            .btn-answer { min-height: 70px; padding: 6px; }
+            .option-img-wrap { width: clamp(28px,7vw,40px); height: clamp(28px,7vw,40px); }
             .silhouette-container { width: clamp(80px,16vw,140px); height: clamp(80px,16vw,140px); }
-            .desk-bg          { height: clamp(50px,11vh,14vh); }
+            .desk-bg { height: clamp(50px,11vh,14vh); }
         }
-
-        @media (max-height: 720px) {
+        @media (max-height:720px) {
             .silhouette-container { width: clamp(100px,27vw,205px); height: clamp(100px,27vw,205px); }
-            .btn-answer       { min-height: 66px; }
-            .options-grid     { max-height: 38dvh; }
-            .desk-bg          { height: clamp(70px,14vh,18vh); }
+            .btn-answer { min-height: clamp(80px,20vw,115px); }
+            .desk-bg { height: clamp(70px,14vh,18vh); }
         }
-
-        @media (min-width: 768px) and (min-height: 900px) {
+        @media (min-width:768px) and (min-height:900px) {
             .options-grid { max-width: 480px; gap: 16px; }
-            .btn-answer   { min-height: 96px; }
+            .btn-answer { min-height: 140px; }
+            .option-img-wrap { width: 70px; height: 70px; }
         }
-
-        @media (prefers-reduced-motion: reduce) {
+        @media (max-height:520px) and (orientation:landscape) {
+            .screen-result { gap: 12px; padding: 12px; }
+            .result-title { font-size: clamp(1.5rem,6vw,2.4rem); }
+            .stars-container { font-size: clamp(1.5rem,6.5vw,2.4rem); }
+        }
+        @media (max-width:360px) { #final-score div { white-space: normal; } }
+        @media (prefers-reduced-motion:reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
@@ -878,155 +459,44 @@
     </style>
 </head>
 <body>
+
     <a href="index.html" class="home-btn" title="Ke Halaman Utama">
         <img src="assets/images/homepage.png" alt="Home">
     </a>
-    <!-- FLASH OVERLAYS (JS toggles) -->
+
     <div id="flash-correct" class="flash-overlay" style="display:none;"></div>
     <div id="flash-wrong"   class="flash-overlay" style="display:none;"></div>
 
-    <!-- DESK BACKGROUND -->
     <div class="desk-bg"></div>
 
-    <!-- =========================================================
-         BACKGROUND MUSIC
-         ========================================================= -->
+    <!-- ── AUDIO ── -->
     <audio id="bgm_main" src="./assets/vogame5/bg_music.mp3" loop preload="auto"></audio>
+    <audio id="bgm_menu" preload="auto" loop><source src="" type="audio/mpeg"></audio>
+    <audio id="bgm_game" preload="auto" loop><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_giggle" preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_tick"   preload="auto" loop><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_boing"  preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_tada"   preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_zip"    preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_swoosh" preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="sfx_cheer"  preload="auto"><source src="" type="audio/mpeg"></audio>
+    <audio id="vo_riddle"    preload="auto"><source src="./assets/vogame4/game4_siapakamu.mp3"    type="audio/mpeg"></audio>
+    <audio id="vo_book"      preload="auto"><source src="./assets/vogame4/game4_sayabuku.mp3"      type="audio/mpeg"></audio>
+    <audio id="vo_pen"       preload="auto"><source src="./assets/vogame4/game4_kolamun.mp3"       type="audio/mpeg"></audio>
+    <audio id="vo_ruler"     preload="auto"><source src="./assets/vogame4/game4_mistorotun.mp3"    type="audio/mpeg"></audio>
+    <audio id="vo_sharpener" preload="auto"><source src="./assets/vogame4/game4_sayapengasah.mp3" type="audio/mpeg"></audio>
+    <audio id="vo_eraser"    preload="auto"><source src="./assets/vogame4/game4_sayapemadam.mp3"   type="audio/mpeg"></audio>
+    <audio id="vo_closing"   preload="auto"><source src="" type="audio/mpeg"></audio>
 
-    <!-- =========================================================
-         AUDIO PLACEHOLDERS (BGM + SFX + VO) — FILL PATHS LATER
-         ========================================================= -->
-    <!--
-      STORYBOARD ALIGNMENT (from doc):
-      - Menu: cute+mystery BGM + giggle on enter screen
-      - Gameplay thinking: tick-tock loop while choosing
-      - Wrong: "Boing!" + button shake (already)
-      - Correct: "Tadaaa/Magic" + VO item speaks (book/pen/ruler/sharpener/eraser placeholder)
-      - Transition between questions: "Ziiip!" + "Swoosh!"
-      - Result: cheering/applause + VO closing line
-    -->
-    
-    <audio id="bgm_menu" preload="auto" loop>
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/bgm_menu_detective.mp3" -->
-    </audio>
-
-    <audio id="bgm_game" preload="auto" loop>
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/bgm_game_soft.mp3" -->
-    </audio>
-
-    <audio id="sfx_giggle" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_giggle.mp3" -->
-    </audio>
-
-    <audio id="sfx_tick" preload="auto" loop>
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_tick_tock_loop.mp3" -->
-    </audio>
-
-    <audio id="sfx_boing" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_boing.mp3" -->
-    </audio>
-
-    <audio id="sfx_tada" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_tada_magic.mp3" -->
-    </audio>
-
-    <audio id="sfx_zip" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_zip_open.mp3" -->
-    </audio>
-
-    <audio id="sfx_swoosh" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_swoosh_jump.mp3" -->
-    </audio>
-
-    <audio id="sfx_cheer" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/audio/sfx_cheer_applause.mp3" -->
-    </audio>
-
-    <!-- VO: Riddle line -->
-    <audio id="vo_riddle" preload="auto">
-      <source src="./assets/vogame4/game4_siapakamu.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3" -->
-    </audio>
-
-    <!-- VO: Items speak (fill later) -->
-    <audio id="vo_book" preload="auto">
-      <source src="./assets/vogame4/game4_sayabuku.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_BOOK_TAHNIAH_SAYA_BUKU_ANA_KITABUN.mp3" -->
-    </audio>
-
-    <audio id="vo_pen" preload="auto">
-      <source src="./assets/vogame4/game4_kolamun.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_PEN_QALAMUN_ANA.mp3" -->
-    </audio>
-
-    <audio id="vo_ruler" preload="auto">
-      <source src="./assets/vogame4/game4_mistorotun.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_RULER_MISTARATUN_ANA.mp3" -->
-    </audio>
-
-    <audio id="vo_sharpener" preload="auto">
-      <source src="./assets/vogame4/game4_sayapengasah.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_SHARPENER_MIBRAATUN_ANA.mp3" -->
-    </audio>
-
-    <!-- NOTE: doc tak bagi skrip pemadam, tapi aku sediakan placeholder -->
-    <audio id="vo_eraser" preload="auto">
-      <source src="./assets/vogame4/game4_sayapemadam.mp3" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_ERASER_MIMHAATUN_ANA.mp3" -->
-    </audio>
-
-    <!-- VO: Closing result -->
-    <audio id="vo_closing" preload="auto">
-      <source src="" type="audio/mpeg">  <!-- TODO: "./assets/vo/VO_CLOSING_SYABAS_KAMU_SUDAH_KENAL.mp3" -->
-    </audio>
-
-
-    <!-- MAIN CONTAINER -->
     <div class="game-container">
 
         <!-- ══ SCREEN: MENU ══ -->
         <div id="screen-menu" class="screen screen-menu active">
-            <div class="menu-character animate-bounce-custom" style="animation-name: bounce;">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="bagBodyGrad" cx="40%" cy="30%" r="65%">
-                            <stop offset="0%"   stop-color="#4D9FFF"/>
-                            <stop offset="60%"  stop-color="#0066FF"/>
-                            <stop offset="100%" stop-color="#0040BB"/>
-                        </radialGradient>
-                        <radialGradient id="bagTopGrad" cx="45%" cy="25%" r="65%">
-                            <stop offset="0%"   stop-color="#3388FF"/>
-                            <stop offset="100%" stop-color="#0040BB"/>
-                        </radialGradient>
-                        <filter id="bagShadow">
-                            <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#002288" flood-opacity="0.4"/>
-                        </filter>
-                        <linearGradient id="bagShine" x1="0%" y1="0%" x2="60%" y2="100%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0.5)"/>
-                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-
-                    <ellipse cx="100" cy="168" rx="52" ry="10" fill="rgba(0,0,80,0.18)"/>
-                    <rect x="40" y="60" width="120" height="100" rx="20" fill="url(#bagBodyGrad)" filter="url(#bagShadow)"/>
-                    <rect x="40" y="50" width="120" height="30" rx="20" fill="url(#bagTopGrad)"/>
-                    <ellipse cx="80" cy="72" rx="28" ry="14" fill="url(#bagShine)" opacity="0.6"/>
-
-                    <circle cx="75" cy="95" r="13" fill="white" opacity="0.95"/>
-                    <circle cx="125" cy="95" r="13" fill="white" opacity="0.95"/>
-                    <circle cx="76" cy="96" r="7"  fill="#1A1A2E" class="animate-blink-eyes"/>
-                    <circle cx="126" cy="96" r="7" fill="#1A1A2E" class="animate-blink-eyes"/>
-                    <circle cx="79" cy="93" r="2.5" fill="white" opacity="0.9"/>
-                    <circle cx="129" cy="93" r="2.5" fill="white" opacity="0.9"/>
-
-                    <path d="M 74 122 Q 100 140 126 122" stroke="white" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-                    <ellipse cx="62" cy="108" rx="9" ry="6" fill="#FF8FAB" opacity="0.45"/>
-                    <ellipse cx="138" cy="108" rx="9" ry="6" fill="#FF8FAB" opacity="0.45"/>
-
-                    <rect x="70" y="38" width="9"  height="22" rx="4.5" fill="#0040BB"/>
-                    <rect x="121" y="38" width="9" height="22" rx="4.5" fill="#0040BB"/>
-                    <rect x="70" y="36" width="9" height="6" rx="3" fill="#FFD60A"/>
-                    <rect x="121" y="36" width="9" height="6" rx="3" fill="#FFD60A"/>
-                </svg>
+            <div class="menu-character animate-bounce-custom" style="animation-name:bounce;">
+                <img src="./assets/images/schoolbag.png" alt="Beg Sekolah" draggable="false">
             </div>
-
             <h1 class="menu-title animate-menu-pop" style="animation-delay:0.1s;">SIAPA KAMU?</h1>
             <h2 class="menu-subtitle arabic-text animate-menu-pop" style="animation-delay:0.25s;">مَنْ أَنْتَ؟</h2>
-
             <div class="animate-menu-pop" style="animation-delay:0.4s;">
                 <button id="btn-start" class="btn-primary">MULA! 🚀</button>
             </div>
@@ -1037,9 +507,9 @@
             <div class="modal-content">
                 <h3>✏️ Cara Bermain</h3>
                 <p>Lihat bayang-bayang dengan mata berkedip...</p>
-                <p class="arabic-text" style="font-size: clamp(1.1rem,3vw,1.4rem);">شاهِدِ الظِّلَّ بِالعُيُونِ الرَّفَّاصَةِ!</p>
+                <p class="arabic-text" style="font-size:clamp(1.1rem,3vw,1.4rem);">شاهِدِ الظِّلَّ بِالعُيُونِ الرَّفَّاصَةِ!</p>
                 <p>Pilih perkataan yang betul untuk alat sekolah itu!</p>
-                <p style="margin-bottom: 24px;">🎓 Jawab sebanyak yang boleh betul!</p>
+                <p style="margin-bottom:24px;">🎓 Jawab sebanyak yang boleh betul!</p>
                 <button id="btn-faham" class="btn-secondary">FAHAM! 👍</button>
             </div>
         </div>
@@ -1058,17 +528,17 @@
 
                 <div class="silhouette-container" id="silhouette-container">
                     <div class="silhouette" id="silhouette"></div>
-
+                    <!-- Blinking eyes overlay -->
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;gap:30px;z-index:5;pointer-events:none;">
                         <svg width="35" height="35" class="animate-blink-eyes" style="opacity:0.85;">
                             <circle cx="17.5" cy="17.5" r="12" fill="white"/>
-                            <circle cx="17.5" cy="17.5" r="5"  fill="#1A1A2E"/>
-                            <circle cx="20"   cy="15"   r="2"  fill="white" opacity="0.9"/>
+                            <circle cx="17.5" cy="17.5" r="5" fill="#1A1A2E"/>
+                            <circle cx="20" cy="15" r="2" fill="white" opacity="0.9"/>
                         </svg>
                         <svg width="35" height="35" class="animate-blink-eyes" style="opacity:0.85;">
                             <circle cx="17.5" cy="17.5" r="12" fill="white"/>
-                            <circle cx="17.5" cy="17.5" r="5"  fill="#1A1A2E"/>
-                            <circle cx="20"   cy="15"   r="2"  fill="white" opacity="0.9"/>
+                            <circle cx="17.5" cy="17.5" r="5" fill="#1A1A2E"/>
+                            <circle cx="20" cy="15" r="2" fill="white" opacity="0.9"/>
                         </svg>
                     </div>
                 </div>
@@ -1082,773 +552,326 @@
         <!-- ══ SCREEN: RESULT ══ -->
         <div id="screen-result" class="screen screen-result">
             <h2 class="result-title">🎉 TAHNIAH!</h2>
-
             <div class="stars-container" id="stars-container"></div>
-
             <div class="score-box animate-slide-up">
                 <p class="score-label">JUMLAH MATA</p>
                 <p class="score-display" id="final-score" style="display:grid;gap:6px;"></p>
             </div>
-
-            <button id="btn-restart" class="btn-primary" style="margin-top: clamp(10px,2.5vw,22px);">MAIN LAGI 🔄</button>
-            
+            <button id="btn-restart" class="btn-primary" style="margin-top:clamp(10px,2.5vw,22px);">MAIN LAGI 🔄</button>
         </div>
 
     </div>
 
     <script>
-        // =========================================================
-        // BACKGROUND MUSIC — bgmusic.mp3
-        // Plays on first user interaction, loops throughout the game
-        // =========================================================
-        const bgmMain = document.getElementById('bgm_main');
-        bgmMain.volume = 0.4; // comfortable background level
+    // ── BGM ──
+    const bgmMain = document.getElementById('bgm_main');
+    bgmMain.volume = 0.4;
+    let bgmStarted = false;
+    function startBGM() { if (bgmStarted) return; bgmStarted = true; bgmMain.play().catch(() => {}); }
+    window.addEventListener('pointerdown', startBGM, { once: true });
+    window.addEventListener('keydown', startBGM, { once: true });
 
-        let bgmStarted = false;
-
-        function startBGM() {
-            if (bgmStarted) return;
-            bgmStarted = true;
-            bgmMain.play().catch(() => {});
-        }
-
-        // Start BGM on first user gesture (browser autoplay policy)
-        window.addEventListener('pointerdown', startBGM, { once: true });
-        window.addEventListener('keydown', startBGM, { once: true });
-
-        // =========================================================
-        // AUDIO ENGINE — PLACEHOLDER ONLY (FILL PATHS LATER)
-        // =========================================================
-        // IMPORTANT: You asked "COMMENT so I just fill voice over later".
-        // So: ALL src paths below are empty "" by default.
-        // When you're ready, just put mp3 path into the src strings.
-
-        const AUDIO = {
-            // --- BGM ---
-            BGM_MENU:   { id:'bgm_menu',   src:"" }, // TODO: "./assets/audio/bgm_menu_detective.mp3"
-            BGM_GAME:   { id:'bgm_game',   src:"" }, // TODO: "./assets/audio/bgm_game_soft.mp3"
-
-            // --- SFX ---
-            SFX_GIGGLE: { id:'sfx_giggle', src:"" }, // TODO: "./assets/audio/sfx_giggle.mp3"
-            SFX_TICK:   { id:'sfx_tick',   src:"" }, // TODO: "./assets/audio/sfx_tick_tock_loop.mp3" (loop)
-            SFX_BOING:  { id:'sfx_boing',  src:"" }, // TODO: "./assets/audio/sfx_boing.mp3"
-            SFX_TADA:   { id:'sfx_tada',   src:"" }, // TODO: "./assets/audio/sfx_tada_magic.mp3"
-            SFX_ZIP:    { id:'sfx_zip',    src:"" }, // TODO: "./assets/audio/sfx_zip_open.mp3"
-            SFX_SWOOSH: { id:'sfx_swoosh', src:"" }, // TODO: "./assets/audio/sfx_swoosh_jump.mp3"
-            SFX_CHEER:  { id:'sfx_cheer',  src:"" }, // TODO: "./assets/audio/sfx_cheer_applause.mp3"
-
-            // --- VO (aligned with storyboard doc) ---
-            VO_RIDDLE:  { id:'vo_riddle',  text:'Siapa kamu?', src:"./assets/vogame4/siapakamugame4.mp3" }, // TODO: "./assets/vo/VO_RIDDLE_SIAPA_KAMU.mp3"
-
-            VO_BOOK:    { id:'vo_book',    text:'Tahniah! Saya Buku! أَنَا كِتَابٌ', src:"./assets/vogame4/game4_sayabuku.mp3" }, // TODO
-            VO_PEN:     { id:'vo_pen',     text:'قَلَمٌ أَنَا', src:"./assets/vogame4/game4_kolamun.mp3" }, // TODO
-            VO_RULER:   { id:'vo_ruler',   text:'مِسْطَرَةٌ أَنَا', src:"./assets/vogame4/game4_mistorotun.mp3" }, // TODO
-            VO_SHARP:   { id:'vo_sharpener', text:'مِبْرَاةٌ أَنَا', src:"./assets/vogame4/game4_sayapengasah.mp3" }, // TODO
-            VO_ERASER:  { id:'vo_eraser',  text:'مِمْحَاةٌ أَنَا', src:"./assets/vogame4/game4_sayapemadam.mp3" }, // TODO (doc tak bagi skrip, placeholder)
-
-            VO_CLOSING: { id:'vo_closing', text:'Syabas! Kamu sudah kenal semua kawan-kawan kita hari ini!', src:"" } // TODO
-        };
-
-        // Create audio objects only if src is filled
-        const AUDIO_POOL = {};
-        function initAudioPool(){
-            Object.keys(AUDIO).forEach(key => {
-                const a = AUDIO[key];
-                if (!a || !a.src) return; // keep placeholder silent
-                const audio = new Audio(a.src);
-                audio.preload = 'auto';
-                audio.loop = !!a.loop;
-                AUDIO_POOL[key] = audio;
-            });
-        }
-
-        // iOS/Chrome autoplay policy: unlock on first gesture
-        let AUDIO_UNLOCKED = false;
-        async function unlockAudioOnce(){
-            if (AUDIO_UNLOCKED) return;
-            AUDIO_UNLOCKED = true;
-            try{
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const o = ctx.createOscillator();
-                const g = ctx.createGain();
-                g.gain.value = 0.0001;
-                o.connect(g); g.connect(ctx.destination);
-                o.start(); o.stop(ctx.currentTime + 0.01);
-                await ctx.resume();
-            }catch(e){}
-        }
-
-        function stopAllVO(){
-            Object.keys(AUDIO_POOL).forEach(k=>{
-                if (k.startsWith('VO_')){
-                    const au = AUDIO_POOL[k];
-                    try{ au.pause(); au.currentTime = 0; }catch(e){}
-                }
-            });
-        }
-
-        function playAudio(key, {restart=true} = {}){
-            const au = AUDIO_POOL[key];
-            if (!au) return; // placeholder: do nothing
-            try{
-                if (restart){ au.currentTime = 0; }
-                au.play().catch(()=>{});
-            }catch(e){}
-        }
-
-        function stopAudio(key){
-            const au = AUDIO_POOL[key];
-            if (!au) return;
-            try{ au.pause(); au.currentTime = 0; }catch(e){}
-        }
-
-        function playBGM(which){
-            // Only one BGM at a time
-            stopAudio('BGM_MENU');
-            stopAudio('BGM_GAME');
-            if (which === 'menu') playAudio('BGM_MENU', {restart:false});
-            if (which === 'game') playAudio('BGM_GAME', {restart:false});
-        }
-
-        function startThinkingTick(){
-            // storyboard: tick-tock while thinking
-            playAudio('SFX_TICK', {restart:false});
-        }
-        function stopThinkingTick(){
-            stopAudio('SFX_TICK');
-        }
-
-        function voForItemId(itemId){
-            switch(itemId){
-                case 'book': return 'VO_BOOK';
-                case 'pen': return 'VO_PEN';
-                case 'ruler': return 'VO_RULER';
-                case 'sharpener': return 'VO_SHARP';
-                case 'eraser': return 'VO_ERASER';
-                default: return null;
-            }
-        }
-
-        // ==================== GAME DATA ====================
-        const STATIONERY_ITEMS = [
-            {
-                id: 'book',
-                malay: 'Buku',
-                arabic: 'كِتَابٌ',
-                color: '#0066FF',
-                svg: `
-                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="bookCover" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%"   stop-color="#3385FF"/>
-                            <stop offset="50%"  stop-color="#0066FF"/>
-                            <stop offset="100%" stop-color="#003DAA"/>
-                        </linearGradient>
-                        <linearGradient id="bookPages" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="#F0F0F0"/>
-                            <stop offset="100%" stop-color="#D8D8D8"/>
-                        </linearGradient>
-                        <linearGradient id="bookSpine" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="#001F66"/>
-                            <stop offset="50%"  stop-color="#003DAA"/>
-                            <stop offset="100%" stop-color="#001F66"/>
-                        </linearGradient>
-                        <linearGradient id="bookTop" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%"   stop-color="#5599FF"/>
-                            <stop offset="100%" stop-color="#0052CC"/>
-                        </linearGradient>
-                        <filter id="bookShadow">
-                            <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#001880" flood-opacity="0.4"/>
-                        </filter>
-                        <linearGradient id="bookShine" x1="0%" y1="0%" x2="50%" y2="100%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0.55)"/>
-                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-
-                    <ellipse cx="62" cy="96" rx="32" ry="6" fill="rgba(0,0,100,0.18)"/>
-                    <path d="M28 27 L38 17 L95 17 L85 27 Z" fill="url(#bookPages)" stroke="#C8C8C8" stroke-width="0.8"/>
-                    <path d="M85 27 L95 17 L95 80 L85 90 Z" fill="#D0D0D0" stroke="#B8B8B8" stroke-width="0.8"/>
-                    <line x1="85" y1="35" x2="95" y2="25" stroke="#C0C0C0" stroke-width="0.7"/>
-                    <line x1="85" y1="48" x2="95" y2="38" stroke="#C0C0C0" stroke-width="0.7"/>
-                    <line x1="85" y1="61" x2="95" y2="51" stroke="#C0C0C0" stroke-width="0.7"/>
-                    <line x1="85" y1="74" x2="95" y2="64" stroke="#C0C0C0" stroke-width="0.7"/>
-
-                    <rect x="25" y="27" width="60" height="63" rx="4" fill="url(#bookCover)" filter="url(#bookShadow)"/>
-                    <path d="M25 27 L35 17 L95 17 L85 27 Z" fill="url(#bookTop)"/>
-
-                    <rect x="18" y="27" width="9" height="63" rx="2" fill="url(#bookSpine)"/>
-                    <rect x="19" y="30" width="3" height="57" rx="1.5" fill="rgba(255,255,255,0.18)"/>
-                    <circle cx="22.5" cy="42" r="1.5" fill="rgba(255,255,255,0.5)"/>
-                    <circle cx="22.5" cy="58" r="1.5" fill="rgba(255,255,255,0.5)"/>
-                    <circle cx="22.5" cy="74" r="1.5" fill="rgba(255,255,255,0.5)"/>
-
-                    <rect x="36" y="40" width="34" height="22" rx="4" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-                    <line x1="40" y1="47" x2="66" y2="47" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
-                    <line x1="40" y1="53" x2="60" y2="53" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
-
-                    <path d="M28 28 Q45 24 60 28 Q45 40 28 40 Z" fill="url(#bookShine)" opacity="0.65"/>
-                </svg>`
-            },
-            {
-                id: 'pen',
-                malay: 'Pen',
-                arabic: 'قَلَمٌ',
-                color: '#FF006E',
-                svg: `
-                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="penBody" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="#FF3385"/>
-                            <stop offset="40%"  stop-color="#FF006E"/>
-                            <stop offset="80%"  stop-color="#CC0059"/>
-                            <stop offset="100%" stop-color="#990044"/>
-                        </linearGradient>
-                        <linearGradient id="penTip" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="#E8E8E8"/>
-                            <stop offset="50%"  stop-color="#C8C8C8"/>
-                            <stop offset="100%" stop-color="#A0A0A0"/>
-                        </linearGradient>
-                        <linearGradient id="penButton" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%"   stop-color="#FFE44D"/>
-                            <stop offset="100%" stop-color="#FFAA00"/>
-                        </linearGradient>
-                        <filter id="penShadow">
-                            <feDropShadow dx="3" dy="3" stdDeviation="4" flood-color="#880040" flood-opacity="0.4"/>
-                        </filter>
-                        <linearGradient id="penShine" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0)"/>
-                            <stop offset="30%"  stop-color="rgba(255,255,255,0.5)"/>
-                            <stop offset="60%"  stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-
-                    <ellipse cx="62" cy="94" rx="16" ry="4" fill="rgba(100,0,40,0.2)"/>
-                    <rect x="50" y="14" width="22" height="62" rx="11" fill="url(#penBody)" filter="url(#penShadow)"/>
-                    <rect x="55" y="18" width="5" height="52" rx="2.5" fill="url(#penShine)" opacity="0.7"/>
-                    <rect x="50" y="66" width="22" height="9" rx="0" fill="#AA004A"/>
-                    <rect x="50" y="68" width="22" height="2" fill="rgba(0,0,0,0.15)"/>
-                    <rect x="50" y="72" width="22" height="2" fill="rgba(255,255,255,0.1)"/>
-                    <rect x="49" y="75" width="24" height="5" rx="2" fill="url(#penTip)" stroke="#888" stroke-width="0.5"/>
-                    <polygon points="61,80 52,92 70,92" fill="url(#penTip)" stroke="#777" stroke-width="1.2"/>
-                    <line x1="61" y1="80" x2="57" y2="90" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
-                    <circle cx="61" cy="92" r="2.5" fill="#111"/>
-                    <circle cx="60" cy="91" r="0.8" fill="rgba(255,255,255,0.6)"/>
-                    <rect x="50" y="10" width="22" height="8" rx="4" fill="#CC0059" stroke="#880040" stroke-width="0.8"/>
-                    <circle cx="61" cy="11" r="6.5" fill="url(#penButton)" stroke="#CC8800" stroke-width="1.2"/>
-                    <circle cx="59.5" cy="9.5" r="2" fill="rgba(255,255,255,0.6)"/>
-                </svg>`
-            },
-            {
-                id: 'ruler',
-                malay: 'Pembaris',
-                arabic: 'مِسْطَرَةٌ',
-                color: '#FFD60A',
-                svg: `
-                <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="rulerBody" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="#FFE84D"/>
-                            <stop offset="40%"  stop-color="#FFD60A"/>
-                            <stop offset="100%" stop-color="#E6B800"/>
-                        </linearGradient>
-                        <linearGradient id="rulerEdge" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="#CC9900"/>
-                            <stop offset="100%" stop-color="#AA7700"/>
-                        </linearGradient>
-                        <filter id="rulerShadow">
-                            <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#AA7700" flood-opacity="0.35"/>
-                        </filter>
-                        <linearGradient id="rulerShine" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0.65)"/>
-                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-
-                    <rect x="12" y="55" width="118" height="8" rx="4" fill="rgba(100,70,0,0.15)" filter="blur(4px)"/>
-                    <rect x="10" y="24" width="120" height="26" rx="6"
-                          fill="url(#rulerBody)" stroke="#CC9900" stroke-width="1.5"
-                          filter="url(#rulerShadow)"/>
-                    <rect x="10" y="46" width="120" height="5" rx="3" fill="url(#rulerEdge)" opacity="0.6"/>
-                    <rect x="12" y="25" width="116" height="9" rx="5" fill="url(#rulerShine)"/>
-
-                    <g stroke="#664400" stroke-linecap="round">
-                        <line x1="25"  y1="24" x2="25"  y2="50" stroke-width="2"/>
-                        <line x1="55"  y1="24" x2="55"  y2="50" stroke-width="2"/>
-                        <line x1="85"  y1="24" x2="85"  y2="50" stroke-width="2"/>
-                        <line x1="115" y1="24" x2="115" y2="50" stroke-width="2"/>
-                        <line x1="40"  y1="30" x2="40"  y2="45" stroke-width="1.2"/>
-                        <line x1="70"  y1="30" x2="70"  y2="45" stroke-width="1.2"/>
-                        <line x1="100" y1="30" x2="100" y2="45" stroke-width="1.2"/>
-                        <line x1="32"  y1="33" x2="32"  y2="42" stroke-width="0.9"/>
-                        <line x1="47"  y1="33" x2="47"  y2="42" stroke-width="0.9"/>
-                        <line x1="62"  y1="33" x2="62"  y2="42" stroke-width="0.9"/>
-                        <line x1="77"  y1="33" x2="77"  y2="42" stroke-width="0.9"/>
-                    </g>
-
-                    <text x="22"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">1</text>
-                    <text x="52"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">2</text>
-                    <text x="82"  y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">3</text>
-                    <text x="112" y="59" font-size="6" fill="#885500" font-family="Nunito,sans-serif" font-weight="700">4</text>
-                </svg>`
-            },
-            {
-                id: 'eraser',
-                malay: 'Pemadam',
-                arabic: 'مِمْحَاةٌ',
-                color: '#00D9FF',
-                svg: `
-                <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="eraserTop" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="#66EEFF"/>
-                            <stop offset="50%"  stop-color="#00D9FF"/>
-                            <stop offset="100%" stop-color="#009DC2"/>
-                        </linearGradient>
-                        <linearGradient id="eraserBottom" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="#007FA0"/>
-                            <stop offset="100%" stop-color="#005570"/>
-                        </linearGradient>
-                        <linearGradient id="eraserLabel" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%"   stop-color="#FFFFFF"/>
-                            <stop offset="100%" stop-color="#E8F8FF"/>
-                        </linearGradient>
-                        <filter id="eraserShadow">
-                            <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#005070" flood-opacity="0.35"/>
-                        </filter>
-                        <linearGradient id="eraserShine" x1="0%" y1="0%" x2="50%" y2="100%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0.6)"/>
-                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-
-                    <ellipse cx="60" cy="76" rx="38" ry="8" fill="rgba(0,60,80,0.18)" filter="url(#eraserShadow)"/>
-                    <rect x="18" y="22" width="84" height="46" rx="13" fill="url(#eraserTop)" stroke="#009DC2" stroke-width="1.5"/>
-                    <rect x="18" y="22" width="18" height="46" rx="13,0,0,13" fill="#009DC2" opacity="0.55"/>
-                    <rect x="22" y="38" width="76" height="14" rx="3" fill="url(#eraserLabel)" opacity="0.88"
-                          stroke="rgba(0,150,190,0.3)" stroke-width="0.8"/>
-                    <line x1="30" y1="43" x2="72" y2="43" stroke="#007FA0" stroke-width="1.2"/>
-                    <line x1="30" y1="47" x2="60" y2="47" stroke="#007FA0" stroke-width="0.9"/>
-                    <rect x="18" y="60" width="84" height="8" rx="0,0,13,13" fill="url(#eraserBottom)" opacity="0.4"/>
-                    <path d="M22 23 Q60 16 98 23 L98 30 Q60 26 22 30 Z" fill="url(#eraserShine)" opacity="0.7"/>
-                    <circle cx="30" cy="30" r="4" fill="rgba(255,255,255,0.45)"/>
-                    <circle cx="92" cy="30" r="3" fill="rgba(255,255,255,0.3)"/>
-                </svg>`
-            },
-            {
-                id: 'sharpener',
-                malay: 'Pengasah',
-                arabic: 'مِبْرَاةٌ',
-                color: '#FF8C42',
-                svg: `
-                <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="sharpBody" cx="35%" cy="30%" r="70%">
-                            <stop offset="0%"   stop-color="#FFAA66"/>
-                            <stop offset="50%"  stop-color="#FF8C42"/>
-                            <stop offset="100%" stop-color="#CC5500"/>
-                        </radialGradient>
-                        <linearGradient id="bladeplate" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stop-color="#E8E8E8"/>
-                            <stop offset="50%"  stop-color="#C0C0C0"/>
-                            <stop offset="100%" stop-color="#A0A0A0"/>
-                        </linearGradient>
-                        <radialGradient id="screwGrad" cx="35%" cy="35%" r="65%">
-                            <stop offset="0%"   stop-color="#AAAAAA"/>
-                            <stop offset="100%" stop-color="#666666"/>
-                        </radialGradient>
-                        <filter id="sharpShadow">
-                            <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#883300" flood-opacity="0.35"/>
-                        </filter>
-                        <linearGradient id="sharpShine" x1="0%" y1="0%" x2="60%" y2="100%">
-                            <stop offset="0%"   stop-color="rgba(255,255,255,0.55)"/>
-                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                        </linearGradient>
-                        <radialGradient id="holeGrad" cx="30%" cy="30%" r="70%">
-                            <stop offset="0%"   stop-color="#333333"/>
-                            <stop offset="100%" stop-color="#111111"/>
-                        </radialGradient>
-                    </defs>
-
-                    <ellipse cx="60" cy="88" rx="30" ry="8" fill="rgba(80,30,0,0.22)"/>
-                    <rect x="28" y="18" width="64" height="65" rx="14" fill="url(#sharpBody)" filter="url(#sharpShadow)"/>
-                    <path d="M32 19 Q60 13 88 19 L88 34 Q60 28 32 34 Z" fill="url(#sharpShine)" opacity="0.6"/>
-                    <rect x="32" y="22" width="12" height="56" rx="6" fill="rgba(255,255,255,0.22)"/>
-                    <rect x="36" y="44" width="48" height="28" rx="7" fill="url(#bladeplate)" stroke="#888" stroke-width="1.2"/>
-                    <rect x="38" y="45" width="44" height="9" rx="5" fill="rgba(255,255,255,0.4)"/>
-                    <line x1="36" y1="57" x2="84" y2="57" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
-                    <circle cx="60" cy="58" r="7" fill="url(#screwGrad)" stroke="#555" stroke-width="1.2"/>
-                    <line x1="56" y1="58" x2="64" y2="58" stroke="#444" stroke-width="1.5"/>
-                    <line x1="60" y1="54" x2="60" y2="62" stroke="#444" stroke-width="1.5"/>
-                    <circle cx="57.5" cy="55.5" r="1.8" fill="rgba(255,255,255,0.5)"/>
-                    <circle cx="60" cy="74" r="10" fill="url(#holeGrad)" stroke="#220000" stroke-width="1.5"/>
-                    <circle cx="56" cy="70" r="3" fill="rgba(255,255,255,0.15)"/>
-                </svg>`
-            }
-        ];
-
-        // ==================== STATE ====================
-        const STATE = {
-            currentIndex: 0,
-            correctAnswers: 0,
-            wrongAttempts: 0,
-            gameStarted: false,
-            isAnswering: false
-        };
-
-        // ==================== EVENT LISTENERS ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            setupEventListeners();
-
-            // --- Audio init (placeholder-safe) ---
-            initAudioPool();
-
-            // --- Unlock audio on first gesture ---
-            window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
-            window.addEventListener('keydown', () => unlockAudioOnce(), { once:true });
-
-            // --- Storyboard: on entering menu screen -> giggle + menu BGM ---
-            // (won't play if src empty; safe)
-            playBGM('menu');
-            playAudio('SFX_GIGGLE');
+    // ── AUDIO ENGINE ──
+    const AUDIO = {
+        BGM_MENU:   { src: "" }, BGM_GAME: { src: "" },
+        SFX_GIGGLE: { src: "" }, SFX_TICK: { src: "", loop: true },
+        SFX_BOING:  { src: "" }, SFX_TADA: { src: "" },
+        SFX_ZIP:    { src: "" }, SFX_SWOOSH: { src: "" }, SFX_CHEER: { src: "" },
+        VO_RIDDLE:  { src: "./assets/vogame4/siapakamugame4.mp3" },
+        VO_BOOK:    { src: "./assets/vogame4/game4_sayabuku.mp3" },
+        VO_PEN:     { src: "./assets/vogame4/game4_kolamun.mp3" },
+        VO_RULER:   { src: "./assets/vogame4/game4_mistorotun.mp3" },
+        VO_SHARP:   { src: "./assets/vogame4/game4_sayapengasah.mp3" },
+        VO_ERASER:  { src: "./assets/vogame4/game4_sayapemadam.mp3" },
+        VO_CLOSING: { src: "" }
+    };
+    const AUDIO_POOL = {};
+    function initAudioPool() {
+        Object.keys(AUDIO).forEach(key => {
+            const a = AUDIO[key]; if (!a.src) return;
+            const audio = new Audio(a.src); audio.preload = 'auto';
+            if (a.loop) audio.loop = true; AUDIO_POOL[key] = audio;
         });
+    }
+    let AUDIO_UNLOCKED = false;
+    async function unlockAudioOnce() {
+        if (AUDIO_UNLOCKED) return; AUDIO_UNLOCKED = true;
+        try {
+            const ctx = new (window.AudioContext||window.webkitAudioContext)();
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            g.gain.value = 0.0001; o.connect(g); g.connect(ctx.destination);
+            o.start(); o.stop(ctx.currentTime+0.01); await ctx.resume();
+        } catch(e){}
+    }
+    function stopAllVO() {
+        Object.keys(AUDIO_POOL).forEach(k => {
+            if (k.startsWith('VO_')) { try { AUDIO_POOL[k].pause(); AUDIO_POOL[k].currentTime=0; } catch(e){} }
+        });
+    }
+    function playAudio(key, {restart=true}={}) {
+        const au=AUDIO_POOL[key]; if(!au) return;
+        try { if(restart) au.currentTime=0; au.play().catch(()=>{}); } catch(e){}
+    }
+    function stopAudio(key) {
+        const au=AUDIO_POOL[key]; if(!au) return;
+        try { au.pause(); au.currentTime=0; } catch(e){}
+    }
+    function playBGM(which) {
+        stopAudio('BGM_MENU'); stopAudio('BGM_GAME');
+        if(which==='menu') playAudio('BGM_MENU',{restart:false});
+        if(which==='game') playAudio('BGM_GAME',{restart:false});
+    }
+    function startThinkingTick() { playAudio('SFX_TICK',{restart:false}); }
+    function stopThinkingTick()  { stopAudio('SFX_TICK'); }
+    function voForItemId(id) {
+        return {book:'VO_BOOK',pen:'VO_PEN',ruler:'VO_RULER',sharpener:'VO_SHARP',eraser:'VO_ERASER'}[id]||null;
+    }
 
-        function setupEventListeners() {
-            const btnStart   = document.getElementById('btn-start');
-            const btnFaham   = document.getElementById('btn-faham');
-            const btnRestart = document.getElementById('btn-restart');
-
-            if (btnStart)   btnStart.addEventListener('click', openInstructions);
-            if (btnFaham)   btnFaham.addEventListener('click', startGame);
-            if (btnRestart) btnRestart.addEventListener('click', restartGame);
+    // ══════════════════════════════════════════════════════
+    // GAME DATA
+    // Replace imgSrc paths with your actual image files.
+    // Same images are used for both the silhouette and
+    // the small thumbnails inside the answer buttons.
+    // ══════════════════════════════════════════════════════
+    const STATIONERY_ITEMS = [
+        {
+            id: 'book', malay: 'Buku', arabic: 'كِتَابٌ', color: '#0066FF',
+            imgSrc: './assets/images/book.png', imgAlt: 'Buku'
+        },
+        {
+            id: 'pen', malay: 'Pen', arabic: 'قَلَمٌ', color: '#FF006E',
+            imgSrc: './assets/images/pen.png', imgAlt: 'Pen'
+        },
+        {
+            id: 'ruler', malay: 'Pembaris', arabic: 'مِسْطَرَةٌ', color: '#FFD60A',
+            imgSrc: './assets/images/ruler.png', imgAlt: 'Pembaris'
+        },
+        {
+            id: 'eraser', malay: 'Pemadam', arabic: 'مِمْحَاةٌ', color: '#00D9FF',
+            imgSrc: './assets/images/eraser.png', imgAlt: 'Pemadam'
+        },
+        {
+            id: 'sharpener', malay: 'Pengasah', arabic: 'مِبْرَاةٌ', color: '#FF8C42',
+            imgSrc: './assets/images/sharp.png', imgAlt: 'Pengasah'
         }
+    ];
 
-        // ==================== GAME FLOW ====================
-        function openInstructions() {
-            playClickSound();
-            document.getElementById('modal-instructions').classList.add('active');
-        }
+    // ── STATE ──
+    const STATE = { currentIndex:0, correctAnswers:0, wrongAttempts:0, gameStarted:false, isAnswering:false };
 
-        function startGame() {
-            playClickSound();
-            document.getElementById('modal-instructions').classList.remove('active');
+    // ── INIT ──
+    document.addEventListener('DOMContentLoaded', () => {
+        setupEventListeners(); initAudioPool();
+        window.addEventListener('pointerdown', unlockAudioOnce, {once:true});
+        window.addEventListener('keydown', unlockAudioOnce, {once:true});
+        playBGM('menu'); playAudio('SFX_GIGGLE');
+    });
 
-            // Storyboard: switch to gameplay -> game BGM
-            playBGM('game');
+    function setupEventListeners() {
+        document.getElementById('btn-start')  ?.addEventListener('click', openInstructions);
+        document.getElementById('btn-faham')  ?.addEventListener('click', startGame);
+        document.getElementById('btn-restart')?.addEventListener('click', restartGame);
+    }
 
-            STATE.gameStarted     = true;
-            STATE.currentIndex    = 0;
-            STATE.correctAnswers  = 0;
-            STATE.wrongAttempts   = 0;
+    // ── GAME FLOW ──
+    function openInstructions() { playClickSound(); document.getElementById('modal-instructions').classList.add('active'); }
 
-            switchScreen('screen-game');
-            loadQuestion();
-        }
+    function startGame() {
+        playClickSound();
+        document.getElementById('modal-instructions').classList.remove('active');
+        playBGM('game');
+        STATE.gameStarted=true; STATE.currentIndex=0; STATE.correctAnswers=0; STATE.wrongAttempts=0;
+        switchScreen('screen-game'); loadQuestion();
+    }
 
-        function loadQuestion() {
-            const item = STATIONERY_ITEMS[STATE.currentIndex];
-            STATE.isAnswering = false;
+    function loadQuestion() {
+        const item = STATIONERY_ITEMS[STATE.currentIndex];
+        STATE.isAnswering = false;
+        document.getElementById('step-current').textContent = STATE.currentIndex + 1;
+        document.getElementById('progress-fill').style.width = (STATE.currentIndex / STATIONERY_ITEMS.length * 100) + '%';
 
-            // Update header
-            document.getElementById('step-current').textContent = STATE.currentIndex + 1;
-            const progress = (STATE.currentIndex / STATIONERY_ITEMS.length) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
+        // Silhouette (black)
+        const silDiv = document.getElementById('silhouette');
+        silDiv.innerHTML = `<img src="${item.imgSrc}" alt="${item.imgAlt}" draggable="false">`;
+        silDiv.classList.remove('revealed');
 
-            // Update silhouette
-            const silhouetteDiv = document.getElementById('silhouette');
-            silhouetteDiv.innerHTML = item.svg;
-            silhouetteDiv.style.color = item.color;
-            silhouetteDiv.classList.remove('revealed');
+        const fb = document.getElementById('feedback-text');
+        fb.textContent = ''; fb.classList.remove('show');
 
-            // Clear feedback
-            const feedbackText = document.getElementById('feedback-text');
-            feedbackText.textContent = '';
-            feedbackText.classList.remove('show');
+        generateOptions(item);
+        stopAllVO(); playAudio('VO_RIDDLE'); startThinkingTick();
+    }
 
-            // Generate options
-            generateOptions(item);
+    function generateOptions(correctItem) {
+        const grid = document.getElementById('options-grid');
+        grid.innerHTML = '';
+        const wrong = STATIONERY_ITEMS.filter(i=>i.id!==correctItem.id).sort(()=>Math.random()-0.5).slice(0,3);
+        const options = [correctItem,...wrong].sort(()=>Math.random()-0.5);
 
-            // =========================================================
-            // STORYBOARD AUDIO (Skrin 2 - Teka-teki)
-            // - VO: "Siapa kamu?"
-            // - SFX/BGM: tick-tock thinking loop
-            // =========================================================
-            stopAllVO();
-            playAudio('VO_RIDDLE');      // TODO fill path later
-            startThinkingTick();         // TODO fill path later
-        }
+        options.forEach((option, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-answer animate-wobble-in';
+            btn.style.animationDelay = (idx * 0.08) + 's';
+            btn.dataset.itemId = option.id;
 
-        function generateOptions(correctItem) {
-            const optionsGrid = document.getElementById('options-grid');
-            optionsGrid.innerHTML = '';
-
-            const incorrectItems = STATIONERY_ITEMS.filter(item => item.id !== correctItem.id);
-            const shuffledIncorrect = incorrectItems.sort(() => Math.random() - 0.5).slice(0, 3);
-            const options = [correctItem, ...shuffledIncorrect].sort(() => Math.random() - 0.5);
-
-            options.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-answer animate-wobble-in';
-                btn.style.animationDelay = (index * 0.08) + 's';
-                btn.dataset.itemId = option.id;
-                btn.innerHTML = `
-                    <span class="option-label">${option.malay}</span>
+            // ── Button content: image + arabic + malay (bracketed) ──
+            btn.innerHTML = `
+                <div class="option-img-wrap">
+                    <img src="${option.imgSrc}" alt="${option.imgAlt}" draggable="false">
+                </div>
+                <div class="option-texts">
                     <span class="option-arabic arabic-text">${option.arabic}</span>
-                `;
+                    <span class="option-label">(${option.malay})</span>
+                </div>`;
 
-                btn.addEventListener('pointermove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    btn.style.setProperty('--rx', x + '%');
-                    btn.style.setProperty('--ry', y + '%');
-                });
-
-                btn.addEventListener('click', () => handleGuess(option.id, btn));
-                optionsGrid.appendChild(btn);
+            btn.addEventListener('pointermove', e => {
+                const r = btn.getBoundingClientRect();
+                btn.style.setProperty('--rx', ((e.clientX-r.left)/r.width*100)+'%');
+                btn.style.setProperty('--ry', ((e.clientY-r.top)/r.height*100)+'%');
             });
-        }
+            btn.addEventListener('click', () => handleGuess(option.id, btn));
+            grid.appendChild(btn);
+        });
+    }
 
-        function handleGuess(selectedId, btnElement) {
-            if (STATE.isAnswering) return;
-            STATE.isAnswering = true;
+    function handleGuess(selectedId, btn) {
+        if (STATE.isAnswering) return; STATE.isAnswering = true;
+        if (selectedId === STATIONERY_ITEMS[STATE.currentIndex].id) { handleCorrectAnswer(btn); }
+        else { handleWrongAnswer(btn); }
+    }
 
-            const correctItem = STATIONERY_ITEMS[STATE.currentIndex];
+    function handleCorrectAnswer(btn) {
+        stopThinkingTick(); playCorrectSound(); playAudio('SFX_TADA');
+        STATE.correctAnswers++;
+        btn.classList.add('correct');
+        const silDiv = document.getElementById('silhouette');
+        silDiv.classList.add('revealed','animate-bounce-reveal');
+        const container = document.getElementById('silhouette-container');
+        container.classList.add('pulsing');
+        setTimeout(()=>container.classList.remove('pulsing'), 900);
+        const fb = document.getElementById('feedback-text');
+        fb.textContent = '✨ أَحْسَنْتَ! ✨'; fb.classList.add('show');
+        triggerFlash('correct'); createSparkles();
 
-            if (selectedId === correctItem.id) {
-                handleCorrectAnswer(btnElement);
-            } else {
-                handleWrongAnswer(btnElement);
-            }
-        }
-
-        function handleCorrectAnswer(btnElement) {
-            // stop thinking tick-tock when answer chosen
-            stopThinkingTick();
-
-            playCorrectSound(); // your synth beep stays
-            // Storyboard: Tadaaa/Magic on correct
-            playAudio('SFX_TADA'); // TODO fill path later
-
-            STATE.correctAnswers++;
-
-            btnElement.classList.add('correct');
-
-            const silhouette = document.getElementById('silhouette');
-            silhouette.classList.add('revealed', 'animate-bounce-reveal');
-
-            const container = document.getElementById('silhouette-container');
-            container.classList.add('pulsing');
-            setTimeout(() => container.classList.remove('pulsing'), 900);
-
-            const feedbackText = document.getElementById('feedback-text');
-            feedbackText.textContent = '✨ أَحْسَنْتَ! ✨';
-            feedbackText.classList.add('show');
-
-            triggerFlash('correct');
-            createSparkles();
-
-            // =========================================================
-            // STORYBOARD VO: item speaks after correct
-            // - Book: "Tahniah! Saya Buku! أَنَا كِتَابٌ"
-            // - Pen: "قَلَمٌ أَنَا"
-            // - Ruler: "مِسْطَرَةٌ أَنَا"
-            // - Sharpener: "مِبْرَاةٌ أَنَا"
-            // - Eraser: placeholder "مِمْحَاةٌ أَنَا"
-            // =========================================================
-            const correctItem = STATIONERY_ITEMS[STATE.currentIndex];
-            const voKey = voForItemId(correctItem.id);
-            if (voKey) {
-                stopAllVO();
-                playAudio(voKey); // TODO fill path later
-            }
-
-            setTimeout(() => {
-                STATE.currentIndex++;
-                if (STATE.currentIndex < STATIONERY_ITEMS.length) {
-
-                    // =========================================================
-                    // STORYBOARD TRANSITION (Skrin 4 - Proses)
-                    // - zip open + swoosh jump
-                    // =========================================================
-                    playAudio('SFX_ZIP');    // TODO fill
-                    setTimeout(() => playAudio('SFX_SWOOSH'), 180); // TODO fill
-
-                    loadQuestion();
-                } else {
-                    showResults();
-                }
-            }, 1800);
-        }
-
-        function handleWrongAnswer(btnElement) {
-            // stop tick while we feedback wrong; resume after shake
-            stopThinkingTick();
-
-            playWrongSound(); // your synth beep stays
-            // Storyboard: "Boing!" on wrong
-            playAudio('SFX_BOING'); // TODO fill path later
-
-            STATE.wrongAttempts++;
-
-            btnElement.classList.add('wrong', 'animate-shake-button');
-
-            const gameScreen = document.getElementById('screen-game');
-            gameScreen.classList.add('animate-screen-shake');
-
-            triggerFlash('wrong');
-
-            setTimeout(() => {
-                btnElement.classList.remove('animate-shake-button');
-                gameScreen.classList.remove('animate-screen-shake');
-                STATE.isAnswering = false;
-
-                // resume tick-tock thinking after wrong feedback
-                startThinkingTick();
-            }, 360);
-        }
-
-        function showResults() {
-            // stop thinking tick
-            stopThinkingTick();
-
-            switchScreen('screen-result');
-            const totalQuestions = STATIONERY_ITEMS.length;
-
-            document.getElementById('final-score').innerHTML = `
-                <div>✅ Jawapan Betul: <strong>${STATE.correctAnswers}</strong></div>
-                <div>❌ Jawapan Salah: <strong>${STATE.wrongAttempts}</strong></div>
-                <div>📚 Jumlah Soalan: <strong>${totalQuestions}</strong></div>
-            `;
-
-            let stars = 3;
-            if (STATE.wrongAttempts >= 5) stars = 1;
-            else if (STATE.wrongAttempts >= 2) stars = 2;
-
-            const starsContainer = document.getElementById('stars-container');
-            starsContainer.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                const star = document.createElement('span');
-                star.className = 'star animate-star-drop';
-                if (i >= stars) star.classList.add('inactive');
-                star.textContent = '⭐';
-                star.style.animationDelay = (i * 0.22) + 's';
-                star.classList.add('animate-star-bounce');
-                starsContainer.appendChild(star);
-            }
-
-            // =========================================================
-            // STORYBOARD RESULT (Skrin 5)
-            // - cheer/applause + VO closing line
-            // =========================================================
-            playAudio('SFX_CHEER');  // TODO fill
+        const voKey = voForItemId(STATIONERY_ITEMS[STATE.currentIndex].id);
+        const goNext = () => {
+            STATE.currentIndex++;
+            if (STATE.currentIndex < STATIONERY_ITEMS.length) {
+                playAudio('SFX_ZIP');
+                setTimeout(()=>playAudio('SFX_SWOOSH'), 180);
+                loadQuestion();
+            } else { showResults(); }
+        };
+        if (voKey && AUDIO_POOL[voKey]) {
             stopAllVO();
-            playAudio('VO_CLOSING'); // TODO fill
+            const vo = AUDIO_POOL[voKey]; let done = false;
+            const finish = () => { if(done)return; done=true; vo.removeEventListener('ended',finish); goNext(); };
+            vo.currentTime=0; vo.addEventListener('ended',finish,{once:true}); vo.play().catch(()=>{});
+            setTimeout(finish, (!isNaN(vo.duration)&&vo.duration>0) ? vo.duration*1000+300 : 2500);
+        } else { setTimeout(goNext, 1800); }
+    }
+
+    function handleWrongAnswer(btn) {
+        stopThinkingTick(); playWrongSound(); playAudio('SFX_BOING');
+        STATE.wrongAttempts++;
+        btn.classList.add('wrong','animate-shake-button');
+        const gameScreen = document.getElementById('screen-game');
+        gameScreen.classList.add('animate-screen-shake');
+        triggerFlash('wrong');
+        setTimeout(()=>{
+            btn.classList.remove('animate-shake-button');
+            gameScreen.classList.remove('animate-screen-shake');
+            STATE.isAnswering = false; startThinkingTick();
+        }, 360);
+    }
+
+    function showResults() {
+        stopThinkingTick(); switchScreen('screen-result');
+        document.getElementById('final-score').innerHTML = `
+            <div>✅ Jawapan Betul: <strong>${STATE.correctAnswers}</strong></div>
+            <div>❌ Jawapan Salah: <strong>${STATE.wrongAttempts}</strong></div>
+            <div>📚 Jumlah Soalan: <strong>${STATIONERY_ITEMS.length}</strong></div>`;
+        let stars = 3;
+        if (STATE.wrongAttempts >= 5) stars = 1;
+        else if (STATE.wrongAttempts >= 2) stars = 2;
+        const sc = document.getElementById('stars-container'); sc.innerHTML = '';
+        for (let i=0; i<3; i++) {
+            const s = document.createElement('span');
+            s.className = 'star animate-star-drop animate-star-bounce';
+            s.textContent = '⭐'; s.style.animationDelay = (i*0.22)+'s';
+            if (i>=stars) s.classList.add('inactive');
+            sc.appendChild(s);
         }
+        playAudio('SFX_CHEER'); stopAllVO(); playAudio('VO_CLOSING');
+    }
 
-        function restartGame() {
-            STATE.currentIndex    = 0;
-            STATE.score           = 0;
-            STATE.wrongAttempts   = 0;
-            STATE.gameStarted     = false;
+    function restartGame() {
+        STATE.currentIndex=0; STATE.score=0; STATE.wrongAttempts=0; STATE.gameStarted=false;
+        playBGM('menu'); switchScreen('screen-menu');
+    }
 
-            // Storyboard: back to menu -> menu BGM
-            playBGM('menu');
-            switchScreen('screen-menu');
+    // ── UTILITIES ──
+    function switchScreen(id) {
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(id)?.classList.add('active');
+    }
+    function triggerFlash(type) {
+        const el = document.getElementById('flash-'+type); if(!el) return;
+        el.style.display='block'; el.className='flash-overlay flash-'+type;
+        setTimeout(()=>{ el.style.display='none'; el.className='flash-overlay'; }, 520);
+    }
+    function createSparkles() {
+        const container = document.getElementById('silhouette').parentElement;
+        const emojis = ['✨','⭐','💛','🌟','💫'];
+        for (let i=0; i<14; i++) {
+            const sp = document.createElement('div');
+            sp.style.cssText = `position:absolute;width:22px;height:22px;pointer-events:none;font-size:${14+Math.random()*10}px;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);`;
+            sp.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+            sp.style.setProperty('--tx',((Math.random()-0.5)*220)+'px');
+            sp.style.setProperty('--ty',((Math.random()-0.5)*220)+'px');
+            sp.classList.add('animate-pop-sparkle');
+            sp.style.animationDelay = (Math.random()*0.15)+'s';
+            container.appendChild(sp);
+            setTimeout(()=>sp.remove(), 1000);
         }
+    }
 
-        // ==================== UTILITY FUNCTIONS ====================
-        function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const screen = document.getElementById(screenId);
-            if (screen) screen.classList.add('active');
-        }
-
-        function triggerFlash(type) {
-            const el = document.getElementById('flash-' + type);
-            if (!el) return;
-            el.style.display = 'block';
-            el.className = 'flash-overlay flash-' + type;
-            setTimeout(() => {
-                el.style.display = 'none';
-                el.className = 'flash-overlay';
-            }, 520);
-        }
-
-        function createSparkles() {
-            const container = document.getElementById('silhouette').parentElement;
-            const emojis = ['✨','⭐','💛','🌟','💫'];
-            for (let i = 0; i < 14; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.style.cssText = `
-                    position:absolute;
-                    width:22px;height:22px;
-                    pointer-events:none;
-                    font-size:${14 + Math.random()*10}px;
-                    z-index:10;
-                `;
-                sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-
-                const x = (Math.random() - 0.5) * 220;
-                const y = (Math.random() - 0.5) * 220;
-                sparkle.style.setProperty('--tx', x + 'px');
-                sparkle.style.setProperty('--ty', y + 'px');
-                sparkle.classList.add('animate-pop-sparkle');
-                sparkle.style.left = '50%';
-                sparkle.style.top  = '50%';
-                sparkle.style.transform = 'translate(-50%,-50%)';
-                sparkle.style.animationDelay = (Math.random() * 0.15) + 's';
-
-                container.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 1000);
-            }
-        }
-
-        // ── SOUNDS (your existing synth beeps - unchanged) ──
-        function playClickSound() {
-            try {
-                const ac = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ac.createOscillator();
-                const gain = ac.createGain();
-                osc.frequency.setValueAtTime(640, ac.currentTime);
-                gain.gain.setValueAtTime(0.28, ac.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.1);
-                osc.connect(gain); gain.connect(ac.destination);
-                osc.start(); osc.stop(ac.currentTime + 0.1);
-            } catch(e){}
-        }
-
-        function playCorrectSound() {
-            try {
-                const ac = new (window.AudioContext || window.webkitAudioContext)();
-                [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
-                    const osc = ac.createOscillator();
-                    const gain = ac.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, ac.currentTime);
-                    gain.gain.setValueAtTime(0.18, ac.currentTime + i*0.09);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + i*0.09 + 0.22);
-                    osc.connect(gain); gain.connect(ac.destination);
-                    osc.start(ac.currentTime + i*0.09);
-                    osc.stop(ac.currentTime + i*0.09 + 0.22);
-                });
-            } catch(e){}
-        }
-
-        function playWrongSound() {
-            try {
-                const ac = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ac.createOscillator();
-                const gain = ac.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(320, ac.currentTime);
-                osc.frequency.linearRampToValueAtTime(180, ac.currentTime + 0.18);
-                gain.gain.setValueAtTime(0.18, ac.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.18);
-                osc.connect(gain); gain.connect(ac.destination);
-                osc.start(); osc.stop(ac.currentTime + 0.18);
-            } catch(e){}
-        }
+    // ── SYNTH SOUNDS ──
+    function playClickSound() {
+        try {
+            const ac=new(window.AudioContext||window.webkitAudioContext)();
+            const o=ac.createOscillator(),g=ac.createGain();
+            o.frequency.setValueAtTime(640,ac.currentTime);
+            g.gain.setValueAtTime(0.28,ac.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.1);
+            o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.1);
+        }catch(e){}
+    }
+    function playCorrectSound() {
+        try {
+            const ac=new(window.AudioContext||window.webkitAudioContext)();
+            [523.25,659.25,783.99,1046.5].forEach((f,i)=>{
+                const o=ac.createOscillator(),g=ac.createGain();
+                o.type='sine'; o.frequency.setValueAtTime(f,ac.currentTime);
+                g.gain.setValueAtTime(0.18,ac.currentTime+i*0.09);
+                g.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+i*0.09+0.22);
+                o.connect(g);g.connect(ac.destination);
+                o.start(ac.currentTime+i*0.09);o.stop(ac.currentTime+i*0.09+0.22);
+            });
+        }catch(e){}
+    }
+    function playWrongSound() {
+        try {
+            const ac=new(window.AudioContext||window.webkitAudioContext)();
+            const o=ac.createOscillator(),g=ac.createGain();
+            o.type='sawtooth';
+            o.frequency.setValueAtTime(320,ac.currentTime);
+            o.frequency.linearRampToValueAtTime(180,ac.currentTime+0.18);
+            g.gain.setValueAtTime(0.18,ac.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.18);
+            o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.18);
+        }catch(e){}
+    }
     </script>
 </body>
 </html>
