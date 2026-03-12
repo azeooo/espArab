@@ -34,6 +34,93 @@ html, body {
   overscroll-behavior: none;
 }
 
+.game-popup-overlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,.25);
+  backdrop-filter:blur(4px);
+  z-index:9999;
+}
+
+.game-popup-overlay.show{
+  display:flex;
+}
+
+/* POPUP BOX */
+.game-popup-box{
+  width:min(420px,90vw);
+  background:#f6eddc;
+  border-radius:24px;
+  padding:26px 22px;
+  text-align:center;
+
+  border:4px solid #f2a23b;
+
+  box-shadow:
+  0 10px 0 #e08a24,
+  0 18px 40px rgba(0,0,0,.25);
+}
+
+/* TITLE */
+.popup-title{
+  font-size:26px;
+  font-weight:900;
+  color:#e6772e;
+  margin-bottom:8px;
+}
+
+/* TEXT */
+.popup-text{
+  font-size:15px;
+  color:#6b5a4b;
+  margin-bottom:22px;
+}
+
+/* BUTTON CONTAINER */
+.popup-buttons{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+}
+
+/* BUTTON BASE */
+.popup-btn{
+  border:none;
+  border-radius:999px;
+  padding:12px 22px;
+  font-weight:800;
+  font-size:15px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+/* CANCEL BUTTON */
+.popup-cancel{
+  background:#3f8fd1;
+  color:white;
+  box-shadow:0 6px 0 #2d6ea5;
+}
+
+.popup-cancel:active{
+  transform:translateY(3px);
+  box-shadow:0 3px 0 #2d6ea5;
+}
+
+/* CONFIRM BUTTON */
+.popup-confirm{
+  background:#4caf50;
+  color:white;
+  box-shadow:0 6px 0 #3c8c40;
+}
+
+.popup-confirm:active{
+  transform:translateY(3px);
+  box-shadow:0 3px 0 #3c8c40;
+}
+
 .home-btn{
   position:fixed;
   top:12px;
@@ -470,9 +557,9 @@ html, body {
 
 <body>
 
-  <a href="index.html" class="home-btn" title="Ke Halaman Utama">
-        <img src="assets/images/homepage.png" alt="Home">
-    </a>
+ <a href="javascript:void(0)" class="home-btn" title="Ke Halaman Utama" onclick="openHomeModal()">
+  <img src="assets/images/homepage.png" alt="Home">
+</a>
 <!-- ══════════════════════════════════════════
      SCREEN 1 — MAIN MENU
 ══════════════════════════════════════════ -->
@@ -1332,5 +1419,36 @@ let sparkleTimer=null;
 setMuted(false); // default unmuted UI
 // ✅ No autoplay. BGM starts after first user gesture (unlockAudioOnce).
 </script>
+<div id="homeModal" class="game-popup-overlay">
+  <div class="game-popup-box">
+
+    <h2 class="popup-title">Kembali ke Halaman Utama?</h2>
+    <p class="popup-text">
+      Permainan akan dihentikan. Adakah anda pasti mahu keluar?
+    </p>
+
+    <div class="popup-buttons">
+      <button class="popup-btn popup-cancel" onclick="closeHomeModal()">Batal</button>
+      <button class="popup-btn popup-confirm" onclick="goHome()">Ya, Keluar</button>
+    </div>
+
+  </div>
+</div>
+<script>
+
+function openHomeModal(){
+  document.getElementById("homeModal").classList.add("show");
+}
+
+function closeHomeModal(){
+  document.getElementById("homeModal").classList.remove("show");
+}
+
+function goHome(){
+  window.location.href="index.html";
+}
+
+</script>
+
 </body>
 </html>

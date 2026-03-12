@@ -13,39 +13,51 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-family:'Azim','Segoe UI',Tahoma,sans-serif;}
 
-        .home-btn{
-        position:fixed;
-        top:10px;
-        right:100px;
-        width:55px;
-        height:55px;
-        border-radius:50%;
-        background:linear-gradient(135deg,#FFD54F,#FF8F00);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:50px;
-        text-decoration:none;
-        box-shadow:0 4px 10px rgba(0,0,0,.25);
-        z-index:9999;
-        transition:transform .15s ease, box-shadow .15s ease;
-        }
-        .home-btn:hover{
-        transform:translateY(-2px) scale(1.08);
-        box-shadow:0 6px 14px rgba(0,0,0,.3);
-        }
-        .home-btn:active{
-        transform:scale(.92);
-        }
-        .home-btn img{
-        width:60px;
-        height:60px;
-        object-fit:contain;
-        }
+/* ── HOME BUTTON (hidden during game) ── */
+.home-btn{
+  position:fixed;top:10px;right:10px;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#FFD54F,#FF8F00);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;
+  box-shadow:0 4px 12px rgba(0,0,0,.28);
+  z-index:9999;
+  transition:transform .15s,box-shadow .15s;
+}
+.home-btn:hover{transform:translateY(-2px) scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,.32);}
+.home-btn:active{transform:scale(.92);}
+.home-btn img{width:34px;height:34px;object-fit:contain;}
+.game-active .home-btn{display:none !important;}
+/* ── GAME TOP-RIGHT: home + stop side by side ── */
+#game-top-right{position:absolute;top:clamp(.3rem,.6vh,.45rem);right:clamp(.4rem,1.2vw,.6rem);z-index:95;display:flex;flex-direction:row;align-items:center;gap:.4rem;}
+#game-home-btn{width:clamp(30px,7vw,38px);height:clamp(30px,7vw,38px);border-radius:50%;background:linear-gradient(135deg,#FFD54F,#FF8F00);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.3);transition:transform .12s;font-size:clamp(.9rem,3.5vw,1.2rem);padding:0;}
+#game-home-btn:hover{transform:scale(1.1);}
+#game-home-btn:active{transform:scale(.9);}
+#game-home-btn img{width:clamp(18px,4.5vw,24px);height:clamp(18px,4.5vw,24px);object-fit:contain;}
+
+/* ── HOME CONFIRM MODAL ── */
+.home-modal-box{
+  background:linear-gradient(145deg,#fff8f0,#fff);
+  border-radius:2.5rem;
+  padding:2rem 2.2rem 1.6rem;
+  max-width:310px;width:90%;
+  text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 0 3px rgba(255,160,0,.22);
+  animation:popIn .32s cubic-bezier(.3,1.5,.5,1) both;
+}
+.home-modal-icon{font-size:3.2rem;display:block;margin-bottom:.45rem;animation:iconBounce 1.4s ease infinite;}
+.home-modal-title{font-family:'Azim','Segoe UI',sans-serif;font-size:1.4rem;color:#5a3000;margin-bottom:.25rem;font-weight:900;}
+.home-modal-sub{font-size:.82rem;color:#999;font-weight:700;margin-bottom:1.1rem;direction:rtl;}
+.home-modal-btns{display:flex;gap:.7rem;justify-content:center;}
+
+@keyframes popIn{0%{transform:scale(.4);opacity:0;}100%{transform:scale(1);opacity:1;}}
+@keyframes iconBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 
 #app{width:100%;height:100dvh;position:relative;overflow:hidden;}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;}
 .screen.active{display:flex;}
+
+/* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer;border-radius:1.5rem;font-weight:900;font-size:1.1rem;letter-spacing:.04em;transition:transform .12s,box-shadow .12s,filter .12s;box-shadow:0 6px 0 rgba(0,0,0,.3);padding:.65rem 2rem;min-width:155px;font-family:'Azim','Segoe UI',Tahoma,sans-serif;}
 .btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn:hover{filter:brightness(1.1);}
@@ -54,109 +66,88 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 .btn-red{background:linear-gradient(160deg,#EF5350,#B71C1C);color:#fff;}
 .btn-blue{background:linear-gradient(160deg,#42A5F5,#1565C0);color:#fff;}
 .btn-sand{background:linear-gradient(160deg,#FFE082,#FFB300);color:#5a3000;}
+
+/* ── MODALS ── */
 .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-box{background:linear-gradient(160deg,#fff8ee,#fff);border-radius:2rem;padding:1.5rem;max-width:90%;max-height:88dvh;overflow-y:auto;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 0 2px rgba(255,180,0,.3);}
 .bilingual-row{display:flex;flex-direction:column;text-align:left;margin-bottom:.6rem;padding:.4rem .6rem;background:rgba(255,240,200,.5);border-radius:.8rem;border-left:3px solid #FF8C42;}
 .lang-ms{font-size:.87rem;color:#333;font-weight:600;}
-.lang-ar{font-size:.9rem;color:#1565C0;font-weight:700;direction:rtl;text-align:right;margin-top:.12rem;}
+
+/* ── GAME ── */
 #road-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:10;}
+#game-bg{position:absolute;inset:0;width:100%;height:100%;background:url('./assets/images/bgcarr.jpeg') center/cover no-repeat;z-index:0;transition:background-position .18s ease-out;}
+#game-bg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.14);pointer-events:none;}
+#game-vignette{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);}
 
-/* ── GAME BG ── */
-#game-bg{
-  position:absolute;inset:0;width:100%;height:100%;
-  background:url('./assets/images/bgcarr.jpeg') center center / cover no-repeat;
-  z-index:0;
-  transition:background-position .18s ease-out;
-}
-#game-bg::after{
-  content:'';position:absolute;inset:0;
-  background:rgba(0,0,0,.14);
-  pointer-events:none;
-}
-#game-vignette{
-  position:absolute;inset:0;pointer-events:none;z-index:2;
-  background:radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
-}
+/* HUD — fully fluid */
+#hud{position:absolute;top:0;left:0;right:0;z-index:80;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:clamp(.3rem,.8vh,1rem) clamp(.5rem,2vw,1rem) 0;}
+#target-num-big{font-size:clamp(2.8rem,12vw,6rem);font-weight:900;color:#FFE66D;text-shadow:0 0 30px rgba(255,140,0,1),0 4px 0 rgba(0,0,0,.5);line-height:1;}
+#target-word{font-size:clamp(.65rem,2.8vw,1.05rem);font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8);letter-spacing:.08em;margin-top:-.1rem;}
+#hud-row{display:flex;justify-content:center;width:100%;margin-top:clamp(.15rem,.5vh,.3rem);}
+.hud-box{background:rgba(0,0,0,.55);border-radius:1rem;padding:clamp(.18rem,.4vh,.28rem) clamp(.5rem,2vw,1rem);font-weight:800;font-size:clamp(.62rem,2.5vw,.95rem);color:#FFE66D;border:2px solid rgba(255,210,0,.35);backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(0,0,0,.4);}
+#round-counter{position:absolute;top:clamp(.3rem,.6vh,.45rem);left:clamp(.4rem,1.2vw,.6rem);z-index:92;background:rgba(0,0,0,.55);border-radius:1rem;padding:clamp(.18rem,.4vh,.28rem) clamp(.5rem,2vw,1rem);font-weight:800;font-size:clamp(.6rem,2.2vw,.85rem);color:#FFE66D;border:2px solid rgba(255,210,0,.35);pointer-events:none;backdrop-filter:blur(6px);}
 
-/* ── HUD ── */
-#hud{position:absolute;top:0;left:0;right:0;z-index:80;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem 0;}
-#target-num-big{font-size:6rem;font-weight:900;color:#FFE66D;text-shadow:0 0 30px rgba(255,140,0,1),0 4px 0 rgba(0,0,0,.5);line-height:1;}
-#target-word{font-size:1.05rem;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8);letter-spacing:.08em;margin-top:-.2rem;}
-#hud-row{display:flex;justify-content:center;width:100%;margin-top:.3rem;}
-.hud-box{background:rgba(0,0,0,.55);border-radius:1rem;padding:.28rem 1rem;font-weight:800;font-size:.95rem;color:#FFE66D;border:2px solid rgba(255,210,0,.35);backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(0,0,0,.4);}
-#round-counter{position:absolute;top:.45rem;left:.6rem;z-index:92;background:rgba(0,0,0,.55);border-radius:1rem;padding:.28rem 1rem;font-weight:800;font-size:.85rem;color:#FFE66D;border:2px solid rgba(255,210,0,.35);pointer-events:none;backdrop-filter:blur(6px);}
-#stop-btn{position:absolute;top:.45rem;right:.6rem;z-index:95;}
-
-/* ── BONUS TITLE ── */
-#bonus-title-wrap{
-  position:absolute;top:2.2%;left:50%;transform:translateX(-50%);z-index:999;display:none;text-align:center;pointer-events:none;width:auto;max-width:96%;
-}
-/* ── BONUS BAR ── */
-#bonus-bar-wrap{position:absolute;bottom:5.8rem;left:50%;transform:translateX(-50%);z-index:92;display:none;flex-direction:column;align-items:center;pointer-events:none;}
-#bonus-bar-bg{width:210px;height:16px;background:rgba(0,0,0,.4);border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.3);}
+/* Bonus */
+#bonus-title-wrap{position:absolute;top:2.2%;left:50%;transform:translateX(-50%);z-index:999;display:none;text-align:center;pointer-events:none;width:auto;max-width:96%;}
+#bonus-bar-wrap{position:absolute;bottom:clamp(4.5rem,10vh,5.8rem);left:50%;transform:translateX(-50%);z-index:92;display:none;flex-direction:column;align-items:center;pointer-events:none;}
+#bonus-bar-bg{width:clamp(130px,42vw,210px);height:clamp(10px,1.8vh,16px);background:rgba(0,0,0,.4);border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.3);}
 #bonus-bar-fill{height:100%;background:linear-gradient(90deg,#FFE66D,#FF8C42,#FF6B6B);border-radius:8px;transition:width .1s linear;}
-#bonus-bar-label{font-size:.75rem;font-weight:800;color:#FFE66D;margin-top:.2rem;text-shadow:0 1px 4px rgba(0,0,0,.8);}
+#bonus-bar-label{font-size:clamp(.6rem,2vw,.75rem);font-weight:800;color:#FFE66D;margin-top:.2rem;text-shadow:0 1px 4px rgba(0,0,0,.8);}
 
-/* ── ARROWS ── */
-#arrow-controls{position:absolute;bottom:.8rem;left:0;right:0;display:flex;justify-content:space-between;padding:0 1rem;z-index:90;}
-.arrow-btn{width:78px;height:78px;border-radius:50%;border:3px solid rgba(255,255,255,.35);background:rgba(0,0,0,.5);font-size:2.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .1s,background .1s;backdrop-filter:blur(4px);box-shadow:0 4px 16px rgba(0,0,0,.4);}
+/* Arrow buttons */
+#arrow-controls{position:absolute;bottom:clamp(.5rem,1.5vh,.8rem);left:0;right:0;display:flex;justify-content:space-between;padding:0 clamp(.5rem,2vw,1rem);z-index:90;}
+.arrow-btn{width:clamp(52px,13vw,78px);height:clamp(52px,13vw,78px);border-radius:50%;border:3px solid rgba(255,255,255,.35);background:rgba(0,0,0,.5);font-size:clamp(1.3rem,5vw,2.1rem);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .1s,background .1s;backdrop-filter:blur(4px);box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .arrow-btn:active{transform:scale(.88);background:rgba(255,200,0,.45);}
 #fx-layer{position:absolute;inset:0;pointer-events:none;z-index:85;overflow:hidden;}
 #end-confetti{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:hidden;}
 
 /* ── SPARKLE LAYER (menu) ── */
-#sparkle-layer{
-  position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;
-}
-.car-sparkle{
-  position:absolute;
-  pointer-events:none;
-  will-change:transform,opacity;
-}
+#sparkle-layer{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;}
+.car-sparkle{position:absolute;pointer-events:none;will-change:transform,opacity;}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{0%{transform:translateX(-50%) translateY(0);opacity:1;}100%{transform:translateX(-50%) translateY(-90px);opacity:0;}}
-@keyframes confettiFall{0%{transform:translateY(-30px) rotate(0) scale(1);opacity:1;}100%{transform:translateY(115vh) rotate(760deg) scale(.8);opacity:.2;}}
+/* ── MENU BG IMAGE ── */
+#screen-menu{background:#87CEEB;}
+
+
+
+/* Main car menu bob (from Doc2) */
 @keyframes bobCar{0%,100%{transform:translateY(0) rotateX(0deg);}50%{transform:translateY(-8px) rotateX(4deg);}}
-@keyframes popNum{0%{transform:scale(.5) rotateY(-90deg);opacity:0;}60%{transform:scale(1.2) rotateY(8deg);}100%{transform:scale(1) rotateY(0deg);opacity:1;}}
-@keyframes bonusTitleAnim{
-  0%{transform:translateY(-48px) scale(.3) rotateX(60deg);opacity:0;}
-  60%{transform:translateY(-8px) scale(1.08) rotateX(-5deg);}
-  100%{transform:translateY(0) scale(1) rotateX(0deg);opacity:1;}
-}
-@keyframes bonusPulse{
-  0%,100%{transform:translateY(0) scale(1);}
-  50%{transform:translateY(-4px) scale(1.04);}
-}
-@keyframes glowPulse{0%,100%{text-shadow:0 0 30px rgba(255,140,0,1),0 4px 0 rgba(0,0,0,.5);}50%{text-shadow:0 0 60px rgba(255,200,0,1),0 0 20px #fff,0 4px 0 rgba(0,0,0,.5);}}
-@keyframes trophyDrop{0%{transform:translateY(-80px) scale(.4) rotate(-15deg);opacity:0;}60%{transform:translateY(10px) scale(1.15) rotate(5deg);}80%{transform:translateY(-5px) scale(.95) rotate(-2deg);}100%{transform:translateY(0) scale(1) rotate(0);opacity:1;}}
-@keyframes slideUp{0%{transform:translateY(60px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
 
-/* Three float variants for visual diversity */
+/* Floating car sparkles */
 @keyframes carFloat1{
-  0%  {transform:translateY(0)      translateX(0px)   rotate(0deg);  opacity:0;}
+  0%  {transform:translateY(0) translateX(0px) rotate(0deg);opacity:0;}
   8%  {opacity:0.62;}
-  45% {transform:translateY(-38vh)  translateX(16px)  rotate(11deg); opacity:0.55;}
-  55% {transform:translateY(-52vh)  translateX(-8px)  rotate(-5deg); opacity:0.48;}
+  45% {transform:translateY(-38vh) translateX(16px) rotate(11deg);opacity:0.55;}
+  55% {transform:translateY(-52vh) translateX(-8px) rotate(-5deg);opacity:0.48;}
   92% {opacity:0.18;}
-  100%{transform:translateY(-105vh) translateX(6px)   rotate(18deg); opacity:0;}
+  100%{transform:translateY(-105vh) translateX(6px) rotate(18deg);opacity:0;}
 }
 @keyframes carFloat2{
-  0%  {transform:translateY(0)      translateX(0px)   rotate(0deg);   opacity:0;}
+  0%  {transform:translateY(0) translateX(0px) rotate(0deg);opacity:0;}
   10% {opacity:0.58;}
-  40% {transform:translateY(-32vh)  translateX(-20px) rotate(-9deg);  opacity:0.52;}
-  60% {transform:translateY(-58vh)  translateX(12px)  rotate(7deg);   opacity:0.42;}
+  40% {transform:translateY(-32vh) translateX(-20px) rotate(-9deg);opacity:0.52;}
+  60% {transform:translateY(-58vh) translateX(12px) rotate(7deg);opacity:0.42;}
   90% {opacity:0.14;}
-  100%{transform:translateY(-108vh) translateX(-4px)  rotate(-16deg); opacity:0;}
+  100%{transform:translateY(-108vh) translateX(-4px) rotate(-16deg);opacity:0;}
 }
 @keyframes carFloat3{
-  0%  {transform:translateY(0)      translateX(0px)   rotate(0deg);  opacity:0;}
+  0%  {transform:translateY(0) translateX(0px) rotate(0deg);opacity:0;}
   12% {opacity:0.55;}
-  50% {transform:translateY(-44vh)  translateX(24px)  rotate(15deg); opacity:0.48;}
-  75% {transform:translateY(-72vh)  translateX(-10px) rotate(-7deg); opacity:0.28;}
+  50% {transform:translateY(-44vh) translateX(24px) rotate(15deg);opacity:0.48;}
+  75% {transform:translateY(-72vh) translateX(-10px) rotate(-7deg);opacity:0.28;}
   95% {opacity:0.10;}
-  100%{transform:translateY(-110vh) translateX(3px)   rotate(21deg); opacity:0;}
+  100%{transform:translateY(-110vh) translateX(3px) rotate(21deg);opacity:0;}
 }
+
+/* Game screen animations */
+@keyframes fadeUp{0%{transform:translateX(-50%) translateY(0);opacity:1;}100%{transform:translateX(-50%) translateY(-90px);opacity:0;}}
+@keyframes confettiFall{0%{transform:translateY(-30px) rotate(0) scale(1);opacity:1;}100%{transform:translateY(115vh) rotate(760deg) scale(.8);opacity:.2;}}
+@keyframes popNum{0%{transform:scale(.5) rotateY(-90deg);opacity:0;}60%{transform:scale(1.2) rotateY(8deg);}100%{transform:scale(1) rotateY(0deg);opacity:1;}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 30px rgba(255,140,0,1),0 4px 0 rgba(0,0,0,.5);}50%{text-shadow:0 0 60px rgba(255,200,0,1),0 0 20px #fff,0 4px 0 rgba(0,0,0,.5);}}
+@keyframes bonusTitleAnim{0%{transform:translateY(-48px) scale(.3) rotateX(60deg);opacity:0;}60%{transform:translateY(-8px) scale(1.08) rotateX(-5deg);}100%{transform:translateY(0) scale(1) rotateX(0deg);opacity:1;}}
+@keyframes bonusPulse{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-4px) scale(1.04);}}
+@keyframes trophyDrop{0%{transform:translateY(-80px) scale(.4) rotate(-15deg);opacity:0;}60%{transform:translateY(10px) scale(1.15) rotate(5deg);}80%{transform:translateY(-5px) scale(.95) rotate(-2deg);}100%{transform:translateY(0) scale(1) rotate(0);opacity:1;}}
+@keyframes slideUp{0%{transform:translateY(60px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
 
 .num-pop{animation:popNum .45s cubic-bezier(.3,1.5,.5,1) both;}
 .num-glow{animation:glowPulse 1.8s ease-in-out infinite;}
@@ -166,94 +157,62 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 </style>
 </head>
 <body>
-
 <div id="app">
 
-  <a href="index.html" class="home-btn" title="Ke Halaman Utama">
-        <img src="assets/images/homepage.png" alt="Home">
-    </a>
+<!-- ── HOME BUTTON (always visible) ── -->
+<a href="#" class="home-btn" title="Ke Halaman Utama"
+   onclick="event.preventDefault(); openModal('modal-home');">
+  <img src="assets/images/homepage.png" alt="Home"
+       onerror="this.style.display='none';this.parentNode.innerHTML='🏠'">
+</a>
+
 <!-- ══════════════════════════════════════
-     SCREEN 1 — MAIN MENU  (blue sky theme)
+     HOME CONFIRM MODAL
 ══════════════════════════════════════ -->
-<div id="screen-menu" class="screen active"
-  style="background:linear-gradient(180deg,#4FC3F7 0%,#29B6F6 40%,#0288D1 80%,#01579B 100%);">
+<div id="modal-home" class="modal-bg">
+  <div class="home-modal-box">
+    <span class="home-modal-icon">🏠</span>
+    <div class="home-modal-title">Balik ke Laman Utama?</div>
+    <div class="home-modal-sub">هل تريد العودة إلى الصفحة الرئيسية؟</div>
+    <div class="home-modal-btns">
+      <button class="btn btn-red" style="min-width:105px;"
+              onclick="window.location.href='index.html'">✅ Ya</button>
+      <button class="btn btn-green" style="min-width:105px;"
+              onclick="closeModal('modal-home')">❌ Tidak</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — MAIN MENU  (desert theme)
+══════════════════════════════════════ -->
+<div id="screen-menu" class="screen active">
+
+  <!-- ══ BG IMAGE ══ -->
+  <div style="position:absolute;inset:0;z-index:1;">
+    <img src="assets/images/bg5.png" alt=""
+         style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;user-select:none;">
+  </div>
 
   <!-- Floating car sparkle layer -->
-  <div id="sparkle-layer"></div>
-
-  <!-- Clouds -->
-  <svg style="position:absolute;top:4%;left:3%;width:125px;opacity:.92;z-index:4" viewBox="0 0 130 55">
-    <ellipse cx="65" cy="38" rx="60" ry="24" fill="rgba(255,255,255,.88)"/>
-    <ellipse cx="42" cy="30" rx="32" ry="22" fill="rgba(255,255,255,.88)"/>
-    <ellipse cx="90" cy="27" rx="30" ry="20" fill="rgba(255,255,255,.88)"/>
-  </svg>
-  <svg style="position:absolute;top:9%;right:7%;width:90px;opacity:.85;z-index:4" viewBox="0 0 130 55">
-    <ellipse cx="65" cy="38" rx="55" ry="22" fill="rgba(255,255,255,.82)"/>
-    <ellipse cx="38" cy="29" rx="28" ry="19" fill="rgba(255,255,255,.82)"/>
-    <ellipse cx="92" cy="26" rx="26" ry="17" fill="rgba(255,255,255,.82)"/>
-  </svg>
-  <svg style="position:absolute;top:18%;left:30%;width:68px;opacity:.70;z-index:4" viewBox="0 0 130 55">
-    <ellipse cx="65" cy="38" rx="55" ry="22" fill="rgba(255,255,255,.75)"/>
-    <ellipse cx="38" cy="30" rx="26" ry="18" fill="rgba(255,255,255,.75)"/>
-    <ellipse cx="94" cy="27" rx="24" ry="16" fill="rgba(255,255,255,.75)"/>
-  </svg>
-
-  <!-- Sun -->
-  <svg style="position:absolute;top:2%;right:15%;width:72px;filter:drop-shadow(0 0 14px rgba(255,240,80,.9));z-index:4" viewBox="0 0 72 72">
-    <circle cx="36" cy="36" r="26" fill="#FFE66D" stroke="#FFCA28" stroke-width="2.5"/>
-    <circle cx="36" cy="36" r="18" fill="#FFF9C4" opacity=".5"/>
-    <line x1="36" y1="2"  x2="36" y2="10"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="36" y1="62" x2="36" y2="70"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="2"  y1="36" x2="10" y2="36"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="62" y1="36" x2="70" y2="36"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="10" y1="10" x2="16" y2="16"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="56" y1="56" x2="62" y2="62"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="62" y1="10" x2="56" y2="16"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-    <line x1="16" y1="56" x2="10" y2="62"  stroke="#FFCA28" stroke-width="3" stroke-linecap="round"/>
-  </svg>
-
-  <!-- Bottom hills (blue-tinted) -->
-  <svg style="position:absolute;bottom:0;left:0;right:0;width:100%;height:40%;z-index:4" viewBox="0 0 400 160" preserveAspectRatio="none">
-    <ellipse cx="60"  cy="160" rx="150" ry="85" fill="#0277BD" opacity=".60"/>
-    <ellipse cx="250" cy="160" rx="210" ry="98" fill="#0288D1" opacity=".55"/>
-    <ellipse cx="400" cy="160" rx="130" ry="72" fill="#0277BD" opacity=".55"/>
-  </svg>
-
-  <!-- Side cactus/persons -->
-  <svg style="position:absolute;bottom:27%;left:3%;width:54px;filter:drop-shadow(2px 4px 6px rgba(0,0,0,.25));z-index:5" viewBox="0 0 55 100">
-    <rect x="22" y="15" width="11" height="78" rx="5" fill="#558B2F"/>
-    <rect x="5"  y="35" width="30" height="10" rx="5" fill="#558B2F"/>
-    <rect x="5"  y="35" width="11" height="28" rx="5" fill="#558B2F"/>
-    <rect x="28" y="28" width="10" height="22" rx="5" fill="#558B2F"/>
-    <circle cx="27" cy="12" r="8" fill="#388E3C"/>
-    <text x="-1" y="65" font-size="22">😊</text>
-  </svg>
-  <svg style="position:absolute;bottom:25%;right:4%;width:46px;filter:drop-shadow(2px 4px 6px rgba(0,0,0,.25));z-index:5" viewBox="0 0 55 100">
-    <rect x="22" y="20" width="10" height="72" rx="5" fill="#558B2F"/>
-    <rect x="8"  y="40" width="26" height="9"  rx="4" fill="#558B2F"/>
-    <rect x="8"  y="40" width="10" height="22" rx="4" fill="#558B2F"/>
-    <text x="0" y="65" font-size="20">😊</text>
-  </svg>
-  <svg style="position:absolute;bottom:27%;right:13%;width:72px;filter:drop-shadow(3px 6px 10px rgba(0,0,0,.30));z-index:5" viewBox="0 0 82 72">
-    <polygon points="41,3 80,70 2,70"  fill="#FFB300" stroke="#E65100" stroke-width="2"/>
-    <polygon points="41,3 80,70 60,70" fill="#E65100" opacity=".38"/>
-    <circle cx="41" cy="52" r="7" fill="#FFF9C4"/>
-    <circle cx="38" cy="50" r="2.5" fill="#444"/>
-    <circle cx="44" cy="50" r="2.5" fill="#444"/>
-    <path d="M37 56 Q41 60 45 56" fill="none" stroke="#444" stroke-width="1.8"/>
-  </svg>
+  <div id="sparkle-layer" style="z-index:3;"></div>
 
   <!-- Title text -->
   <div style="position:relative;z-index:10;text-align:center;margin-bottom:.8rem;">
-    <div style="font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:.08em;text-shadow:0 2px 8px rgba(0,60,140,.5);">🌟 NOMBOR & BILANGAN 🌟</div>
+    <div style="font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:.08em;text-shadow:0 2px 8px rgba(0,60,140,.5);">🌟 NOMBOR &amp; BILANGAN 🌟</div>
     <div style="font-size:2.6rem;font-weight:900;color:#fff;text-shadow:0 5px 0 rgba(0,50,120,.4),0 0 30px rgba(100,220,255,.5);transform:perspective(300px) rotateX(8deg);display:block;">LUMBA KERETA</div>
     <div style="font-size:.9rem;font-weight:700;color:rgba(255,255,255,.88);margin-top:.2rem;letter-spacing:.12em;">لعبة الأرقام العربية</div>
   </div>
 
-  <!-- Animated car SVG -->
+  <!-- Animated car SVG (from Doc2) -->
   <div style="position:relative;z-index:10;animation:bobCar 1.7s ease-in-out infinite;filter:drop-shadow(0 12px 24px rgba(0,80,200,.5));">
     <svg viewBox="0 0 160 220" width="108" height="148">
-      <defs><radialGradient id="cg" cx="40%" cy="30%"><stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#B71C1C"/></radialGradient></defs>
+      <defs>
+        <radialGradient id="cg" cx="40%" cy="30%">
+          <stop offset="0%"   stop-color="#EF5350"/>
+          <stop offset="100%" stop-color="#B71C1C"/>
+        </radialGradient>
+      </defs>
       <ellipse cx="80" cy="110" rx="58" ry="100" fill="url(#cg)"/>
       <ellipse cx="80" cy="55"  rx="35" ry="38"  fill="#EF5350" opacity=".85"/>
       <path d="M68 90 Q80 75 92 90"   fill="none" stroke="#B71C1C" stroke-width="3"   stroke-linecap="round"/>
@@ -280,14 +239,15 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
     <button class="btn btn-orange" onclick="onMenuBtn('arahan')">📖 Arahan</button>
     <button class="btn btn-red"    onclick="onMenuBtn('keluar')">🚪 Keluar</button>
   </div>
-</div>
+
+</div><!-- /screen-menu -->
 
 <!-- ══════════════════════════════════════
      MODALS
 ══════════════════════════════════════ -->
 <div id="modal-arahan" class="modal-bg">
   <div class="modal-box" style="max-width:360px;">
-    <div style="font-size:1.3rem;font-weight:900;color:#6b3a00;margin-bottom:.8rem;">📖 Arahan &nbsp;&nbsp; <span style="direction:rtl;font-size:1.2rem;color:#1565C0;"></span></div>
+    <div style="font-size:1.3rem;font-weight:900;color:#6b3a00;margin-bottom:.8rem;">📖 Arahan</div>
     <div style="display:flex;flex-direction:column;gap:.1rem;">
       <div class="bilingual-row"><span class="lang-ms">🎯 Dengar nombor → bawa kereta ke lorong yang betul.</span></div>
       <div class="bilingual-row"><span class="lang-ms">⌨️ Tekan ← → di papan kekunci.</span></div>
@@ -311,16 +271,15 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
     <button class="btn btn-blue" style="margin-top:1rem;" onclick="closeModal('modal-arahan')">Faham! / فهمت ✓</button>
   </div>
 </div>
+
 <div id="modal-keluar" class="modal-bg">
   <div class="modal-box" style="max-width:300px;">
     <div style="font-size:1.25rem;font-weight:900;color:#6b3a00;margin-bottom:1rem;">Nak keluar? 🤔</div>
     <div style="display:flex;gap:1rem;justify-content:center;">
-<button class="btn btn-red"
-        style="min-width:100px;"
-        onclick="closeModal('modal-keluar'); window.location.href='index.html';">
-  Ya
-</button>
-      <button class="btn btn-green" style="min-width:100px;" onclick="closeModal('modal-keluar')">Tidak</button>
+      <button class="btn btn-red"   style="min-width:100px;"
+              onclick="closeModal('modal-keluar');window.location.href='index.html'">Ya</button>
+      <button class="btn btn-green" style="min-width:100px;"
+              onclick="closeModal('modal-keluar')">Tidak</button>
     </div>
   </div>
 </div>
@@ -334,8 +293,12 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
   <canvas id="road-canvas"></canvas>
 
   <div id="bonus-title-wrap">
-    <div id="bonus-title-text" style="font-size:clamp(2.2rem,9vw,3.4rem);font-weight:900;color:#FFE66D;text-shadow:0 0 30px #FF8C42,0 0 60px #FFE66D,0 5px 0 rgba(0,0,0,.5);letter-spacing:.06em;line-height:2.05;"> BONUS TIME!</div>
-    <div style="font-size:clamp(.9rem,3vw,1.1rem);font-weight:800;color:rgba(255,255,255,.9);margin-top:.35rem;letter-spacing:.1em;">وقت المكافأة 🌈</div>
+    <div id="bonus-title-text"
+         style="font-size:clamp(1.6rem,7vw,3.4rem);font-weight:900;color:#FFE66D;
+                text-shadow:0 0 30px #FF8C42,0 0 60px #FFE66D,0 5px 0 rgba(0,0,0,.5);
+                letter-spacing:.06em;line-height:1.2;">BONUS TIME!</div>
+    <div style="font-size:clamp(.75rem,2.5vw,1.1rem);font-weight:800;color:rgba(255,255,255,.9);
+                margin-top:.35rem;letter-spacing:.1em;">وقت المكافأة 🌈</div>
   </div>
 
   <div id="bonus-bar-wrap">
@@ -353,14 +316,22 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
     <div id="hud-row"><div class="hud-box">🏆 Skor: <span id="hud-score">0</span></div></div>
   </div>
 
-  <div id="stop-btn">
-    <button class="btn btn-sand" style="font-size:.78rem;padding:.3rem .85rem;min-width:65px;" onclick="stopGame()">⏹ Stop</button>
+  <div id="game-top-right">
+    <button id="game-home-btn" onclick="openModal('modal-home')" title="Ke Halaman Utama">
+      <img src="assets/images/homepage.png" alt="🏠" onerror="this.parentNode.textContent='🏠'">
+    </button>
+    <button class="btn btn-sand" style="font-size:clamp(.6rem,2.2vw,.78rem);padding:.3rem clamp(.5rem,1.5vw,.85rem);min-width:clamp(50px,14vw,65px);"
+            onclick="stopGame()">⏹ Stop</button>
   </div>
 
-  <div id="tutorial-hint" style="position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);border:2px solid rgba(255,220,0,.5);border-radius:1.8rem;padding:1rem 1.8rem;text-align:center;z-index:88;pointer-events:none;display:none;backdrop-filter:blur(8px);">
-    <div style="font-size:1rem;font-weight:900;color:#FFE66D;">👆 Tekan kiri/kanan untuk pilih nombor!</div>
-    <div style="font-size:.85rem;color:#A8E6F0;direction:rtl;margin-top:.25rem;">اضغط يسار/يمين لاختيار الرقم</div>
-    <div style="font-size:2rem;margin-top:.35rem;color:#fff;">◀ &nbsp;&nbsp; ▶</div>
+  <div id="tutorial-hint"
+       style="position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);
+              background:rgba(0,0,0,.75);border:2px solid rgba(255,220,0,.5);
+              border-radius:1.8rem;padding:clamp(.6rem,2vh,1rem) clamp(1rem,4vw,1.8rem);
+              text-align:center;z-index:88;pointer-events:none;display:none;backdrop-filter:blur(8px);">
+    <div style="font-size:clamp(.75rem,3vw,1rem);font-weight:900;color:#FFE66D;">👆 Tekan kiri/kanan untuk pilih nombor!</div>
+    <div style="font-size:clamp(.65rem,2.5vw,.85rem);color:#A8E6F0;direction:rtl;margin-top:.25rem;">اضغط يسار/يمين لاختيار الرقم</div>
+    <div style="font-size:clamp(1.3rem,5vw,2rem);margin-top:.35rem;color:#fff;">◀ &nbsp;&nbsp; ▶</div>
   </div>
 
   <div id="arrow-controls">
@@ -372,9 +343,11 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
 <!-- ══════════════════════════════════════
      SCREEN END
 ══════════════════════════════════════ -->
-<div id="screen-end" class="screen" style="background:linear-gradient(160deg,#FFD54F 0%,#FFB300 40%,#E65100 100%);">
+<div id="screen-end" class="screen"
+     style="background:linear-gradient(160deg,#FFD54F 0%,#FFB300 40%,#E65100 100%);">
   <div id="end-confetti"></div>
-  <svg style="position:absolute;bottom:0;left:0;right:0;width:100%;height:32%;z-index:1" viewBox="0 0 400 130" preserveAspectRatio="none">
+  <svg style="position:absolute;bottom:0;left:0;right:0;width:100%;height:32%;z-index:1"
+       viewBox="0 0 400 130" preserveAspectRatio="none">
     <ellipse cx="80"  cy="130" rx="150" ry="78" fill="#BF360C" opacity=".45"/>
     <ellipse cx="310" cy="130" rx="185" ry="85" fill="#E64A19" opacity=".4"/>
   </svg>
@@ -384,7 +357,9 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
   </div>
   <div id="end-trophy"       style="position:relative;z-index:10;font-size:5.5rem;margin:.1rem 0;filter:drop-shadow(0 8px 20px rgba(0,0,0,.4));"></div>
   <div id="end-trophy-label" style="position:relative;z-index:10;font-size:1.1rem;font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.4);margin-bottom:.3rem;"></div>
-  <div style="position:relative;z-index:10;background:rgba(255,255,255,.92);border-radius:1.8rem;padding:1rem 1.5rem;max-width:320px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,.25);margin-bottom:.6rem;" class="slide-up">
+  <div style="position:relative;z-index:10;background:rgba(255,255,255,.92);border-radius:1.8rem;
+              padding:1rem 1.5rem;max-width:320px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,.25);
+              margin-bottom:.6rem;" class="slide-up">
     <div style="font-size:1.3rem;font-weight:900;color:#6b3a00;">🏆 Skor Akhir: <span id="end-score" style="color:#E65100;">0</span></div>
     <div id="end-missed" style="margin-top:.55rem;font-size:.88rem;color:#555;line-height:1.75;text-align:left;"></div>
   </div>
@@ -394,19 +369,22 @@ html,body{width:100%;height:100dvh;overflow:hidden;background:#1a1a2e;font-famil
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     JAVASCRIPT — UNCHANGED FROM DOC2
+══════════════════════════════════════ -->
 <script>
 const ASSET_CONFIG = { carImage: "" };
 
 const SPEED = {
-  ROAD_SCROLL:      0.0022,
-  BARREL_Z:         0.0028,
-  COIN_Z:           0.0020,
-  THINK_MS:         2600,
-  BOOST_MULT:       1.18,
-  BOOST_MS:         1200,
-  WRONG_SLOW_MULT:  0.78,
-  SLOW_MS:          900,
-  SPARKLE_SCROLL:   0.0014,
+  ROAD_SCROLL:     0.0022,
+  BARREL_Z:        0.0028,
+  COIN_Z:          0.0020,
+  THINK_MS:        2600,
+  BOOST_MULT:      1.18,
+  BOOST_MS:        1200,
+  WRONG_SLOW_MULT: 0.78,
+  SLOW_MS:         900,
+  SPARKLE_SCROLL:  0.0014,
 };
 
 const BONUS_DURATION_MS = 20000;
@@ -501,6 +479,7 @@ function showScreen(s){
   ['menu','game','end'].forEach(n=>$('screen-'+n).classList.remove('active'));
   $('screen-'+s).classList.add('active');
   G.screen=s;
+  document.body.classList.toggle('game-active', s==='game');
 }
 function openModal(id)  { $(id).style.display='flex'; }
 function closeModal(id) { $(id).style.display='none'; }
@@ -525,7 +504,6 @@ function positionCarTarget(){
   if(!G.carX||Math.abs(G.carX)<1) G.carX=G.carTargetX;
 }
 
-// ─── BACKGROUND PARALLAX ─────────────────────────────────────────
 function updateBgParallax(dt){
   G.bgParallaxTarget=(G.lane-1)*2.5;
   G.bgParallaxX+=(G.bgParallaxTarget-G.bgParallaxX)*Math.min(1,dt*0.006);
@@ -533,24 +511,16 @@ function updateBgParallax(dt){
   if(bg) bg.style.backgroundPosition=`${50+G.bgParallaxX}% center`;
 }
 
-// ─── FLOATING CAR SPARKLES ───────────────────────────────────────
+/* ── FLOATING CAR SPARKLES ── */
 const SPARKLE_CFGS = [
-  [4,  44, 9.2, 0.0,  'carFloat1'],
-  [12, 36, 7.8, 1.3,  'carFloat2'],
-  [22, 52, 11.0,0.6,  'carFloat3'],
-  [33, 38, 8.2, 2.1,  'carFloat1'],
-  [44, 48, 10.4,0.4,  'carFloat2'],
-  [54, 34, 7.2, 1.9,  'carFloat3'],
-  [64, 50, 9.6, 0.8,  'carFloat1'],
-  [74, 40, 8.8, 2.6,  'carFloat2'],
-  [84, 46, 10.2,1.1,  'carFloat3'],
-  [9,  32, 6.8, 3.1,  'carFloat1'],
-  [28, 56, 12.0,1.6,  'carFloat2'],
-  [49, 38, 8.4, 2.9,  'carFloat3'],
-  [69, 44, 9.4, 1.0,  'carFloat1'],
-  [91, 36, 7.6, 3.6,  'carFloat2'],
+  [4,  44, 9.2, 0.0,  'carFloat1'],[12, 36, 7.8, 1.3,  'carFloat2'],
+  [22, 52, 11.0,0.6,  'carFloat3'],[33, 38, 8.2, 2.1,  'carFloat1'],
+  [44, 48, 10.4,0.4,  'carFloat2'],[54, 34, 7.2, 1.9,  'carFloat3'],
+  [64, 50, 9.6, 0.8,  'carFloat1'],[74, 40, 8.8, 2.6,  'carFloat2'],
+  [84, 46, 10.2,1.1,  'carFloat3'],[9,  32, 6.8, 3.1,  'carFloat1'],
+  [28, 56, 12.0,1.6,  'carFloat2'],[49, 38, 8.4, 2.9,  'carFloat3'],
+  [69, 44, 9.4, 1.0,  'carFloat1'],[91, 36, 7.6, 3.6,  'carFloat2'],
 ];
-
 function buildSparkles(){
   const layer=$('sparkle-layer');
   if(!layer) return;
@@ -564,27 +534,24 @@ function buildSparkles(){
   });
 }
 
-// ─── ROAD DRAWING ────────────────────────────────────────────────
+/* ── ROAD DRAWING ── */
 function drawNormalRoad(){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
-  const topW=W*topHalf, botW=W*botHalf;
-  const t=Date.now()*.001;
+  const topW=W*topHalf, botW=W*botHalf, t=Date.now()*.001;
   ctx.save();
-  ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx+topW,vy); ctx.lineTo(vx+botW,bottom); ctx.lineTo(vx-botW,bottom); ctx.closePath();
+  ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx+topW,vy);
+  ctx.lineTo(vx+botW,bottom); ctx.lineTo(vx-botW,bottom); ctx.closePath();
   const rg=ctx.createLinearGradient(0,vy,0,bottom);
   rg.addColorStop(0,'rgba(60,75,85,0.85)'); rg.addColorStop(0.3,'rgba(50,65,75,0.92)'); rg.addColorStop(1,'#1a252b');
   ctx.fillStyle=rg; ctx.fill();
-  const sheenOff=Math.sin(t*0.7)*0.08;
   const sh=ctx.createLinearGradient(vx-topW,0,vx+topW,0);
-  sh.addColorStop(0,'rgba(255,255,255,0)'); sh.addColorStop(0.5+sheenOff,'rgba(255,255,255,.055)'); sh.addColorStop(1,'rgba(255,255,255,0)');
+  sh.addColorStop(0,'rgba(255,255,255,0)'); sh.addColorStop(0.5+Math.sin(t*0.7)*0.08,'rgba(255,255,255,.055)'); sh.addColorStop(1,'rgba(255,255,255,0)');
   ctx.fillStyle=sh; ctx.fill();
   ctx.strokeStyle='#F5D680'; ctx.lineWidth=3.5;
   ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx-botW,bottom);
   ctx.moveTo(vx+topW,vy); ctx.lineTo(vx+botW,bottom); ctx.stroke();
-  drawLaneDashes();
-  ctx.restore();
+  drawLaneDashes(); ctx.restore();
 }
-
 function drawLaneDashes(){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
   const topW=W*topHalf, botW=W*botHalf;
@@ -601,109 +568,70 @@ function drawLaneDashes(){
     }
   }
 }
-
 function drawFog(){
   const {W,vy,H}=ROAD;
   const fg=ctx.createLinearGradient(0,vy-H*0.08,0,vy+H*0.06);
-  fg.addColorStop(0,'rgba(200,220,240,0.00)'); fg.addColorStop(0.25,'rgba(180,210,235,0.30)');
-  fg.addColorStop(0.55,'rgba(160,200,230,0.62)'); fg.addColorStop(0.80,'rgba(140,185,220,0.35)');
-  fg.addColorStop(1,'rgba(120,170,210,0.00)');
+  fg.addColorStop(0,'rgba(200,220,240,0)'); fg.addColorStop(0.25,'rgba(180,210,235,.30)');
+  fg.addColorStop(0.55,'rgba(160,200,230,.62)'); fg.addColorStop(0.80,'rgba(140,185,220,.35)');
+  fg.addColorStop(1,'rgba(120,170,210,0)');
   ctx.fillStyle=fg; ctx.fillRect(0,vy-H*0.08,W,H*0.14);
 }
-
 const SPARKLE_POS=Array.from({length:20},()=>({lf:Math.random()*2,z:Math.random(),sz:4+Math.random()*7,phase:Math.random()*Math.PI*2}));
 
-// ─── RAINBOW ROAD ─────────────────────────────────────────────────
-// Draws rainbow stripes running straight forward (along Z depth),
-// one stripe per lane column so they converge to the vanishing point.
 function drawRainbowRoad(){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
   const topW=W*topHalf, botW=W*botHalf;
-
   ctx.save();
-  // Clip to road trapezoid
-  ctx.beginPath();
-  ctx.moveTo(vx-topW,vy); ctx.lineTo(vx+topW,vy);
-  ctx.lineTo(vx+botW,bottom); ctx.lineTo(vx-botW,bottom);
-  ctx.closePath(); ctx.clip();
-
-  // White base
+  ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx+topW,vy);
+  ctx.lineTo(vx+botW,bottom); ctx.lineTo(vx-botW,bottom); ctx.closePath(); ctx.clip();
   ctx.fillStyle='#fff'; ctx.fillRect(vx-botW,vy,botW*2,bottom-vy);
-
-  // Rainbow stripes: 6 colours, split across the full width of the road,
-  // rendered as perspective-correct trapezoid slices converging to vx,vy
   const RAINBOW=['#FF1744','#FF6D00','#FFD600','#00C853','#00B0FF','#651FFF'];
   const N=RAINBOW.length;
-
-  // At any depth z, road half-width = topW+(botW-topW)*z
-  // We divide into N equal vertical bands at every depth
-  // Draw each band as a quad from top edge to bottom edge
   for(let s=0;s<N;s++){
-    const f0=s/N, f1=(s+1)/N; // fraction across road width [0..1]
-    // Map fractions to x coords at top and bottom
-    // x = vx + (f - 0.5)*2 * halfWidth
-    const xt0 = vx+(f0-.5)*2*topW, xt1 = vx+(f1-.5)*2*topW;
-    const xb0 = vx+(f0-.5)*2*botW, xb1 = vx+(f1-.5)*2*botW;
+    const f0=s/N,f1=(s+1)/N;
+    const xt0=vx+(f0-.5)*2*topW,xt1=vx+(f1-.5)*2*topW;
+    const xb0=vx+(f0-.5)*2*botW,xb1=vx+(f1-.5)*2*botW;
     ctx.fillStyle=RAINBOW[s];
-    ctx.beginPath();
-    ctx.moveTo(xt0,vy); ctx.lineTo(xt1,vy);
-    ctx.lineTo(xb1,bottom); ctx.lineTo(xb0,bottom);
-    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(xt0,vy); ctx.lineTo(xt1,vy);
+    ctx.lineTo(xb1,bottom); ctx.lineTo(xb0,bottom); ctx.closePath(); ctx.fill();
   }
-
-  // Bright centre gloss strip
   const cg=ctx.createLinearGradient(vx,vy,vx,bottom);
-  cg.addColorStop(0,'rgba(255,255,255,0)');
-  cg.addColorStop(.4,'rgba(255,255,255,.55)');
-  cg.addColorStop(1,'rgba(255,255,255,.06)');
-  const cwT=topW*.22, cwB=botW*.22;
+  cg.addColorStop(0,'rgba(255,255,255,0)'); cg.addColorStop(.4,'rgba(255,255,255,.55)'); cg.addColorStop(1,'rgba(255,255,255,.06)');
+  const cwT=topW*.22,cwB=botW*.22;
   ctx.fillStyle=cg;
-  ctx.beginPath();
-  ctx.moveTo(vx-cwT,vy); ctx.lineTo(vx+cwT,vy);
-  ctx.lineTo(vx+cwB,bottom); ctx.lineTo(vx-cwB,bottom);
-  ctx.closePath(); ctx.fill();
-
-  // Road sparkles on top
-  drawRoadSparkles();
-  ctx.restore();
-
-  // Edge lines
+  ctx.beginPath(); ctx.moveTo(vx-cwT,vy); ctx.lineTo(vx+cwT,vy);
+  ctx.lineTo(vx+cwB,bottom); ctx.lineTo(vx-cwB,bottom); ctx.closePath(); ctx.fill();
+  drawRoadSparkles(); ctx.restore();
   ctx.save();
   ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=4.5;
   ctx.shadowColor='#fff'; ctx.shadowBlur=14;
   ctx.beginPath(); ctx.moveTo(vx-topW,vy); ctx.lineTo(vx-botW,bottom); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(vx+topW,vy); ctx.lineTo(vx+botW,bottom); ctx.stroke();
-
-  // Lane dividers (white dashed) so player can still see lanes
   ctx.setLineDash([18,14]); ctx.lineWidth=3; ctx.shadowBlur=8;
-  ctx.lineDashOffset = -(G.roadOffset * (bottom-vy) * 2);
+  ctx.lineDashOffset=-(G.roadOffset*(bottom-vy)*2);
   for(let d=1;d<=2;d++){
-    const fr=d/3;
-    const lxt=vx+(fr-.5)*2*topW, lxb=vx+(fr-.5)*2*botW;
+    const fr=d/3,lxt=vx+(fr-.5)*2*topW,lxb=vx+(fr-.5)*2*botW;
     ctx.beginPath(); ctx.moveTo(lxt,vy); ctx.lineTo(lxb,bottom); ctx.stroke();
   }
-  ctx.setLineDash([]);
-  ctx.restore();
+  ctx.setLineDash([]); ctx.restore();
 }
-
 function drawRoadSparkles(){
   const t=Date.now()*.001;
   SPARKLE_POS.forEach(sp=>{
     sp.z=(sp.z+SPEED.SPARKLE_SCROLL)%1;
     const {bx,by}=zToScreenPos(sp.lf,sp.z);
-    const op=.45+.55*Math.sin(t*3.5+sp.phase), sz=sp.sz*(.35+sp.z*.65);
+    const op=.45+.55*Math.sin(t*3.5+sp.phase),sz=sp.sz*(.35+sp.z*.65);
     ctx.save(); ctx.globalAlpha=op; ctx.fillStyle='#fff'; ctx.shadowColor='#FFE66D'; ctx.shadowBlur=100;
     ctx.beginPath();
-    for(let i=0;i<8;i++){const a=i*Math.PI/4,r=i%2===0?sz:sz*.38; i===0?ctx.moveTo(bx+Math.cos(a)*r,by+Math.sin(a)*r):ctx.lineTo(bx+Math.cos(a)*r,by+Math.sin(a)*r);}
+    for(let i=0;i<8;i++){const a=i*Math.PI/4,r=i%2===0?sz:sz*.38;i===0?ctx.moveTo(bx+Math.cos(a)*r,by+Math.sin(a)*r):ctx.lineTo(bx+Math.cos(a)*r,by+Math.sin(a)*r);}
     ctx.closePath(); ctx.fill(); ctx.restore();
   });
 }
-
 function drawFinishLine(z){
   const {vx,vy,bottom,W,topHalf,botHalf}=ROAD;
-  const topW=W*topHalf, botW=W*botHalf;
-  const y=vy+(bottom-vy)*z, hw=topW+(botW-topW)*z;
-  const h=Math.max(6,(bottom-vy)*.046), lx=vx-hw, sqW=(vx+hw-lx)/10;
+  const topW=W*topHalf,botW=W*botHalf;
+  const y=vy+(bottom-vy)*z,hw=topW+(botW-topW)*z;
+  const h=Math.max(6,(bottom-vy)*.046),lx=vx-hw,sqW=(vx+hw-lx)/10;
   ctx.save();
   for(let i=0;i<10;i++){
     ctx.fillStyle=i%2===0?'#fff':'#111'; ctx.fillRect(lx+i*sqW,y-h/2,sqW,h);
@@ -712,11 +640,8 @@ function drawFinishLine(z){
   ctx.restore();
 }
 
-// ─── BARREL ──────────────────────────────────────────────────────
 function drawBarrel(bx,by,bz,num){
-  const sc=0.38+bz*0.62;
-  const SIZE=(ROAD.W<420?1.62:1.52);
-  const W=46*sc*SIZE, H=72*sc*SIZE;
+  const sc=0.38+bz*0.62,SIZE=(ROAD.W<420?1.62:1.52),W=46*sc*SIZE,H=72*sc*SIZE;
   ctx.save(); ctx.translate(bx,by);
   ctx.fillStyle='rgba(0,0,0,.30)'; ctx.beginPath(); ctx.ellipse(0,H*.5+5,W*.65,H*.11,0,0,Math.PI*2); ctx.fill();
   const bg=ctx.createLinearGradient(-W/2,0,W/2,0);
@@ -730,15 +655,11 @@ function drawBarrel(bx,by,bz,num){
   ctx.fillStyle='rgba(144,202,249,.55)'; ctx.beginPath(); ctx.roundRect(-W*.16,-H*.42,W*.13,H*.76,W*.06); ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.38)'; ctx.beginPath(); ctx.ellipse(-W*.06,-H*.38,W*.055,H*.055,-.3,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#fff'; ctx.font=`900 ${Math.max(13,H*.39)}px 'Azim','Segoe UI',sans-serif`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(0,0,80,.7)'; ctx.shadowBlur=7;
-  ctx.fillText(num.arabic,0,0); ctx.shadowBlur=0;
-  ctx.restore();
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor='rgba(0,0,80,.7)'; ctx.shadowBlur=7;
+  ctx.fillText(num.arabic,0,0); ctx.shadowBlur=0; ctx.restore();
 }
-
-// ─── COIN ────────────────────────────────────────────────────────
 function drawCoin(cx,cy,cz,spin){
-  const sc=0.38+cz*0.62, r=18*sc;
+  const sc=0.38+cz*0.62,r=18*sc;
   ctx.save(); ctx.translate(cx,cy);
   ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0,r+4,r*.7,r*.15,0,0,Math.PI*2); ctx.fill();
   ctx.scale(Math.abs(Math.cos(spin)),1);
@@ -751,19 +672,15 @@ function drawCoin(cx,cy,cz,spin){
   ctx.restore();
 }
 
-// ─── CAR (2D canvas — original) ──────────────────────────────────
 let carImgEl=null;
 (function(){ if(!ASSET_CONFIG.carImage)return; carImgEl=new Image(); carImgEl.src=ASSET_CONFIG.carImage; })();
 
 function drawCar(){
-  const cx=G.carX, cy=ROAD.carY;
-  const carW=Math.min(92,ROAD.W*.19), carH=carW*1.38;
-  const bob=Math.sin(G.carBobT)*5.5;
+  const cx=G.carX,cy=ROAD.carY,carW=Math.min(92,ROAD.W*.19),carH=carW*1.38,bob=Math.sin(G.carBobT)*5.5;
   ctx.save(); ctx.translate(cx,cy+bob);
   ctx.fillStyle='rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(0,carH*.52,carW*.48,carH*.1,0,0,Math.PI*2); ctx.fill();
   if(G.isBoosting){
-    ctx.shadowColor='#FFE66D'; ctx.shadowBlur=28+Math.sin(G.boostTimer*.01)*10;
-    ctx.globalAlpha=.5;
+    ctx.shadowColor='#FFE66D'; ctx.shadowBlur=28+Math.sin(G.boostTimer*.01)*10; ctx.globalAlpha=.5;
     const tg=ctx.createLinearGradient(0,0,0,carH*.82);
     tg.addColorStop(0,'#FFE66D'); tg.addColorStop(1,'rgba(255,140,0,0)');
     ctx.fillStyle=tg;
@@ -774,19 +691,15 @@ function drawCar(){
   if(G.isSlowing){ ctx.shadowColor='#FF6B6B'; ctx.shadowBlur=18; }
   if(carImgEl&&carImgEl.complete&&carImgEl.naturalWidth>0){
     ctx.drawImage(carImgEl,-carW/2,-carH/2,carW,carH);
-  } else {
-    drawFallbackCar(carW,carH);
-  }
+  } else { drawFallbackCar(carW,carH); }
   ctx.restore();
 }
-
 function drawFallbackCar(w,h){
   const bg=ctx.createRadialGradient(-w*.15,-h*.2,0,0,0,h*.7);
   bg.addColorStop(0,'#EF5350'); bg.addColorStop(.6,'#E53935'); bg.addColorStop(1,'#B71C1C');
   ctx.fillStyle=bg; ctx.beginPath(); ctx.ellipse(0,0,w/2,h/2,0,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#EF9A9A'; ctx.globalAlpha=.4;
-  ctx.beginPath(); ctx.ellipse(0,-h*.22,w*.28,h*.2,0,0,Math.PI*2); ctx.fill();
-  ctx.globalAlpha=1;
+  ctx.beginPath(); ctx.ellipse(0,-h*.22,w*.28,h*.2,0,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
   ctx.fillStyle='rgba(20,28,40,.88)';
   ctx.beginPath(); ctx.moveTo(-w*.27,-h*.07); ctx.quadraticCurveTo(0,-h*.19,w*.27,-h*.07);
   ctx.lineTo(w*.23,h*.13); ctx.quadraticCurveTo(0,h*.19,-w*.23,h*.13); ctx.closePath(); ctx.fill();
@@ -805,20 +718,15 @@ function drawFallbackCar(w,h){
   ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',0,h*.32);
 }
 
-// ─── SPAWN BARRELS ───────────────────────────────────────────────
 function spawnBarrels(){
   if(G.phase==='finished'||G.phase==='bonus') return;
-  G.barrels=[];
-  G.round++;
-  $('hud-round').textContent=G.round;
+  G.barrels=[]; G.round++; $('hud-round').textContent=G.round;
   const pool=NUMBERS.filter(n=>n.val!==G.currentTarget?.val);
   const tgt=pool[Math.floor(Math.random()*pool.length)];
   G.currentTarget=tgt;
   const tnb=$('target-num-big');
-  tnb.textContent=tgt.arabic;
-  tnb.classList.remove('num-pop','num-glow'); void tnb.offsetWidth; tnb.classList.add('num-pop','num-glow');
-  $('target-word').textContent=tgt.word;
-  playVO(tgt.word);
+  tnb.textContent=tgt.arabic; tnb.classList.remove('num-pop','num-glow'); void tnb.offsetWidth; tnb.classList.add('num-pop','num-glow');
+  $('target-word').textContent=tgt.word; playVO(tgt.word);
   let cl; do{ cl=Math.floor(Math.random()*3); }while(cl===G.lastCorrectLane);
   G.lastCorrectLane=cl; G.correctLane=cl;
   const wrongs=NUMBERS.filter(n=>n.val!==tgt.val).sort(()=>Math.random()-.5).slice(0,2);
@@ -828,14 +736,11 @@ function spawnBarrels(){
   if(G.isTutorial&&G.round===1){ $('tutorial-hint').style.display='block'; setTimeout(()=>$('tutorial-hint').style.display='none',3000); }
   G.phase='think'; G.thinkTimer=SPEED.THINK_MS;
 }
-
-// ─── COLLISION ───────────────────────────────────────────────────
 function checkBarrels(){
   if(G.phase!=='barrels') return;
   const frontZ=Math.max(...G.barrels.map(b=>b.z));
-  if(frontZ>=0.83){ G.phase='resolve'; resolveCollision(G.lane===G.correctLane, G.currentTarget.val); }
+  if(frontZ>=0.83){ G.phase='resolve'; resolveCollision(G.lane===G.correctLane,G.currentTarget.val); }
 }
-
 function resolveCollision(correct,val){
   G.barrels=[];
   if(correct){
@@ -852,8 +757,6 @@ function resolveCollision(correct,val){
     setTimeout(()=>{ if(G.phase!=='finished'&&G.phase!=='bonus') spawnBarrels(); },correct?700:950);
   } else { setTimeout(()=>triggerFinish(),1000); }
 }
-
-// ─── BONUS ───────────────────────────────────────────────────────
 function startBonus(){
   G.phase='bonus'; G.bonusTimer=BONUS_DURATION_MS; G.barrels=[];
   const bw=$('bonus-title-wrap'); bw.style.display='block';
@@ -866,38 +769,19 @@ function endBonus(){
   G.coins=[]; $('bonus-title-wrap').style.display='none'; $('bonus-bar-wrap').style.display='none';
   triggerFinish();
 }
-
-// ─── COIN SPAWNING — STRAIGHT ROWS, ONE PER LANE ─────────────────
-// Each lane gets a straight line of evenly-spaced coins coming from
-// the vanishing point toward the player — no random horizontal scatter.
 function spawnBonusCoins(){
   G.coins=[];
   [0,1,2].forEach(lane=>{
-    for(let i=0;i<8;i++){
-      G.coins.push({
-        lane: lane,
-        z: 0.04 + i * 0.052,   // evenly spaced in depth
-        spin: Math.random()*Math.PI*2,
-        collected: false
-      });
-    }
+    for(let i=0;i<8;i++) G.coins.push({lane,z:0.04+i*0.052,spin:Math.random()*Math.PI*2,collected:false});
   });
 }
 function replenishCoins(){
-  if(G.coins.filter(c=>!c.collected).length < 6){
+  if(G.coins.filter(c=>!c.collected).length<6){
     [0,1,2].forEach(lane=>{
-      for(let i=0;i<6;i++){
-        G.coins.push({
-          lane: lane,
-          z: 0.04 + i * 0.052,
-          spin: Math.random()*Math.PI*2,
-          collected: false
-        });
-      }
+      for(let i=0;i<6;i++) G.coins.push({lane,z:0.04+i*0.052,spin:Math.random()*Math.PI*2,collected:false});
     });
   }
 }
-
 function checkCoins(){
   if(G.phase!=='bonus') return;
   G.coins.forEach(c=>{
@@ -908,8 +792,6 @@ function checkCoins(){
     }
   });
 }
-
-// ─── FINISH ──────────────────────────────────────────────────────
 function triggerFinish(){
   G.phase='finished'; if(G.raf){ cancelAnimationFrame(G.raf); G.raf=null; }
   G.finishLineZ=0; let fz=0;
@@ -935,8 +817,6 @@ function buildEndScreen(){
     $('end-missed').innerHTML=h;
   } else { $('end-missed').innerHTML='<b>✅ Tiada kesilapan! Hebat! 🌟</b>'; }
 }
-
-// ─── FX ──────────────────────────────────────────────────────────
 function spawnFadeUp(x,y,text,color){
   const p=document.createElement('div');
   p.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:1.6rem;font-weight:900;color:${color};pointer-events:none;z-index:98;text-shadow:0 2px 8px rgba(0,0,0,.5);animation:fadeUp 1s ease-out both;font-family:'Azim','Segoe UI',sans-serif;`;
@@ -951,12 +831,10 @@ function spawnConfetti(container){
   }
 }
 
-// ─── MAIN LOOP ────────────────────────────────────────────────────
 function gameLoop(ts){
   if(G.screen!=='game'){ G.raf=null; return; }
   const dt=Math.min(ts-G.lastTime,50); G.lastTime=ts;
-  const ndt=dt/16;
-  const spd=G.isBoosting?SPEED.BOOST_MULT:G.isSlowing?SPEED.WRONG_SLOW_MULT:1;
+  const ndt=dt/16, spd=G.isBoosting?SPEED.BOOST_MULT:G.isSlowing?SPEED.WRONG_SLOW_MULT:1;
   G.roadOffset=(G.roadOffset+SPEED.ROAD_SCROLL*ndt)%1;
   G.carBobT+=dt*.003;
   G.carX+=(G.carTargetX-G.carX)*Math.min(1,dt*.013);
@@ -1000,7 +878,6 @@ function gameLoop(ts){
   G.raf=requestAnimationFrame(gameLoop);
 }
 
-// ─── CONTROLS ────────────────────────────────────────────────────
 function arrowPress(dir){
   if(G.screen!=='game') return;
   G.lane=Math.max(0,Math.min(2,G.lane+dir));
@@ -1019,7 +896,6 @@ document.addEventListener('touchend',e=>{
   _tx=null;
 },{passive:true});
 
-// ─── NAVIGATION ──────────────────────────────────────────────────
 function onMenuBtn(action){
   playSound('engine_vroom');
   if(action==='mula')        startGame(false);
@@ -1051,7 +927,7 @@ function goMenu(){
 }
 function restartGame(){ goMenu(); setTimeout(()=>startGame(false),60); }
 
-// ─── INIT ────────────────────────────────────────────────────────
+/* ── INIT ── */
 resizeCanvas();
 buildSparkles();
 showScreen('menu');
