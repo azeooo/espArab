@@ -28,7 +28,6 @@ tailwind.config = {
 @font-face { font-family:'Amiri';            src:url('./fonts/Amiri-Regular.ttf'); }
 @font-face { font-family:'Lateef';           src:url('./fonts/Lateef-Regular.ttf'); }
 @font-face { font-family:'TraditionalArabic';src:url('./fonts/TraditionalArabic-Regular.ttf'); }
-
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html, body {
   width:100%; height:100dvh; overflow:hidden;
@@ -37,14 +36,42 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════
-   BACKGROUND SCENE
+   BACKGROUND — PNG IMAGE (replaces gradient)
+   Place your file at: assets/images/game_bg.png
+   object-fit:cover keeps it crisp on all screens
 ═══════════════════════════════════════════ */
 #bg {
-  position:fixed; inset:0; z-index:0;
-  background: linear-gradient(180deg,
-    #4FC3F7 0%, #81D4FA 28%,
-    #A5D6A7 52%, #66BB6A 68%,
-    #388E3C 100%);
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;          /* clips the img to the fixed box */
+}
+
+/* The PNG image — fills viewport, never stretches */
+#bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;         /* cover: fills without distortion */
+  object-position: center bottom; /* anchor horizon to bottom */
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Subtle gradient overlay for readability — remove if not needed */
+#bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.10) 0%,
+    rgba(0, 0, 0, 0.00) 35%,
+    rgba(0, 0, 0, 0.00) 65%,
+    rgba(0, 30, 0, 0.12) 100%
+  );
+  pointer-events: none;
 }
 
 /* Sun */
@@ -57,6 +84,7 @@ html, body {
               0 0 0 clamp(8px,2vw,20px) rgba(255,214,0,.18),
               0 0 clamp(30px,6vw,70px) rgba(255,180,0,.4);
   animation: sunPulse 3.5s ease-in-out infinite;
+  z-index: 2;
 }
 .sun::before {
   content:'';
@@ -81,30 +109,14 @@ html, body {
   to { transform:rotate(360deg); }
 }
 
-/* Clouds */
-.cloud {
-  position:absolute; background:white; border-radius:999px; opacity:.88;
-}
-.cloud::before,.cloud::after {
-  content:''; position:absolute; background:white; border-radius:50%;
-}
-.c1 { width:clamp(55px,9vw,110px); height:clamp(18px,3vw,36px); top:7%;  left:18%; animation:cDrift 20s linear infinite; }
-.c1::before { width:55%; height:190%; top:-85%; left:12%; }
-.c1::after  { width:38%; height:165%; top:-55%; left:52%; }
-.c2 { width:clamp(45px,7vw,90px);  height:clamp(16px,2.5vw,30px); top:13%; right:12%; animation:cDrift2 26s linear infinite; }
-.c2::before { width:55%; height:190%; top:-85%; left:12%; }
-.c2::after  { width:38%; height:165%; top:-55%; left:52%; }
-.c3 { width:clamp(38px,6vw,78px);  height:clamp(14px,2.2vw,26px); top:19%; left:48%; animation:cDrift 32s linear infinite .5s; }
-.c3::before { width:55%; height:190%; top:-85%; left:12%; }
-.c3::after  { width:38%; height:165%; top:-55%; left:52%; }
-@keyframes cDrift  { 0%{transform:translateX(-15vw)} 100%{transform:translateX(115vw)} }
-@keyframes cDrift2 { 0%{transform:translateX(115vw)} 100%{transform:translateX(-15vw)} }
+
 
 /* Flowers */
 .flower {
   position:absolute; bottom:clamp(1px,.8%,8px);
   animation:sway 2.8s ease-in-out infinite;
   transform-origin:bottom center;
+  z-index: 2;
 }
 .flower:nth-child(1){left:6%;  animation-delay:0s;}
 .flower:nth-child(2){left:18%; animation-delay:.5s;}
@@ -122,7 +134,6 @@ html, body {
   width:100%; height:100dvh;
   display:flex; flex-direction:column;
 }
-
 /* ── TOP BAR ── */
 #topbar {
   display:flex; align-items:center; justify-content:space-between;
@@ -153,7 +164,6 @@ html, body {
 .pd.done   { background:#FFD600; border-color:#FF6F00; color:#333; }
 .pl { flex:1; height:4px; background:#ccc; border-radius:2px; transition:background .4s; }
 .pl.done { background:#43A047; }
-
 /* ── ACTION BAR ── */
 #action-bar {
   display:flex; justify-content:center; align-items:center;
@@ -174,7 +184,6 @@ html, body {
 .act-btn:active { transform:scale(.92); }
 #btn-mula     { background:linear-gradient(135deg,#43A047,#1B5E20); border-color:#2E7D32; color:#fff; }
 #btn-berhenti { background:linear-gradient(135deg,#E53935,#B71C1C); border-color:#C62828; color:#fff; }
-
 /* ── MAZE AREA ── */
 #maze-area {
   flex:1; display:flex; justify-content:center; align-items:center;
@@ -189,7 +198,6 @@ canvas#cv {
   background:#F0D888;
   image-rendering:pixelated;
 }
-
 /* ── WIN FLASH OVERLAY ── */
 #win-flash {
   position:absolute; inset:0; border-radius:clamp(5px,1.3vw,11px);
@@ -203,7 +211,6 @@ canvas#cv {
   20%  { opacity:1; }
   100% { opacity:0; }
 }
-
 /* ── DPAD ── */
 #ctrl-bar {
   display:flex; justify-content:center; align-items:center;
@@ -225,7 +232,6 @@ canvas#cv {
   transition:transform .1s, box-shadow .1s;
 }
 .dp-btn:active { transform:scale(.88); box-shadow:0 1px 4px rgba(0,0,0,.2); }
-
 /* ═══════════════════════════════════════════
    MODALS
 ═══════════════════════════════════════════ */
@@ -274,7 +280,6 @@ canvas#cv {
 .mbtn.blue   { background:linear-gradient(135deg,#1E88E5,#0D47A1); color:#fff; }
 .mbtn.purple { background:linear-gradient(135deg,#8E24AA,#4A148C); color:#fff; }
 .mbtn.teal   { background:linear-gradient(135deg,#00897B,#004D40); color:#fff; }
-
 .qopt {
   display:block; width:100%;
   background:linear-gradient(135deg,#E3F2FD,#BBDEFB);
@@ -290,7 +295,6 @@ canvas#cv {
 .qopt:hover  { background:linear-gradient(135deg,#BBDEFB,#90CAF9); transform:scale(1.025); }
 .qopt.ok     { background:linear-gradient(135deg,#C8E6C9,#A5D6A7); border-color:#43A047; pointer-events:none; }
 .qopt.bad    { background:linear-gradient(135deg,#FFCDD2,#EF9A9A); border-color:#E53935; pointer-events:none; }
-
 .score-box {
   background:rgba(255,255,255,.82);
   border:2px solid #FFD600; border-radius:12px;
@@ -300,9 +304,7 @@ canvas#cv {
   display:inline-block; min-width:min(280px,88%);
 }
 .score-box .big-num { font-size:clamp(1.6rem,5vw,2.6rem); color:#BF360C; font-weight:900; }
-
 .stars { font-size:clamp(1.6rem,5.5vw,2.8rem); letter-spacing:4px; }
-
 /* ── LEVEL COMPLETE PANEL ── */
 #lc-panel {
   display:none; position:absolute; inset:0; z-index:150;
@@ -321,7 +323,6 @@ canvas#cv {
 .lc-title { font-family:'Azim','Segoe UI',sans-serif; font-size:clamp(1.3rem,4.5vw,2rem); color:#BF360C; margin-bottom:6px; }
 .lc-sub   { font-size:clamp(.78rem,2.2vw,.96rem); color:#555; margin-bottom:14px; }
 .lc-btns  { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
-
 .bump { animation:bumpShake .28s ease-out; }
 @keyframes bumpShake {
   0%{transform:translateX(0)} 30%{transform:translateX(-5px)} 70%{transform:translateX(5px)} 100%{transform:translateX(0)}
@@ -332,9 +333,7 @@ canvas#cv {
   100% { opacity:1; transform:scale(1); }
 }
 .pop-in { animation:popIn .4s cubic-bezier(.34,1.56,.64,1) forwards; }
-
 #q-fb { min-height:26px; font-size:clamp(.8rem,2.2vw,.96rem); font-weight:700; margin-top:6px; }
-
 #vo-banner {
   display:none; position:fixed; bottom:clamp(60px,12vh,100px); left:50%;
   transform:translateX(-50%);
@@ -351,8 +350,6 @@ canvas#cv {
   0%   { opacity:0; transform:translateX(-50%) translateY(16px); }
   100% { opacity:1; transform:translateX(-50%) translateY(0); }
 }
-
-/* NEW: quiz text mobile responsive */
 .quiz-visual-wrap{
   margin:8px auto 12px;
   width:min(100%, 120px);
@@ -391,7 +388,6 @@ canvas#cv {
   max-height:100%;
   object-fit:contain;
 }
-
 @media (max-width: 640px){
   .mbox{
     padding:14px 12px 18px;
@@ -408,7 +404,6 @@ canvas#cv {
     min-width:100%;
   }
 }
-
 @media(orientation:landscape) and (max-height:480px) {
   #topbar   { padding:2px 8px; }
   .tb-pill  { font-size:.58rem; padding:2px 6px; }
@@ -420,14 +415,23 @@ canvas#cv {
 </style>
 </head>
 <body>
-
 <audio id="bgm-rats" src="./assets/vogame1/bgmusicrats.mp3" autoplay loop preload="auto"></audio>
 
+<!-- ═══════════════════════════════════════════
+     BACKGROUND — PNG image
+     Change src to your actual PNG filename.
+     Recommended: landscape image, min 1920×1080px.
+     The image fills the screen via object-fit:cover.
+═══════════════════════════════════════════ -->
 <div id="bg">
+  <!-- ▼ CHANGE THIS SRC to your PNG path ▼ -->
+  <img id="bg-img" src="assets/images/bgmaze.png" alt="" aria-hidden="true" loading="eager" decoding="async">
+  <!-- Subtle dark overlay for better readability — remove #bg-overlay if not needed -->
+  <div id="bg-overlay"></div>
+
+  <!-- Sun, clouds and flowers sit above the image -->
   <div class="sun"></div>
-  <div class="cloud c1"></div>
-  <div class="cloud c2"></div>
-  <div class="cloud c3"></div>
+  
   <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#388E3C" rx="2"/><circle cx="20" cy="18" r="10" fill="#F06292"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
   <div class="flower"><svg style="width:clamp(16px,3.2vw,34px);height:clamp(26px,5.5vw,50px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#2E7D32" rx="2"/><circle cx="20" cy="18" r="9" fill="#FF7043"/><circle cx="20" cy="18" r="4" fill="#FFF"/></svg></div>
   <div class="flower"><svg style="width:clamp(18px,3.8vw,38px);height:clamp(28px,6vw,54px)" viewBox="0 0 40 55"><rect x="18" y="20" width="4" height="35" fill="#43A047" rx="2"/><circle cx="20" cy="18" r="10" fill="#AB47BC"/><circle cx="20" cy="18" r="5" fill="#FFD600"/></svg></div>
@@ -437,7 +441,6 @@ canvas#cv {
 </div>
 
 <div id="shell">
-
   <div id="topbar">
     <div class="tb-pill">⭐ <b id="skor-disp">0</b></div>
     <div class="tb-pill">⏱ <b id="masa-disp">0:00</b></div>
@@ -451,12 +454,10 @@ canvas#cv {
     <div class="tb-pill">🔊 <button id="audio-btn" onclick="toggleAudio()"
       style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:inherit;padding:0;font-weight:700">ON</button></div>
   </div>
-
   <div id="action-bar">
     <button class="act-btn" id="btn-mula" onclick="mulaPermainan()">🚀 Mula</button>
     <button class="act-btn" id="btn-berhenti" onclick="bukaPauseMenu()">🛑 Berhenti</button>
   </div>
-
   <div id="maze-area">
     <div id="maze-wrap">
       <canvas id="cv"></canvas>
@@ -473,7 +474,6 @@ canvas#cv {
       </div>
     </div>
   </div>
-
   <div id="ctrl-bar">
     <div class="dpad">
       <div></div>
@@ -572,7 +572,6 @@ canvas#cv {
 
 <script>
 'use strict';
-
 /* ═══════════════════════════════════════════════════════════
    AUDIO ENGINE
 ═══════════════════════════════════════════════════════════ */
@@ -582,46 +581,36 @@ const meowMp3 = new Audio('./assets/audio/meow.mp3');
 meowMp3.preload = 'auto';
 meowMp3.volume = 0.9;
 meowMp3.load();
-
 const bgmRats = document.getElementById('bgm-rats');
 bgmRats.volume = 0.22;
-
 function tryPlayBgmRats(){
   if(!audioOn) return;
   try{
     const p = bgmRats.play();
-    if(p && typeof p.catch === 'function'){
-      p.catch(()=>{});
-    }
+    if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
   }catch(e){}
 }
-
-/* NEW: ganti bunyi synth dengan mp3 */
 const drumMp3 = new Audio('./assets/vogame1/bunyi-gendangg.mp3');
 drumMp3.preload = 'auto';
 drumMp3.volume = 1.0;
-
 const enjinMp3 = new Audio('./assets/vogame1/bunyi-enjinn.mp3');
 enjinMp3.preload = 'auto';
 enjinMp3.volume = 1.0;
-
 /* ═══════════════════════════════════════════════════════════
    VOICE OVER
 ═══════════════════════════════════════════════════════════ */
 const VO_LINES = {
-  VO_INTRO_02: { text:"Kawal tikus, elakkan dinding, dan capai keju secepat mungkin.", src:"./assets/vogame1/g1_kawal tikus.mp3" },
-  VO_MOTIVASI_01: { text:"Cepat, bantu tikus cari keju!", src:"./assets/vogame1/g1_cepat.mp3" },
-  VO_WIN_L1:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.", src:"./assets/vogame1/g1_tahniahlevel2.mp3" },
-  VO_WIN_L2:    { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 3.", src:"./assets/vogame1/g1tahniahkelevel akhir.mp3" },
-  VO_WIN_FINAL: { text:"Tahniah, anda telah sampai ke keju! Untuk dikira sebagai pemenang, jawab dua soalan berikut.", src:"./assets/vogame1/g1tahniah.mp3" },
+  VO_INTRO_02:       { text:"Kawal tikus, elakkan dinding, dan capai keju secepat mungkin.", src:"./assets/vogame1/g1_kawal tikus.mp3" },
+  VO_MOTIVASI_01:    { text:"Cepat, bantu tikus cari keju!", src:"./assets/vogame1/g1_cepat.mp3" },
+  VO_WIN_L1:         { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 2.", src:"./assets/vogame1/g1_tahniahlevel2.mp3" },
+  VO_WIN_L2:         { text:"Tahniah, anda telah membantu tikus mendapatkan keju! Sekarang jawab dua soalan untuk ke Level 3.", src:"./assets/vogame1/g1tahniahkelevel akhir.mp3" },
+  VO_WIN_FINAL:      { text:"Tahniah, anda telah sampai ke keju! Untuk dikira sebagai pemenang, jawab dua soalan berikut.", src:"./assets/vogame1/g1tahniah.mp3" },
   VO_QUIZ_Q_GENERIC: { text:"Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1bunyi apa.mp3" },
   VO_QUIZ_TRAKTOR_Q: { text:"Traktor sedang bergerak. Bunyi apakah yang dihasilkan?", src:"./assets/vogame1/g1traktor.mp3" },
 };
-
 const voPlayer = new Audio();
 voPlayer.preload = 'auto';
 voPlayer.volume  = 1.0;
-
 let voQueue = [];
 let voBusy  = false;
 let voMotivIv = null;
@@ -629,7 +618,6 @@ let audioUnlocked = false;
 let voTimer = null;
 let quizAudioTimer = null;
 let lastVOEndedAt = 0;
-
 function unlockAudioOnce(){
   if(audioUnlocked) return;
   audioUnlocked = true;
@@ -662,97 +650,54 @@ function unlockAudioOnce(){
 window.addEventListener('pointerdown', unlockAudioOnce, { once:true });
 window.addEventListener('keydown', unlockAudioOnce, { once:true });
 window.addEventListener('load', tryPlayBgmRats);
-
-function showVO(text){
-  // Caption disabled
-}
-
+function showVO(text){ /* Caption disabled */ }
 function stopMotivationLoop(){
   if(voMotivIv){ clearInterval(voMotivIv); voMotivIv=null; }
 }
-
 function clearQuizAudioTimer(){
-  if(quizAudioTimer){
-    clearTimeout(quizAudioTimer);
-    quizAudioTimer = null;
-  }
+  if(quizAudioTimer){ clearTimeout(quizAudioTimer); quizAudioTimer = null; }
 }
-
 function stopQuizSfx(){
   try { drumMp3.pause(); drumMp3.currentTime = 0; } catch(e){}
   try { enjinMp3.pause(); enjinMp3.currentTime = 0; } catch(e){}
 }
-
 function playVOById(id){
   const line = VO_LINES[id];
   if(!line) return;
   enqueueVO(line.text, line.src, id);
 }
-
-function playVOQueue(ids){
-  ids.forEach(id=>playVOById(id));
-}
-
+function playVOQueue(ids){ ids.forEach(id=>playVOById(id)); }
 function enqueueVO(text, src, id){
-  if(!audioOn){
-    showVO(text);
-    return;
-  }
+  if(!audioOn){ showVO(text); return; }
   voQueue.push({text, src, id});
   pumpVO();
 }
-
 function pumpVO(){
   if(voBusy) return;
   const item = voQueue.shift();
   if(!item) return;
   voBusy = true;
-
   showVO(item.text);
-
   if(!item.src){
-    setTimeout(()=>{
-      voBusy=false;
-      lastVOEndedAt = Date.now();
-      pumpVO();
-    }, 1300);
+    setTimeout(()=>{ voBusy=false; lastVOEndedAt=Date.now(); pumpVO(); }, 1300);
     return;
   }
-
   try{
     voPlayer.pause();
     voPlayer.currentTime = 0;
     voPlayer.src = item.src;
     const p = voPlayer.play();
     if(p && typeof p.catch === 'function'){
-      p.catch(()=>{
-        setTimeout(()=>{
-          voBusy=false;
-          lastVOEndedAt = Date.now();
-          pumpVO();
-        }, 1300);
-      });
+      p.catch(()=>{ setTimeout(()=>{ voBusy=false; lastVOEndedAt=Date.now(); pumpVO(); }, 1300); });
     }
-    voPlayer.onended = ()=>{
-      voBusy=false;
-      lastVOEndedAt = Date.now();
-      pumpVO();
-    };
+    voPlayer.onended = ()=>{ voBusy=false; lastVOEndedAt=Date.now(); pumpVO(); };
   } catch(e){
-    setTimeout(()=>{
-      voBusy=false;
-      lastVOEndedAt = Date.now();
-      pumpVO();
-    }, 1300);
+    setTimeout(()=>{ voBusy=false; lastVOEndedAt=Date.now(); pumpVO(); }, 1300);
   }
 }
-
 function estimateVODelayByText(text){
-  const base = 1600;
-  const perChar = 38;
-  return Math.min(5200, Math.max(1800, base + (text || '').length * perChar));
+  return Math.min(5200, Math.max(1800, 1600 + (text||'').length * 38));
 }
-
 function playAudioWithDelay(audioEl, delayMs){
   clearQuizAudioTimer();
   stopQuizSfx();
@@ -760,34 +705,23 @@ function playAudioWithDelay(audioEl, delayMs){
   quizAudioTimer = setTimeout(()=>{
     if(!audioOn) return;
     try{
-      audioEl.pause();
-      audioEl.currentTime = 0;
+      audioEl.pause(); audioEl.currentTime = 0;
       const p = audioEl.play();
       if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
     }catch(e){}
   }, delayMs);
 }
-
 function scheduleQuizAudio(voId, soundType){
   clearQuizAudioTimer();
   stopQuizSfx();
-
   let delayMs = 650;
-
   if(voId && VO_LINES[voId]){
     playVOById(voId);
     delayMs = estimateVODelayByText(VO_LINES[voId].text) + 450;
-  } else if(voBusy){
-    delayMs = 1800;
-  }
-
-  if(soundType === 'drum'){
-    playAudioWithDelay(drumMp3, delayMs);
-  } else if(soundType === 'engine'){
-    playAudioWithDelay(enjinMp3, delayMs);
-  }
+  } else if(voBusy){ delayMs = 1800; }
+  if(soundType === 'drum') playAudioWithDelay(drumMp3, delayMs);
+  else if(soundType === 'engine') playAudioWithDelay(enjinMp3, delayMs);
 }
-
 function getCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -814,22 +748,12 @@ function sndWin(){
 }
 function sndMeow() {
   if (!audioOn) return;
-
   try {
-    meowMp3.pause();
-    meowMp3.currentTime = 0;
-
+    meowMp3.pause(); meowMp3.currentTime = 0;
     const p = meowMp3.play();
-    if (p && typeof p.catch === "function") {
-      p.catch(() => {
-        fallbackMeow();
-      });
-    }
-  } catch (e) {
-    fallbackMeow();
-  }
+    if (p && typeof p.catch === 'function'){ p.catch(()=>{ fallbackMeow(); }); }
+  } catch (e){ fallbackMeow(); }
 }
-
 function fallbackMeow() {
   if (!audioOn) return;
   try {
@@ -843,48 +767,30 @@ function fallbackMeow() {
     o.start(ctx.currentTime); o.stop(ctx.currentTime+.65);
   }catch(e){}
 }
-
-/* NEW: gendang & enjin guna mp3 */
 function sndDrum(){
   if (!audioOn) return;
-  try{
-    drumMp3.pause();
-    drumMp3.currentTime = 0;
-    const p = drumMp3.play();
-    if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
-  }catch(e){}
+  try{ drumMp3.pause(); drumMp3.currentTime=0; const p=drumMp3.play(); if(p&&typeof p.catch==='function'){p.catch(()=>{});} }catch(e){}
 }
 function sndTraktor() {
   if (!audioOn) return;
-  try{
-    enjinMp3.pause();
-    enjinMp3.currentTime = 0;
-    const p = enjinMp3.play();
-    if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
-  }catch(e){}
+  try{ enjinMp3.pause(); enjinMp3.currentTime=0; const p=enjinMp3.play(); if(p&&typeof p.catch==='function'){p.catch(()=>{});} }catch(e){}
 }
-
 function sndCorrect() { tone(659,'sine',.18,.28); tone(784,'sine',.18,.28,.15); }
 function sndWrong()   { tone(200,'square',.3,.4); }
-
 function toggleAudio() {
   audioOn=!audioOn;
   document.getElementById('audio-btn').textContent = audioOn?'ON':'OFF';
   document.getElementById('audio-lbl').textContent = audioOn?'ON':'OFF';
-
   if (!audioOn) {
-    clearQuizAudioTimer();
-    stopQuizSfx();
+    clearQuizAudioTimer(); stopQuizSfx();
     try { voPlayer.pause(); } catch(e){}
     try { bgmRats.pause(); } catch(e){}
   }
-
   if (audioOn) {
     try{getCtx().resume();}catch(e){}
     tryPlayBgmRats();
   }
 }
-
 /* ═══════════════════════════════════════════════════════════
    MAZE DATA
 ═══════════════════════════════════════════════════════════ */
@@ -945,7 +851,6 @@ const MAZES = [
     },
   },
 ];
-
 /* ═══════════════════════════════════════════════════════════
    QUIZ DATA
 ═══════════════════════════════════════════════════════════ */
@@ -990,35 +895,26 @@ const QUIZ = [
       },
       {
         s:'Apakah bentuk huruf Arab seperti objek ini?',
-        opts:['د','ب','ج'],
-        betul:0,
-        visual:'cacing',
-        isArab:true,
+        opts:['د','ب','ج'], betul:0, visual:'cacing', isArab:true,
       },
     ],
   },
 ];
-
 /* ═══════════════════════════════════════════════════════════
    GAME STATE
 ═══════════════════════════════════════════════════════════ */
 const G = {
   level:0, skor:0, jatuhan:0, tick:0,
   timerRef:null, animRef:null,
-  sedang:false,
-  dimulakan:false,
-  levelMenang:false,
+  sedang:false, dimulakan:false, levelMenang:false,
   pemR:1, pemC:1,
   kucingIdx:0, kucingTick:0, kucingAnim:0,
   kejuFasa:0,
-  kuizLevel:0, kuizSoalan:0, kuizBetulCount:0,
-  kuizSelesai:false,
+  kuizLevel:0, kuizSoalan:0, kuizBetulCount:0, kuizSelesai:false,
 };
-
 const cv  = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 let TS    = 32;
-
 function hitungTS() {
   const tb  = document.getElementById('topbar');
   const ab  = document.getElementById('action-bar');
@@ -1035,7 +931,6 @@ function setupCanvas() {
   cv.width  = mz.cols * TS;
   cv.height = mz.rows * TS;
 }
-
 function drawMouse(x, y, r) {
   const c=ctx;
   c.fillStyle='#BDBDBD'; c.beginPath(); c.ellipse(x,y,r,r*.8,0,0,Math.PI*2); c.fill();
@@ -1057,12 +952,10 @@ function drawMouse(x, y, r) {
   c.strokeStyle='#BDBDBD'; c.lineWidth=Math.max(1,r*.12);
   c.beginPath(); c.moveTo(x+r*.58,y+r*.28); c.quadraticCurveTo(x+r*1.4,y+r*.9,x+r*1.1,y+r*1.3); c.stroke();
 }
-
 function drawCheese(x, y, r, fasa, bigGlow) {
   const c=ctx;
   const gv = bigGlow ? 1.0 : (0.55 + 0.45*Math.sin(fasa*.1));
   const gR = r * (bigGlow ? 3.5+Math.sin(fasa*.08) : 2.2+.7*Math.sin(fasa*.1));
-
   const grad = ctx.createRadialGradient(x,y-r*.15,r*.15,x,y-r*.15,gR);
   grad.addColorStop(0, `rgba(255,240,0,${bigGlow?0.85:0.55*gv})`);
   grad.addColorStop(.3, `rgba(255,190,0,${bigGlow?0.6:0.3*gv})`);
@@ -1070,7 +963,6 @@ function drawCheese(x, y, r, fasa, bigGlow) {
   grad.addColorStop(1,  'rgba(255,120,0,0)');
   c.fillStyle=grad;
   c.beginPath(); c.ellipse(x,y-r*.15,gR,gR,0,0,Math.PI*2); c.fill();
-
   const nStars = bigGlow ? 8 : 5;
   for(let i=0;i<nStars;i++){
     const ang  = fasa*.065 + (i/nStars)*Math.PI*2;
@@ -1087,30 +979,25 @@ function drawCheese(x, y, r, fasa, bigGlow) {
     c.lineTo(-sr,0); c.lineTo(-sr*.28,-sr*.28); c.closePath(); c.fill();
     c.restore();
   }
-
   c.fillStyle='#FFD600';
   c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1.5,r*.18);
   c.beginPath();
   c.moveTo(x,y-r*1.15); c.lineTo(x+r*1.15,y+r*.65); c.lineTo(x-r*1.15,y+r*.65);
   c.closePath(); c.fill(); c.stroke();
-
   c.fillStyle='rgba(255,255,200,.45)';
   c.beginPath(); c.ellipse(x-r*.18,y-r*.48,r*.32,r*.17,-0.5,0,Math.PI*2); c.fill();
-
   [[-.28,.1,.2],[.32,-.08,.15],[.02,.38,.12]].forEach(([dx,dy,rh])=>{
     c.fillStyle='#E65100';
     c.beginPath(); c.ellipse(x+dx*r,y+dy*r,rh*r,rh*r*.8,0,0,Math.PI*2); c.fill();
     c.fillStyle='#BF360C';
     c.beginPath(); c.ellipse(x+dx*r+rh*r*.18,y+dy*r+rh*r*.18,rh*r*.58,rh*r*.48,0,0,Math.PI*2); c.fill();
   });
-
   if(bigGlow){
     const kd = .5+.5*Math.abs(Math.sin(fasa*.22));
     c.fillStyle=`rgba(255,255,200,${kd*.8})`;
     c.beginPath(); c.arc(x,y-r*1.15,r*.18,0,Math.PI*2); c.fill();
   }
 }
-
 function drawCat(x, y, r, fasa) {
   const c=ctx;
   const wg=ctx.createRadialGradient(x,y,r*.2,x,y,r*2.2);
@@ -1135,12 +1022,10 @@ function drawCat(x, y, r, fasa) {
   c.strokeStyle='#FF8F00'; c.lineWidth=Math.max(1,r*.15);
   c.beginPath(); c.moveTo(x+r*.65,y+r*.4); c.quadraticCurveTo(x+r*1.5,y+r*.2,x+r*1.2,y-r*.3); c.stroke();
 }
-
 function drawScene() {
   const mz=MAZES[G.level];
   const ts=TS;
   ctx.clearRect(0,0,cv.width,cv.height);
-
   for(let r=0;r<mz.rows;r++){
     for(let c=0;c<mz.cols;c++){
       if(mz.grid[r][c]===1){
@@ -1160,33 +1045,26 @@ function drawScene() {
       }
     }
   }
-
   const s=mz.mula;
   ctx.fillStyle='rgba(0,200,80,.28)';
   ctx.fillRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
   ctx.strokeStyle='rgba(0,180,60,.5)'; ctx.lineWidth=2;
   ctx.strokeRect(s.c*ts+2,s.r*ts+2,ts-4,ts-4);
-
   const e=mz.tamat;
   drawCheese(e.c*ts+ts/2, e.r*ts+ts/2, ts*.38, G.kejuFasa, G.levelMenang);
-
   if(mz.kucing){
     const cp=mz.kucing.laluan[G.kucingIdx % mz.kucing.laluan.length];
     drawCat(cp.c*ts+ts/2, cp.r*ts+ts/2, ts*.36, G.kucingAnim);
   }
-
   if(G.dimulakan){
     drawMouse(G.pemC*ts+ts/2, G.pemR*ts+ts/2, ts*.38);
   }
 }
-
 function animLoop() {
   G.kejuFasa++;
   G.kucingAnim++;
-
   if(G.sedang && !G.levelMenang){
     G.tick++;
-
     const mz=MAZES[G.level];
     if(mz.kucing){
       G.kucingTick++;
@@ -1198,11 +1076,9 @@ function animLoop() {
     }
     updateTopBar();
   }
-
   drawScene();
   G.animRef = requestAnimationFrame(animLoop);
 }
-
 function updateTopBar(){
   document.getElementById('skor-disp').textContent = G.skor;
   document.getElementById('masa-disp').textContent = fmtMasa(G.tick);
@@ -1211,12 +1087,10 @@ function fmtMasa(t){
   const s=Math.floor(t/60);
   return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
 }
-
 function isDinding(r,c){
   const mz=MAZES[G.level];
   return r<0||r>=mz.rows||c<0||c>=mz.cols||mz.grid[r][c]===1;
 }
-
 function gerak(dr,dc){
   if(!G.sedang||G.levelMenang) return;
   const nr=G.pemR+dr, nc=G.pemC+dc;
@@ -1231,13 +1105,11 @@ function gerak(dr,dc){
   const mz=MAZES[G.level];
   if(nr===mz.tamat.r && nc===mz.tamat.c) padaMenang();
 }
-
 document.addEventListener('keydown', e=>{
   const map={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
   if(map[e.key]){e.preventDefault(); gerak(...map[e.key]);}
   if(e.key === 'Escape' && G.sedang){ bukaPauseMenu(); }
 });
-
 let dpIv=null;
 function dpStart(d,e){
   if(e) e.preventDefault();
@@ -1245,7 +1117,6 @@ function dpStart(d,e){
   gerak(...m[d]); dpIv=setInterval(()=>gerak(...m[d]),180);
 }
 function dpEnd(){ if(dpIv){clearInterval(dpIv);dpIv=null;} }
-
 function cekKucing(){
   const mz=MAZES[G.level];
   if(!mz.kucing) return;
@@ -1262,61 +1133,47 @@ function cekKucing(){
     if(!ok){G.pemR=mz.mula.r;G.pemC=mz.mula.c;}
   }
 }
-
 function padaMenang(){
   G.sedang = false;
   G.levelMenang = true;
   stopMotivationLoop();
-
   const bonusMasa=Math.max(0,500-Math.floor(G.tick/60)*5);
   G.skor += bonusMasa;
   updateTopBar();
-
   sndChime();
   setTimeout(sndWin, 400);
-
   const fl=document.getElementById('win-flash');
   fl.classList.add('show');
   setTimeout(()=>fl.classList.remove('show'),1200);
-
   if(G.level===0) playVOById('VO_WIN_L1');
   else if(G.level===1) playVOById('VO_WIN_L2');
   else if(G.level===2) playVOById('VO_WIN_FINAL');
-
   const quiz=QUIZ[G.level];
   showVO(quiz.vo);
-
   setTimeout(()=>{ showLevelComplete(G.level); }, 1800);
 }
-
 function showLevelComplete(lvl){
   const panel   = document.getElementById('lc-panel');
   const isAkhir = lvl===2;
-
   document.getElementById('lc-title').textContent =
     isAkhir ? '🏆 Semua Level Selesai!' : `🎉 Level ${lvl+1} Selesai!`;
   document.getElementById('lc-sub').textContent =
     isAkhir
       ? 'Tahniah! Anda berjaya tamat semua level!'
       : `Tahniah! Tikus berjaya mendapatkan keju Level ${lvl+1}!`;
-
   document.getElementById('lc-skor-num').textContent = G.skor;
-
   const btns=document.getElementById('lc-btns');
   btns.innerHTML=`
     <button class="mbtn purple" onclick="bukKuiz(${lvl})">📚 Jawab Kuiz</button>
     <button class="mbtn red" onclick="mulaSemulaPermainan()">🔄 Main Lagi</button>
     <button class="mbtn amber" onclick="keluarPermainan()">🚪 Keluar</button>
   `;
-
   const box=document.getElementById('lc-box-inner');
   box.classList.remove('pop-in');
   void box.offsetWidth;
   box.classList.add('pop-in');
-
   panel.classList.add('show');
 }
-
 function bukKuiz(lvl){
   document.getElementById('lc-panel').classList.remove('show');
   G.kuizLevel    = lvl;
@@ -1328,28 +1185,18 @@ function bukKuiz(lvl){
   document.getElementById('mod-kuiz').style.display='flex';
   stopMotivationLoop();
 }
-
-function startQuiz(level){
-  console.log(`[startQuiz] Level ${level+1} quiz triggered`);
-  bukKuiz(level);
-}
-
+function startQuiz(level){ bukKuiz(level); }
 function renderKuiz(){
   clearQuizAudioTimer();
   stopQuizSfx();
-
   const qd   = QUIZ[G.kuizLevel];
   const sq   = qd.soalan[G.kuizSoalan];
   const total= qd.soalan.length;
-
   document.getElementById('kuiz-title').textContent =
     `${qd.tajuk}- Soalan ${G.kuizSoalan+1} / ${total}`;
-
   let html='';
   if(sq.visual) html+=`<div class="quiz-visual-wrap">${svgVisual(sq.visual)}</div>`;
-
   html+=`<p class="quiz-question">${sq.s}</p>`;
-
   sq.opts.forEach((opt,i)=>{
     const arabSt = sq.isArab
       ? 'font-family:"SakkalMajalla",serif;font-size:clamp(1.4rem,4.8vw,2.1rem);direction:rtl'
@@ -1357,9 +1204,7 @@ function renderKuiz(){
     html+=`<button class="qopt" id="qopt${i}" onclick="pilihJwp(${i})" style="${arabSt}">${opt}</button>`;
   });
   html+=`<div id="q-fb"></div>`;
-
   document.getElementById('kuiz-body').innerHTML=html;
-
   if(G.kuizLevel===0 && G.kuizSoalan===0){
     scheduleQuizAudio('VO_QUIZ_Q_GENERIC', 'drum');
   } else if(G.kuizLevel===1 && G.kuizSoalan===0){
@@ -1370,23 +1215,18 @@ function renderKuiz(){
     playAudioWithDelay(enjinMp3, 700);
   }
 }
-
 function pilihJwp(idx){
   const qd  = QUIZ[G.kuizLevel];
   const sq  = qd.soalan[G.kuizSoalan];
   const fb  = document.getElementById('q-fb');
-
   clearQuizAudioTimer();
   stopQuizSfx();
-
   sq.opts.forEach((_,i)=>{ const b=document.getElementById('qopt'+i); if(b) b.onclick=null; });
-
   if(idx===sq.betul){
     document.getElementById('qopt'+idx).classList.add('ok');
     fb.innerHTML='<span style="color:#2E7D32">✅ Betul! Bagus sekali!</span>';
     sndCorrect();
     G.kuizBetulCount++;
-
     setTimeout(()=>{
       G.kuizSoalan++;
       if(G.kuizSoalan < qd.soalan.length){
@@ -1395,9 +1235,7 @@ function pilihJwp(idx){
         G.kuizSelesai=true;
         document.getElementById('kuiz-body').innerHTML=`
           <div style="font-size:clamp(1.4rem,4.5vw,2rem);margin:10px 0">🎊🎊🎊</div>
-          <p class="quiz-done-msg">
-            Tahniah! Anda menjawab SEMUA soalan dengan betul!
-          </p>
+          <p class="quiz-done-msg">Tahniah! Anda menjawab SEMUA soalan dengan betul!</p>
         `;
         document.getElementById('kuiz-title').textContent='✅ Kuiz Selesai!';
         const nav=document.getElementById('kuiz-nav');
@@ -1412,15 +1250,10 @@ function pilihJwp(idx){
         if(G.kuizLevel===2) setTimeout(tunjukKeputusanAkhir, 800);
       }
     }, 900);
-
   } else {
     document.getElementById('qopt'+idx).classList.add('bad');
-    fb.innerHTML=`
-      <div style="color:#C62828;font-size:clamp(.88rem,2.4vw,1.05rem)">
-        ❌ Jawapan salah! Cuba Lagi!
-      </div>`;
+    fb.innerHTML=`<div style="color:#C62828;font-size:clamp(.88rem,2.4vw,1.05rem)">❌ Jawapan salah! Cuba Lagi!</div>`;
     sndWrong();
-
     setTimeout(()=>{
       document.getElementById('qopt'+idx).classList.remove('bad');
       fb.innerHTML='';
@@ -1431,28 +1264,19 @@ function pilihJwp(idx){
     }, 1000);
   }
 }
-
 function teruskanLevelSeterusnya(){
-  clearQuizAudioTimer();
-  stopQuizSfx();
+  clearQuizAudioTimer(); stopQuizSfx();
   document.getElementById('mod-kuiz').style.display='none';
-  if(G.kuizLevel<2){
-    mulaLevelBaru(G.kuizLevel+1);
-  } else {
-    tunjukKeputusanAkhir();
-  }
+  if(G.kuizLevel<2){ mulaLevelBaru(G.kuizLevel+1); }
+  else { tunjukKeputusanAkhir(); }
 }
-
 function tunjukKeputusanAkhir(){
-  clearQuizAudioTimer();
-  stopQuizSfx();
+  clearQuizAudioTimer(); stopQuizSfx();
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
-
   let bintang=1;
   if(G.skor>=800 && G.jatuhan<=5) bintang=3;
   else if(G.skor>=400) bintang=2;
-
   document.getElementById('res-title').textContent  = '🏆 Anda Pemenang!';
   document.getElementById('res-stars').textContent  = '⭐'.repeat(bintang)+'🌑'.repeat(3-bintang);
   document.getElementById('res-skor').textContent   = G.skor;
@@ -1462,11 +1286,9 @@ function tunjukKeputusanAkhir(){
     bintang===3 ? '<b style="color:#2E7D32">🌟 Luar Biasa! Markah Penuh!</b>'
     : bintang===2 ? '👍 Bagus! Boleh lebih baik lagi!'
     : '💪 Teruskan berlatih!';
-
   document.getElementById('mod-result').style.display='flex';
   sndWin();
 }
-
 function updateProgress(){
   for(let i=1;i<=3;i++){
     const d=document.getElementById('pd'+i);
@@ -1478,36 +1300,23 @@ function updateProgress(){
     document.getElementById('pl'+i).classList.toggle('done',G.level>=i);
   }
 }
-
 function mulaPermainan(){
   if(G.sedang) return;
   G.dimulakan=true;
   mulakanLevel();
 }
-
 function bukaPauseMenu(){
   if(!G.dimulakan || !G.sedang || G.levelMenang) return;
   G.sedang = false;
   stopMotivationLoop();
   document.getElementById('mod-pause').style.display='flex';
 }
-
 function sambungPermainan(){
   document.getElementById('mod-pause').style.display='none';
-  if(!G.levelMenang){
-    G.sedang = true;
-    startMotivationLoop();
-  }
+  if(!G.levelMenang){ G.sedang=true; startMotivationLoop(); }
 }
-
-function keluarKeIndex(){
-  window.location.href = 'index.html';
-}
-
-function togglePause(){
-  bukaPauseMenu();
-}
-
+function keluarKeIndex(){ window.location.href = 'index.html'; }
+function togglePause(){ bukaPauseMenu(); }
 function mulakanLevel(){
   const mz=MAZES[G.level];
   G.pemR=mz.mula.r; G.pemC=mz.mula.c;
@@ -1516,22 +1325,13 @@ function mulakanLevel(){
   setupCanvas(); updateProgress();
   startMotivationLoop();
 }
-
 function startMotivationLoop(){
   stopMotivationLoop();
   if(!G.sedang || G.levelMenang) return;
-
   playVOById('VO_MOTIVASI_01');
-
-  setTimeout(()=>{
-    if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01');
-  }, 1400);
-
-  voMotivIv = setInterval(()=>{
-    if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01');
-  }, 12000);
+  setTimeout(()=>{ if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01'); }, 1400);
+  voMotivIv = setInterval(()=>{ if(G.sedang && !G.levelMenang) playVOById('VO_MOTIVASI_01'); }, 12000);
 }
-
 function mulaLevelBaru(lvl){
   document.getElementById('lc-panel').classList.remove('show');
   document.getElementById('mod-kuiz').style.display='none';
@@ -1539,17 +1339,13 @@ function mulaLevelBaru(lvl){
   G.levelMenang=false;
   updateProgress(); mulakanLevel();
 }
-
 function mulaSemulaPermainan(){
-  clearQuizAudioTimer();
-  stopQuizSfx();
-
+  clearQuizAudioTimer(); stopQuizSfx();
   document.getElementById('mod-result').style.display='none';
   document.getElementById('mod-kuiz').style.display='none';
   document.getElementById('lc-panel').classList.remove('show');
   document.getElementById('mod-pause').style.display='none';
   stopMotivationLoop();
-
   Object.assign(G,{
     level:0,skor:0,jatuhan:0,tick:0,
     kucingIdx:0,kucingTick:0,
@@ -1559,44 +1355,28 @@ function mulaSemulaPermainan(){
   });
   updateTopBar(); updateProgress(); setupCanvas();
 }
-
-function keluarPermainan(){
-  document.getElementById('mod-keluar').style.display='flex';
-}
+function keluarPermainan(){ document.getElementById('mod-keluar').style.display='flex'; }
 function sahKeluar(){
-  clearQuizAudioTimer();
-  stopQuizSfx();
+  clearQuizAudioTimer(); stopQuizSfx();
   document.getElementById('mod-keluar').style.display='none';
   window.location.href = 'index.html';
 }
-function tutupKeluar(){
-  document.getElementById('mod-keluar').style.display='none';
-}
-
+function tutupKeluar(){ document.getElementById('mod-keluar').style.display='none'; }
 function tutupIntro(){
   document.getElementById('mod-intro').style.display='none';
   setupCanvas();
   playVOQueue(['VO_INTRO_02']);
 }
-
 function svgVisual(t){
   const M={
     drum:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="25" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><rect x="10" y="25" width="60" height="30" fill="#A0522D" stroke="#5D2F0A" stroke-width="2"/><ellipse cx="40" cy="55" rx="30" ry="10" fill="#8B4513" stroke="#5D2F0A" stroke-width="2"/><line x1="15" y1="25" x2="15" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="40" y1="25" x2="40" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="65" y1="25" x2="65" y2="55" stroke="#FFD700" stroke-width="2"/><line x1="5" y1="15" x2="18" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/><line x1="75" y1="15" x2="62" y2="22" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/></svg>`,
     traktor:`<svg viewBox="0 0 100 70"><rect x="30" y="20" width="45" height="30" rx="4" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/><rect x="50" y="10" width="20" height="20" rx="3" fill="#81C784" stroke="#2E7D32" stroke-width="1.5"/><circle cx="20" cy="50" r="15" fill="#333" stroke="#111" stroke-width="2"/><circle cx="20" cy="50" r="8" fill="#666"/><circle cx="72" cy="55" r="10" fill="#333" stroke="#111" stroke-width="2"/><circle cx="72" cy="55" r="5" fill="#666"/><rect x="10" y="30" width="20" height="10" rx="2" fill="#FF8C00"/></svg>`,
     flamingo: `<div style="font-size:80px; line-height:80px;">🦩</div>`,
-    cacing: `
-      <div class="visual-img-wrap">
-        <img
-          src="assets/images/cacing2.png"
-          alt="Cacing"
-        />
-      </div>`,
+    cacing: `<div class="visual-img-wrap"><img src="assets/images/cacing2.png" alt="Cacing"/></div>`,
   };
   return M[t]||'';
 }
-
 window.addEventListener('resize',()=>{ setupCanvas(); });
-
 setupCanvas();
 updateTopBar();
 updateProgress();

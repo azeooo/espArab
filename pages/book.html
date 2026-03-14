@@ -27,14 +27,9 @@
       --text: #24324a;
       --shadow: 0 20px 50px rgba(31,41,55,0.18);
       --radius: 30px;
+      --accent: #6d5efc;
+      --accent2: #ff7a59;
 
-      /* ── Character sizes ──────────────────────────
-         Uses vmin so they look identical on every device.
-         Change these two numbers to resize independently:
-           --boy-w  = Boy  (left)  character width
-           --girl-w = Girl (right) character width
-         Example: --boy-w: 22vmin makes the boy bigger.
-      ─────────────────────────────────────────────── */
       --boy-w:  25vmin;
       --girl-w: 14vmin;
     }
@@ -58,12 +53,12 @@
     body {
       position: relative;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 18px;
+      padding: 18px 5vw;
     }
 
-    /* blobs */
+    /* ── Blobs ── */
     .blob { position:fixed; border-radius:50%; filter:blur(16px); opacity:.14; pointer-events:none; animation:floatBlob linear infinite; z-index:0; }
     .blob.b1 { width:220px; height:220px; background:#fff;    top:6%;   left:4%;   animation-duration:12s; }
     .blob.b2 { width:280px; height:280px; background:#ffd6e8; right:4%; top:15%;  animation-duration:16s; }
@@ -77,7 +72,7 @@
       100% { transform:translateY(0)    translateX(0)    scale(1);    }
     }
 
-    /* sparkles */
+    /* ── Sparkles ── */
     .sparkles { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; opacity:.7; }
     .sparkle {
       position:absolute; width:10px; height:10px; border-radius:50%;
@@ -87,7 +82,7 @@
     }
     @keyframes twinkle { 0%,100%{transform:scale(.4);opacity:.2;} 50%{transform:scale(1.2);opacity:1;} }
 
-    /* clouds */
+    /* ── Clouds ── */
     .cloud-stage { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; opacity:.7; }
     .cloud { position:absolute; animation-timing-function:linear; animation-iteration-count:infinite; filter:drop-shadow(0 8px 10px rgba(255,255,255,.18)); }
     .cloud img { width:100%; height:100%; object-fit:contain; display:none; }
@@ -112,16 +107,16 @@
     @keyframes cloudMove2 { from{transform:translateX(0)} to{transform:translateX(150vw)} }
     @keyframes cloudMove3 { from{transform:translateX(0)} to{transform:translateX(155vw)} }
 
-    /* body already has overflow-x:hidden — prevents horizontal scrollbar
-       when characters peek outside the card on small screens */
-
+    /* ── App ── */
     .app {
       position: relative;
-      width: min(1200px, 100%);
+      width: 90vw;
+      max-width: 90vw;
+      margin: 0 auto;
       z-index: 2;
     }
 
-    /* top bar */
+    /* ── Top bar ── */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -149,41 +144,29 @@
     .nav-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
 
     /* ══════════════════════════════════════════════
-       STAGE — wraps the card + the two outside chars
+       STAGE
     ══════════════════════════════════════════════ */
     .stage {
       position: relative;
-      /* Inset the card away from the viewport edges
-         so characters have room to peek out */
       padding-left:  calc(var(--boy-w)  * 0.42);
       padding-right: calc(var(--girl-w) * 0.42);
     }
 
-    /* ══════════════════════════════════════════════
-       CHARACTERS — absolutely positioned outside card
-       Each character is pinned to bottom of .stage.
-       Positive left/right = inside stage.
-       0 = flush with stage edge = character half-outside card.
-    ══════════════════════════════════════════════ */
+    /* ── Characters ── */
     .char-outside {
       position: absolute;
       bottom: 0;
       z-index: 4;
       pointer-events: none;
     }
-
-    /* Boy — left character */
     .char-outside.left {
       width: var(--boy-w);
-      left: 0;   /* adjust this: negative = more outside, positive = more inside */
+      left: 0;
     }
-
-    /* Girl — right character */
     .char-outside.right {
       width: var(--girl-w);
-      right: 0;  /* adjust this: negative = more outside, positive = more inside */
+      right: 0;
     }
-
     .char-outside img {
       width: 100%;
       height: auto;
@@ -193,7 +176,6 @@
       animation: characterAlive 2.8s ease-in-out infinite;
     }
     .char-outside.right img { animation-delay: .8s; }
-
     .char-outside-placeholder {
       width: 100%;
       height: calc(var(--boy-w) * 2.5);
@@ -214,10 +196,15 @@
     .char-outside.right .char-outside-placeholder {
       height: calc(var(--girl-w) * 2.5);
     }
+    @keyframes characterAlive {
+      0%,100% { transform:translateY(0);    }
+      25%      { transform:translateY(-3px); }
+      50%      { transform:translateY(-9px); }
+      75%      { transform:translateY(-4px); }
+    }
 
     /* ══════════════════════════════════════════════
-       PAGE CARD — no overflow:hidden needed anymore,
-       characters are outside the card entirely
+       PAGE CARD
     ══════════════════════════════════════════════ */
     .page-card {
       position: relative;
@@ -238,25 +225,14 @@
       background:
         radial-gradient(circle at top left,    rgba(255,255,255,.38), transparent 30%),
         radial-gradient(circle at bottom right,rgba(255,255,255,.28), transparent 28%);
+      border-radius: var(--radius);
     }
+
+    .outer-grid { display: block; }
 
     /* ══════════════════════════════════════════════
-       OUTER GRID — now just the content, no char cols
+       CONTENT GRID — 2 kolum utama
     ══════════════════════════════════════════════ */
-    .outer-grid {
-      display: block;  /* simply wraps content-col */
-    }
-
-    /* remove old char-col styles — no longer used */
-
-    @keyframes characterAlive {
-      0%,100% { transform:translateY(0);    }
-      25%      { transform:translateY(-3px); }
-      50%      { transform:translateY(-9px); }
-      75%      { transform:translateY(-4px); }
-    }
-
-    /* content column */
     .content-col {
       display: grid;
       grid-template-columns: minmax(0,1.05fr) minmax(280px,.88fr);
@@ -264,36 +240,124 @@
       align-items: stretch;
     }
 
-    /* visual panel */
+    /* ── Visual Panel (Gambar) ── */
     .visual-panel {
       position: relative;
-      min-height: 480px;
       border-radius: 24px;
       overflow: hidden;
       background: linear-gradient(180deg,rgba(219,234,254,.72) 0%,rgba(245,208,254,.72) 100%);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.7);
       display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .main-image {
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:contain; object-position:center;
-      display:none; background:rgba(255,255,255,.72); padding:14px;
-    }
-    .image-placeholder {
-      position:absolute; inset:0; display:flex; align-items:center;
-      justify-content:center; text-align:center; padding:24px;
-      font-size:clamp(1rem,2vw,1.25rem); font-weight:900; color:#475569;
-      background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.05));
-      font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif;
-    }
-    .placeholder-box {
-      background:rgba(255,255,255,.72); border:2px dashed #bfd6ff;
-      border-radius:22px; padding:22px 18px; max-width:380px; line-height:1.5;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      /* Desktop: match side panel height naturally */
+      min-height: 520px;
     }
 
-    /* side panel */
+    /* ── Gambar utama dalam visual panel ── */
+    .visual-image-wrapper {
+      position: relative;
+      flex: 1 1 0;
+      width: 100%;
+      /* Ensure the wrapper has a measurable height so absolute children work */
+      min-height: 0;
+    }
+    .main-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: none;
+      background: rgba(255,255,255,.72);
+      padding: 14px;
+    }
+    .image-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      font-size: clamp(1rem,2vw,1.25rem);
+      font-weight: 900;
+      color: #475569;
+      background: linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.05));
+      font-family: 'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+    }
+    .placeholder-box {
+      background: rgba(255,255,255,.72);
+      border: 2px dashed #bfd6ff;
+      border-radius: 22px;
+      padding: 22px 18px;
+      max-width: 380px;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════
+       NAVIGATION BAR — di bawah gambar (dalam visual panel)
+    ══════════════════════════════════════════════ */
+    .nav-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(8px);
+      border-top: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 0 0 24px 24px;
+      flex-shrink: 0;
+    }
+
+    /* ── Butang emoji kiri / kanan ── */
+    .nav-arrow-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.82);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.9);
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .nav-arrow-btn:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.08);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      background: rgba(255,255,255,0.96);
+    }
+    .nav-arrow-btn:active:not(:disabled) {
+      transform: scale(0.93);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    }
+    .nav-arrow-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Page badge dalam nav bar ── */
+    .nav-page-badge {
+      flex: 1;
+      text-align: center;
+      font-weight: 900;
+      font-size: clamp(0.8rem, 1.8vw, 1rem);
+      color: var(--text);
+      font-family: 'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+      white-space: nowrap;
+    }
+
+    /* ── Side panel ── */
     .side-panel { display:flex; flex-direction:column; gap:14px; min-width:0; }
 
     .title-box {
@@ -317,6 +381,7 @@
       font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif;
     }
 
+    /* ── Audio panel ── */
     .audio-panel {
       background:linear-gradient(180deg,rgba(255,255,255,.84),rgba(248,250,252,.72));
       border-radius:22px; padding:16px;
@@ -330,13 +395,13 @@
       width:100%; border:none; cursor:pointer; border-radius:16px;
       padding:13px 14px; font-size:.97rem; font-weight:900;
       font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif;
-      color:white; transition:transform .18s ease,filter .18s ease;
+      color:white; transition:transform .18s ease,filter .18s ease, box-shadow .18s ease;
       box-shadow:0 8px 20px rgba(0,0,0,.12);
       display:flex; justify-content:space-between; align-items:center; gap:10px;
     }
-    .audio-btn:hover  { transform:translateY(-2px); filter:brightness(1.04); }
-    .audio-btn:active { transform:scale(.985); }
-    .audio-btn.playing{ outline:3px solid rgba(255,255,255,.7); filter:brightness(1.06); }
+    .audio-btn:hover  { transform:translateY(-2px); filter:brightness(1.06); box-shadow:0 12px 28px rgba(0,0,0,.18); }
+    .audio-btn:active { transform:scale(.97); filter:brightness(.96); }
+    .audio-btn.playing{ outline:3px solid rgba(255,255,255,.75); filter:brightness(1.08); }
     .audio-btn.a1 { background:linear-gradient(135deg,#ff7a59,#ffb347); }
     .audio-btn.a2 { background:linear-gradient(135deg,#6d5efc,#4facfe); }
     .audio-btn.a3 { background:linear-gradient(135deg,#22c55e,#84cc16); }
@@ -351,80 +416,127 @@
       text-align:right; font-size:1.6rem; font-weight:400; line-height:1.25;
     }
 
-    .note-box {
-      background:linear-gradient(135deg,rgba(254,243,199,.82),rgba(253,230,138,.72));
-      border-radius:22px; padding:16px;
-      box-shadow:0 12px 28px rgba(0,0,0,.08);
-      font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+    /* ══════════════════════════════════════════════
+       PAGE JUMP — di bawah audio panel
+    ══════════════════════════════════════════════ */
+    .page-jump-panel {
+      background: linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.58));
+      border-radius: 22px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    .note-box h3 { margin-bottom:6px; font-size:1rem; }
-    .note-box p  { line-height:1.6; font-weight:700; color:#6b4f00; }
-
-    .footer-actions { display:flex; gap:10px; flex-wrap:wrap; }
-    .footer-btn {
-      flex:1; min-width:130px; border:none; cursor:pointer;
-      border-radius:18px; padding:14px 16px; font-weight:1000; font-size:.97rem;
-      font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif; color:white;
-      box-shadow:0 10px 24px rgba(0,0,0,.12); transition:transform .18s ease;
+    .page-jump-label {
+      font-size: .88rem;
+      font-weight: 900;
+      color: var(--text);
+      white-space: nowrap;
+      font-family: 'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+      flex-shrink: 0;
     }
-    .footer-btn:hover    { transform:translateY(-2px); }
-    .footer-btn.prev     { background:linear-gradient(135deg,#64748b,#94a3b8); }
-    .footer-btn.next     { background:linear-gradient(135deg,#ec4899,#8b5cf6); }
-    .footer-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
-
-    .page-jump { display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-width:0; }
     .page-input {
-      width:110px; min-width:0; height:46px; border:none; outline:none;
-      border-radius:999px; padding:0 16px; font-size:1rem; font-weight:900;
-      font-family:'Azim',"Trebuchet MS","Segoe UI",sans-serif;
-      color:var(--text); background:rgba(255,255,255,.88);
-      box-shadow:0 10px 24px rgba(0,0,0,.10); text-align:center;
+      width: 64px;
+      height: 38px;
+      padding: 0 10px;
+      font-size: .95rem;
+      font-weight: 800;
+      text-align: center;
+      border-radius: 12px;
+      border: 2px solid rgba(109,94,252,0.3);
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      font-family: 'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      /* hide arrows on number input */
+      -moz-appearance: textfield;
+      appearance: textfield;
     }
-    .page-input::placeholder { color:#7b8aa0; }
-    .page-input:focus { box-shadow:0 10px 24px rgba(0,0,0,.10),0 0 0 3px rgba(255,255,255,.65); }
-    .jump-btn { padding-left:16px; padding-right:16px; flex:0 0 auto; white-space:nowrap; }
-    .sr-only  { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .page-input::-webkit-inner-spin-button,
+    .page-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .page-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(109,94,252,0.18);
+    }
+    .jump-btn {
+      height: 38px;
+      padding: 0 18px;
+      font-size: .9rem;
+      font-weight: 900;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6d5efc, #4facfe);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-family: 'Azim',"Trebuchet MS","Segoe UI",sans-serif;
+      box-shadow: 0 6px 16px rgba(109,94,252,0.3);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      white-space: nowrap;
+    }
+    .jump-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 10px 22px rgba(109,94,252,0.38);
+      filter: brightness(1.06);
+    }
+    .jump-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 4px 10px rgba(109,94,252,0.22);
+    }
+    .jump-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
 
     /* ══════════════════════════════════════════════
        RESPONSIVE
     ══════════════════════════════════════════════ */
 
-    /* Tablet */
+    /* Tablet — single column, image fills width */
     @media (max-width: 960px) {
       .content-col  { grid-template-columns: 1fr; }
-      .visual-panel { min-height: 300px; }
+      /* On single-column layout the panel must have an explicit height
+         because flex: 1 has nothing to stretch against */
+      .visual-panel        { min-height: 60vw; max-height: 520px; }
+      .visual-image-wrapper{ min-height: 0; height: 100%; }
       .topbar       { justify-content: center; }
-      .page-jump    { width:100%; justify-content:center; }
-      .page-input   { flex:1 1 180px; max-width:220px; }
-      /* shrink stage padding on tablet */
       .stage { padding: 0 calc(var(--boy-w) * 0.3); }
     }
 
-    /* Small tablet — shrink characters */
+    /* Small tablet */
     @media (max-width: 680px) {
       :root { --boy-w: 15vmin; --girl-w: 12vmin; }
-      .visual-panel { min-height: 240px; }
+      .visual-panel { min-height: 65vw; max-height: none; }
+      .nav-arrow-btn { width: 46px; height: 46px; font-size: 1.3rem; }
     }
 
-    /* Phone — hide outside characters, no room */
+    /* Phone */
     @media (max-width: 480px) {
       :root { --boy-w: 12vmin; --girl-w: 10vmin; }
       .char-outside { display: none; }
       .stage { padding: 0; }
-      body  { padding: 10px; }
+      body  { padding: 12px 5vw; }
       .topbar { justify-content: center; }
       .badge  { width:100%; text-align:center; }
       .topbar > .nav-btn:not(.jump-btn) { width:100%; text-align:center; }
-      .visual-panel { min-height: 200px; }
-      .main-image   { padding: 8px; }
-      .footer-actions { flex-direction: column; }
-      .footer-btn     { width: 100%; }
-      .audio-btn      { font-size: .9rem; padding: 11px 10px; }
+      /* Image fills nearly the full viewport width on phones */
+      .visual-panel        { min-height: 75vw; max-height: none; }
+      .visual-image-wrapper{ height: 100%; }
+      .main-image          { padding: 8px; }
+      .audio-btn           { font-size: .9rem; padding: 11px 10px; }
       .audio-label.is-arabic { font-size: 1.3rem; }
-      .page-title     { font-size: clamp(1.4rem,6.5vw,2rem); }
-      .page-jump      { width:100%; flex-wrap:nowrap; justify-content:stretch; }
-      .page-input     { flex:1 1 auto; width:auto; max-width:none; }
-      .jump-btn       { flex:0 0 auto; }
+
+      .nav-arrow-btn  { width: 42px; height: 42px; font-size: 1.2rem; }
+      .nav-page-badge { font-size: .78rem; }
+      .nav-bar        { padding: 10px 14px; gap: 10px; }
+
+      .page-jump-panel { padding: 12px 14px; gap: 8px; }
+      .page-input  { width: 52px; height: 34px; font-size: .88rem; }
+      .jump-btn    { height: 34px; padding: 0 14px; font-size: .85rem; }
+      .page-jump-label { font-size: .8rem; }
     }
   </style>
 </head>
@@ -461,28 +573,16 @@
     </div>
   </div>
 
-  <div class="app">
-
-    <div class="topbar">
-      <button class="nav-btn" id="topPrevBtn" type="button">← Sebelum</button>
-      <div class="badge" id="pageBadge">Halaman 1 / 24</div>
-      <div class="page-jump">
-        <label for="pageInput" class="sr-only">Pergi ke halaman</label>
-        <input id="pageInput" class="page-input" type="number" min="1" max="24" inputmode="numeric" placeholder="Page" />
-        <button class="nav-btn jump-btn" id="jumpBtn" type="button">Pergi</button>
-      </div>
-      <button class="nav-btn" id="topNextBtn" type="button">Seterusnya →</button>
-    </div>
-
+  <div class="app"> <br><br><br><br>
     <div class="stage">
 
-      <!-- BOY — sits outside the card on the LEFT -->
+      <!-- BOY — kiri -->
       <div class="char-outside left" id="charOutsideLeft">
         <div class="char-outside-placeholder" id="leftCharPlaceholder">LETAK<br>BOY</div>
         <img id="leftCharImg" alt="Boy Character">
       </div>
 
-      <!-- GIRL — sits outside the card on the RIGHT -->
+      <!-- GIRL — kanan -->
       <div class="char-outside right" id="charOutsideRight">
         <div class="char-outside-placeholder" id="rightCharPlaceholder">LETAK<br>GIRL</div>
         <img id="rightCharImg" alt="Girl Character">
@@ -492,199 +592,214 @@
         <div class="outer-grid">
           <div class="content-col">
 
-          <div class="visual-panel">
-            <img class="main-image" id="mainImage" alt="Gambar halaman">
-            <div class="image-placeholder" id="imagePlaceholder">
-              <div class="placeholder-box">
-                LETAK GAMBAR PAGE DI SINI<br><br>
-                Contoh: <strong>../assets/pages/page1.jpg</strong>
+            <!-- ══ KOLUM KIRI: Gambar + Nav bar ══ -->
+            <div class="visual-panel">
+              <div class="visual-image-wrapper">
+                <img class="main-image" id="mainImage" alt="Gambar halaman">
+                <div class="image-placeholder" id="imagePlaceholder">
+                  <div class="placeholder-box">
+                    LETAK GAMBAR PAGE DI SINI<br><br>
+                    Contoh: <strong>../assets/pages/page1.jpg</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nav bar: ⬅ badge ➡ -->
+              <div class="nav-bar">
+                <button class="nav-arrow-btn" id="prevBtn" type="button" aria-label="Halaman sebelum">⬅️</button>
+                <div class="nav-page-badge" id="pageBadge">Halaman 1 / 24</div>
+                <button class="nav-arrow-btn" id="nextBtn" type="button" aria-label="Halaman seterusnya">➡️</button>
               </div>
             </div>
-          </div>
 
-          <div class="side-panel">
-            <div class="title-box">
-              <span class="mini-label">INTERAKTIF AUDIO</span>
-              <h1 class="page-title" id="pageTitle">Tajuk Halaman 1</h1>
-              <p class="page-subtitle" id="pageSubtitle">
-                Tekan butang audio di sebelah untuk mula atau berhentikan audio.
-              </p>
+            <!-- ══ KOLUM KANAN: Tajuk + Audio + Jump ══ -->
+            <div class="side-panel">
+              <div class="title-box">
+                <span class="mini-label">INTERAKTIF AUDIO</span>
+                <p class="page-subtitle" id="pageSubtitle">
+                  Tekan butang audio di bawah untuk mula atau berhentikan audio.
+                </p>
+              </div>
+
+              <div class="audio-panel">
+                <div class="audio-heading">🎵 Senarai Audio</div>
+                <div id="audioList"></div>
+              </div>
+
+              <!-- Jump ke halaman — di bawah audio -->
+              <div class="page-jump-panel">
+                <span class="page-jump-label">Pergi ke halaman:</span>
+                <input
+                  id="pageInput"
+                  class="page-input"
+                  type="number"
+                  min="1"
+                  max="24"
+                  inputmode="numeric"
+                  placeholder="—"
+                  aria-label="Nombor halaman"
+                />
+                <button class="jump-btn" id="jumpBtn" type="button">Pergi</button>
+              </div>
             </div>
 
-            <div class="audio-panel">
-              <div class="audio-heading">Senarai Audio</div>
-              <div id="audioList"></div>
-            </div>
-
-            <div class="note-box">
-              <h3>Cara Guna</h3>
-              <p>Tekan butang <strong>Mula</strong> untuk mendengar audio halaman ini.</p>
-            </div>
-
-            <div class="footer-actions">
-              <button class="footer-btn prev" id="prevBtn" type="button">← Page Sebelum</button>
-              <button class="footer-btn next" id="nextBtn" type="button">Page Seterusnya →</button>
-            </div>
-          </div>
-
-        </div><!-- /content-col -->
+          </div><!-- /content-col -->
         </div><!-- /outer-grid -->
       </section>
 
     </div><!-- /stage -->
-
   </div><!-- /app -->
 
   <audio id="player" preload="auto"></audio>
 
   <script>
     const BOOK_PAGES = [
-      { pageNumber:2,  title:"Muka Surat 2",  subtitle:"شكرا، عفوا",
+      { pageNumber:2,  
         image:"../assets/pages/ms2.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"شُكْرًا",file:"../assets/audiovo/ms2-syukran.mp3",show:true},{label:"عَفْوًا",file:"../assets/audiovo/ms2-afwan.mp3",show:true}]
       },
-      { pageNumber:3,  title:"Muka Surat 3",  subtitle:"أم، جدة، أخت",
+      { pageNumber:3,  
         image:"../assets/pages/ms3.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"أُمٌّ",file:"../assets/audiovo/ms3-ummun.mp3",show:true},{label:"جَدَّةٌ",file:"../assets/audiovo/ms3-jaddatun.mp3",show:true},{label:"أُخْتٌ",file:"../assets/audiovo/ms3-ukhtun.mp3",show:true}]
       },
-      { pageNumber:6,  title:"Muka Surat 6",  subtitle:"ج د",
+      { pageNumber:6,  
         image:"../assets/pages/ms6.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"ج د",file:"../assets/audiovo/ms6-kalimah-jimdal.mp3",show:true}]
       },
-      { pageNumber:13, title:"Muka Surat 13", subtitle:"هذا أخ، هذا أب، هذا جد",
+      { pageNumber:13, 
         image:"../assets/pages/ms13.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"هٰذَا أَبٌ",file:"../assets/audiovo/ms13-01-LK-1kali.mp3",show:true},{label:"هٰذَا جَدٌّ",file:"../assets/audiovo/ms13-02-L-1kali.mp3",show:true},{label:"هٰذَا أَخٌ",file:"../assets/audiovo/ms13-03-PR-1kali.mp3",show:true}]
       },
-      { pageNumber:14, title:"Muka Surat 14", subtitle:"هذه جدة، هذه أخت، هذه أم",
+      { pageNumber:14, 
         image:"../assets/pages/ms14.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"هَذِهِ أُمٌّ",file:"../assets/audiovo/ms14-01-PR-1kali.mp3",show:true},{label:"هَذِهِ جَدَّةٌ",file:"../assets/audiovo/ms14-02-PR-1kali.mp3",show:true},{label:"هَذِهِ أُخْتٌ",file:"../assets/audiovo/ms14-03-LK-1kali.mp3",show:true}]
       },
-      { pageNumber:17, title:"Muka Surat 17", subtitle:"واحد، اثنان",
+      { pageNumber:17,
         image:"../assets/pages/ms17.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"وَاحِدٌ",file:"../assets/audiovo/ms17-wahidun.mp3",show:true},{label:"اِثْنَانِ",file:"../assets/audiovo/ms17-isnani.mp3",show:true}]
       },
-      { pageNumber:21, title:"Muka Surat 21", subtitle:"Nyanyian Ahli Keluarga",
+      { pageNumber:21,
         image:"../assets/pages/ms21.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Nyanyian Ahli Keluarga",file:"../assets/audiovo/ms21-laguHAZAUSRATI.mp3",show:true}]
       },
-      { pageNumber:24, title:"Muka Surat 24", subtitle:"قياما، معلم، تلميذ",
+      { pageNumber:24, 
         image:"../assets/pages/ms24.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"قِيَامًا",file:"../assets/audiovo/ms24-qiyam.mp3",show:true},{label:"مُعَلِّمٌ",file:"../assets/audiovo/ms24-mualimun.mp3",show:true},{label:"تِلْمِيذٌ",file:"../assets/audiovo/ms24-tilmizun.mp3",show:true}]
       },
-      { pageNumber:25, title:"Muka Surat 25", subtitle:"جلوسا، معلمة، تلميذة",
+      { pageNumber:25, 
         image:"../assets/pages/ms25.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"جُلُوسًا",file:"../assets/audiovo/ms25-julusan.mp3",show:true},{label:"مُعَلِّمَةٌ",file:"../assets/audiovo/ms25-mualimatun.mp3",show:true},{label:"تِلْمِيذَةٌ",file:"../assets/audiovo/ms25-tilmizatun.mp3",show:true}]
       },
-      { pageNumber:28, title:"Muka Surat 28", subtitle:"ا ت",
+      { pageNumber:28, 
         image:"../assets/pages/ms28.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"ا ت",file:"../assets/audiovo/ms28-kalimahaliftaa-1kali.mp3",show:true}]
       },
-      { pageNumber:43, title:"Muka Surat 43", subtitle:"Nyanyian Ahli Warga Sekolah",
+      { pageNumber:43, 
         image:"../assets/pages/ms43.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Nyanyian Ahli Warga Sekolah",file:"../assets/audiovo/ms43-SOBAHULKHAIR.mp3",show:true}]
       },
-      { pageNumber:46, title:"Muka Surat 46", subtitle:"انتبهوا، حسنا، كرسي، مكتب، باب",
+      { pageNumber:46, 
         image:"../assets/pages/ms46.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"اِنْتَبِهُوا، حَسَنًا",file:"../assets/audiovo/ms46-01.mp3",show:true},{label:"كُرْسِيٌّ",file:"../assets/audiovo/ms46-kursiyyun.mp3",show:true},{label:"مَكْتَبٌ",file:"../assets/audiovo/ms46-maktabun.mp3",show:true},{label:"بَابٌ",file:"../assets/audiovo/ms46-baabun.mp3",show:true}]
       },
-      { pageNumber:47, title:"Muka Surat 47", subtitle:"استمعوا جيدا، نافذة، سبورة، ممسحة",
+      { pageNumber:47, 
         image:"../assets/pages/ms47.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"اِسْتَمِعُوا جَيِّدًا",file:"../assets/audiovo/ms47-istamiujayyida.mp3",show:true},{label:"نَافِذَةٌ",file:"../assets/audiovo/ms47-nafizatun.mp3",show:true},{label:"سَبُّورَةٌ",file:"../assets/audiovo/ms47-sabburotun.mp3",show:true},{label:"مِمْسَحَةٌ",file:"../assets/audiovo/ms47-mimsahatun.mp3",show:true}]
       },
-      { pageNumber:50, title:"Muka Surat 50", subtitle:"ك ن",
+      { pageNumber:50, 
         image:"../assets/pages/ms50.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"ك ن",file:"../assets/audiovo/ms49-kalimahkafnun-1kali.mp3",show:true}]
       },
-      { pageNumber:57, title:"Muka Surat 57", subtitle:"هذا باب، هذا مكتب، هذا كرسي",
+      { pageNumber:57, 
         image:"../assets/pages/ms57.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"هٰذَا بَابٌ",file:"../assets/audiovo/ms57-01-hazaababun.mp3",show:true},{label:"هٰذَا مَكْتَبٌ",file:"../assets/audiovo/ms57-02-hazamaktabun.mp3",show:true},{label:"هٰذَا كُرْسِيٌّ",file:"../assets/audiovo/ms57-03-hazakursiyun.mp3",show:true}]
       },
-      { pageNumber:58, title:"Muka Surat 58", subtitle:"هذه سبورة، هذه ممسحة، هذه نافذة",
+      { pageNumber:58, 
         image:"../assets/pages/ms58.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"هٰذِهِ سَبُّورَةٌ",file:"../assets/audiovo/ms58-01-hazisabburatun.mp3",show:true},{label:"هٰذِهِ مِمْسَحَةٌ",file:"../assets/audiovo/ms58-02-hazihimimsahatun.mp3",show:true},{label:"هٰذِهِ نَافِذَةٌ",file:"../assets/audiovo/ms58-03-hazihinaafizatun.mp3",show:true}]
       },
-      { pageNumber:59, title:"Muka Surat 59", subtitle:"Dialog", image:"../assets/pages/ms59.jpg",
+      { pageNumber:59, 
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Dialog",file:"../assets/audiovo/ms59-01-1kali.mp3",show:true}]
       },
-      { pageNumber:60, title:"Muka Surat 60", subtitle:"Dialog", image:"../assets/pages/ms60.jpg",
+      { pageNumber:60, 
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Dialog",file:"../assets/audiovo/ms60-01-1kali.mp3",show:true}]
       },
-      { pageNumber:61, title:"Muka Surat 61", subtitle:"خمسة، ستة، سبعة",
+      { pageNumber:61,
         image:"../assets/pages/ms61.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"خَمْسَةٌ",file:"../assets/audiovo/ms61-khomsah5.mp3",show:true},{label:"سِتَّةٌ",file:"../assets/audiovo/ms61-sittatun6.mp3",show:true},{label:"سَبْعَةٌ",file:"../assets/audiovo/ms61-sabatun7.mp3",show:true}]
       },
-      { pageNumber:68, title:"Muka Surat 68", subtitle:"مسطرة، مبراة، ممحاة",
+      { pageNumber:68,
         image:"../assets/pages/ms68.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"مِسْطَرَةٌ",file:"../assets/audiovo/ms68-mistorotun.mp3",show:true},{label:"مِبْرَاةٌ",file:"../assets/audiovo/ms68-mimbrotun.mp3",show:true},{label:"مِمْحَاةٌ",file:"../assets/audiovo/ms68-mimhatun.mp3",show:true}]
       },
-      { pageNumber:69, title:"Muka Surat 69", subtitle:"قلم، كتاب، حقيبة",
+      { pageNumber:69, 
         image:"../assets/pages/ms69.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"قَلَمٌ",file:"../assets/audiovo/ms69-kolamun.mp3",show:true},{label:"كِتَابٌ",file:"../assets/audiovo/ms69-kitaabun.mp3",show:true},{label:"حَقِيبَةٌ",file:"../assets/audiovo/ms69-haqibatun.mp3",show:true}]
       },
-      { pageNumber:79, title:"Muka Surat 79", subtitle:"هذا كتاب، هذه حقيبة",
+      { pageNumber:79,
         image:"../assets/pages/ms79.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"هٰذَا كِتَابٌ، هٰذِهِ حَقِيبَةٌ",file:"../assets/audiovo/ms79-01-1kali.mp3",show:true}]
       },
-      { pageNumber:80, title:"Muka Surat 80", subtitle:"Dialog", image:"../assets/pages/ms80.jpg",
+      { pageNumber:80, image:"../assets/pages/ms80.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Dialog",file:"../assets/audiovo/ms80-01-1kali.mp3",show:true}]
       },
-      { pageNumber:81, title:"Muka Surat 81", subtitle:"Dialog", image:"../assets/pages/ms81.jpg",
+      { pageNumber:81, image:"../assets/pages/ms81.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Dialog",file:"../assets/audiovo/ms81-01.mp3",show:true}]
       },
-      { pageNumber:82, title:"Muka Surat 82", subtitle:"Dialog", image:"../assets/pages/ms82.jpg",
+      { pageNumber:82, image:"../assets/pages/ms82.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
         audios:[{label:"Dialog",file:"../assets/audiovo/ms82-01.mp3",show:true}]
       },
-      { pageNumber:83, title:"Muka Surat 83", subtitle:"ثمانية، تسعة، عشرة",
+      { pageNumber:83,
         image:"../assets/pages/ms83.jpg",
         leftCharacter:"../assets/images/boy.png", rightCharacter:"../assets/images/girl.png",
         clouds:["../assets/images/awan.png","../assets/images/awan.png","../assets/images/awan.png"],
@@ -692,37 +807,35 @@
       }
     ];
 
-    /* state */
+    /* ── State ── */
     let currentIndex      = 0;
     let currentAudioIndex = -1;
     let isPaused          = false;
 
-    /* DOM */
-    const pageTitle        = document.getElementById("pageTitle");
-    const pageSubtitle     = document.getElementById("pageSubtitle");
+    /* ── DOM ── */
     const pageBadge        = document.getElementById("pageBadge");
+    const pageSubtitle     = document.getElementById("pageSubtitle");
     const mainImage        = document.getElementById("mainImage");
     const imagePlaceholder = document.getElementById("imagePlaceholder");
     const leftCharImg      = document.getElementById("leftCharImg");
     const rightCharImg     = document.getElementById("rightCharImg");
     const leftCharPH       = document.getElementById("leftCharPlaceholder");
     const rightCharPH      = document.getElementById("rightCharPlaceholder");
-    const cloudImgs        = [document.getElementById("cloudImg1"),document.getElementById("cloudImg2"),document.getElementById("cloudImg3")];
-    const cloudFBs         = [document.getElementById("cloudFallback1"),document.getElementById("cloudFallback2"),document.getElementById("cloudFallback3")];
+    const cloudImgs        = [document.getElementById("cloudImg1"), document.getElementById("cloudImg2"), document.getElementById("cloudImg3")];
+    const cloudFBs         = [document.getElementById("cloudFallback1"), document.getElementById("cloudFallback2"), document.getElementById("cloudFallback3")];
     const audioListEl      = document.getElementById("audioList");
     let   audioButtons     = [];
-    const topPrevBtn = document.getElementById("topPrevBtn");
-    const topNextBtn = document.getElementById("topNextBtn");
-    const prevBtn    = document.getElementById("prevBtn");
-    const nextBtn    = document.getElementById("nextBtn");
-    const player     = document.getElementById("player");
-    const pageInput  = document.getElementById("pageInput");
-    const jumpBtn    = document.getElementById("jumpBtn");
 
-    /* helpers */
-    const isArabic = t => /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(t||"");
+    const prevBtn   = document.getElementById("prevBtn");
+    const nextBtn   = document.getElementById("nextBtn");
+    const player    = document.getElementById("player");
+    const pageInput = document.getElementById("pageInput");
+    const jumpBtn   = document.getElementById("jumpBtn");
 
-    function styleLabelEl(el, text){
+    /* ── Helpers ── */
+    const isArabic = t => /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(t || "");
+
+    function styleLabelEl(el, text) {
       el.textContent = text;
       const ar = isArabic(text);
       el.classList.toggle("is-arabic", ar);
@@ -730,108 +843,164 @@
       el.setAttribute("lang", ar ? "ar"  : "ms");
     }
 
-    function resetButtons(){
-      audioButtons.forEach(b=>{
+    function resetButtons() {
+      audioButtons.forEach(b => {
         b.classList.remove("playing");
         const a = b.querySelector(".audio-action");
         if(a) a.textContent = "▶ Mula";
       });
     }
 
-    function stopAudio(){
-      player.pause(); player.currentTime=0; player.removeAttribute("src");
-      currentAudioIndex=-1; isPaused=false; resetButtons();
+    function stopAudio() {
+      player.pause();
+      player.currentTime = 0;
+      player.removeAttribute("src");
+      currentAudioIndex = -1;
+      isPaused = false;
+      resetButtons();
     }
 
-    function loadImg(img, ph, src){
+    function loadImg(img, ph, src) {
       if(!img) return;
       if(src && src.trim()){
-        img.src=src; img.style.display="block";
-        if(ph) ph.style.display="none";
-        img.onerror=()=>{ img.style.display="none"; if(ph) ph.style.display="flex"; };
+        img.src = src;
+        img.style.display = "block";
+        if(ph) ph.style.display = "none";
+        img.onerror = () => { img.style.display = "none"; if(ph) ph.style.display = "flex"; };
       } else {
-        img.removeAttribute("src"); img.style.display="none";
-        if(ph) ph.style.display="flex";
+        img.removeAttribute("src");
+        img.style.display = "none";
+        if(ph) ph.style.display = "flex";
       }
     }
 
-    /* render */
-    function setupPage(){
+    /* ── Render ── */
+    function setupPage() {
       const p = BOOK_PAGES[currentIndex];
       stopAudio();
 
-      pageTitle.textContent    = p.title    || `Tajuk Halaman ${p.pageNumber}`;
-      pageSubtitle.textContent = p.subtitle || "Tekan butang audio di sebelah untuk mula atau berhentikan audio.";
-      pageBadge.textContent    = `Halaman ${currentIndex+1} / ${BOOK_PAGES.length}`;
-      pageInput.value = currentIndex+1;
+      pageSubtitle.textContent = "Tekan butang audio di bawah untuk mula atau berhentikan audio.";
+      pageBadge.textContent    = `Halaman ${currentIndex + 1} / ${BOOK_PAGES.length}`;
+      pageInput.value = currentIndex + 1;
       pageInput.max   = BOOK_PAGES.length;
 
       if(p.image && p.image.trim()){
-        mainImage.src=p.image; mainImage.style.display="block"; imagePlaceholder.style.display="none";
-        mainImage.onerror=()=>{ mainImage.style.display="none"; imagePlaceholder.style.display="flex";
-          imagePlaceholder.innerHTML=`<div class="placeholder-box">GAMBAR TAK JUMPA<br><br>Semak path:<br><strong>${p.image}</strong></div>`; };
+        mainImage.src = p.image;
+        mainImage.style.display = "block";
+        imagePlaceholder.style.display = "none";
+        mainImage.onerror = () => {
+          mainImage.style.display = "none";
+          imagePlaceholder.style.display = "flex";
+          imagePlaceholder.innerHTML = `<div class="placeholder-box">GAMBAR TAK JUMPA<br><br>Semak path:<br><strong>${p.image}</strong></div>`;
+        };
       } else {
-        mainImage.removeAttribute("src"); mainImage.style.display="none"; imagePlaceholder.style.display="flex";
-        imagePlaceholder.innerHTML=`<div class="placeholder-box">LETAK GAMBAR PAGE ${currentIndex+1} DI SINI<br><br>Contoh: <strong>../assets/pages/page${currentIndex+1}.jpg</strong></div>`;
+        mainImage.removeAttribute("src");
+        mainImage.style.display = "none";
+        imagePlaceholder.style.display = "flex";
+        imagePlaceholder.innerHTML = `<div class="placeholder-box">LETAK GAMBAR PAGE ${currentIndex + 1} DI SINI<br><br>Contoh: <strong>../assets/pages/page${currentIndex + 1}.jpg</strong></div>`;
       }
 
-      loadImg(leftCharImg,  leftCharPH,  p.leftCharacter  ||"");
-      loadImg(rightCharImg, rightCharPH, p.rightCharacter ||"");
+      loadImg(leftCharImg, leftCharPH, p.leftCharacter || "");
+      loadImg(rightCharImg, rightCharPH, p.rightCharacter || "");
 
-      const clouds = Array.isArray(p.clouds) ? p.clouds : ["","",""];
-      cloudImgs.forEach((img,i)=>loadImg(img, cloudFBs[i], clouds[i]||""));
+      const clouds = Array.isArray(p.clouds) ? p.clouds : ["", "", ""];
+      cloudImgs.forEach((img, i) => loadImg(img, cloudFBs[i], clouds[i] || ""));
 
-      audioListEl.innerHTML=""; audioButtons=[];
-      (p.audios||[]).filter(i=>i&&i.show).forEach((item,idx)=>{
-        const btn=document.createElement("button");
-        btn.type="button"; btn.className=`audio-btn a${Math.min(idx+1,6)}`;
-        btn.innerHTML=`<span class="audio-action">▶ Mula</span><span class="audio-label"></span>`;
-        styleLabelEl(btn.querySelector(".audio-label"), item.label||`Perkataan ${idx+1}`);
-        btn.dataset.file=item.file||"";
-        btn.addEventListener("click",()=>toggleAudio(idx));
-        audioListEl.appendChild(btn); audioButtons.push(btn);
+      audioListEl.innerHTML = "";
+      audioButtons = [];
+      (p.audios || []).filter(i => i && i.show).forEach((item, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `audio-btn a${Math.min(idx + 1, 6)}`;
+        btn.innerHTML = `<span class="audio-action">▶ Mula</span><span class="audio-label"></span>`;
+        styleLabelEl(btn.querySelector(".audio-label"), item.label || `Perkataan ${idx + 1}`);
+        btn.dataset.file = item.file || "";
+        btn.addEventListener("click", () => toggleAudio(idx));
+        audioListEl.appendChild(btn);
+        audioButtons.push(btn);
       });
 
-      const first=currentIndex===0, last=currentIndex===BOOK_PAGES.length-1;
-      topPrevBtn.disabled=first; prevBtn.disabled=first;
-      topNextBtn.disabled=last;  nextBtn.disabled=last;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === BOOK_PAGES.length - 1;
     }
 
-    /* audio */
-    function toggleAudio(i){
-      const btn=audioButtons[i]; if(!btn) return;
-      const file=btn.dataset.file||""; const act=btn.querySelector(".audio-action");
-      if(!file.trim()) return;
-      if(currentAudioIndex===i){
-        if(!player.paused){ player.pause(); isPaused=true; btn.classList.remove("playing"); act.textContent="▶ Mula"; }
-        else { player.play().then(()=>{ isPaused=false; btn.classList.add("playing"); act.textContent="⏸ Berhenti"; }).catch(()=>{}); }
+    /* ── Audio toggle ── */
+    function toggleAudio(i) {
+      const btn = audioButtons[i];
+      if (!btn) return;
+      const file = btn.dataset.file || "";
+      const act = btn.querySelector(".audio-action");
+      if (!file.trim()) return;
+
+      if (currentAudioIndex === i) {
+        if (!player.paused) {
+          player.pause();
+          isPaused = true;
+          btn.classList.remove("playing");
+          act.textContent = "▶ Mula";
+        } else {
+          player.play().then(() => {
+            isPaused = false;
+            btn.classList.add("playing");
+            act.textContent = "⏸ Berhenti";
+          }).catch(() => {});
+        }
         return;
       }
-      stopAudio(); player.src=file; player.load();
-      player.play().then(()=>{ currentAudioIndex=i; isPaused=false; btn.classList.add("playing"); act.textContent="⏸ Berhenti"; }).catch(()=>stopAudio());
+
+      stopAudio();
+      player.src = file;
+      player.load();
+      player.play().then(() => {
+        currentAudioIndex = i;
+        isPaused = false;
+        btn.classList.add("playing");
+        act.textContent = "⏸ Berhenti";
+      }).catch(() => stopAudio());
     }
 
-    player.addEventListener("ended",()=>{ resetButtons(); currentAudioIndex=-1; isPaused=false; });
-    player.addEventListener("pause",()=>{
-      if(currentAudioIndex!==-1&&!player.ended&&isPaused){
-        const b=audioButtons[currentAudioIndex];
-        if(b){ b.classList.remove("playing"); const a=b.querySelector(".audio-action"); if(a) a.textContent="▶ Mula"; }
+    player.addEventListener("ended", () => {
+      resetButtons();
+      currentAudioIndex = -1;
+      isPaused = false;
+    });
+
+    player.addEventListener("pause", () => {
+      if (currentAudioIndex !== -1 && !player.ended && isPaused) {
+        const b = audioButtons[currentAudioIndex];
+        if (b) {
+          b.classList.remove("playing");
+          const a = b.querySelector(".audio-action");
+          if (a) a.textContent = "▶ Mula";
+        }
       }
     });
 
-    /* nav */
-    function goToPage(i){ if(i<0||i>=BOOK_PAGES.length) return; currentIndex=i; setupPage(); }
-    const nextPage=()=>goToPage(currentIndex+1);
-    const prevPage=()=>goToPage(currentIndex-1);
-    function jumpToPage(){ const v=Number(pageInput.value); if(!Number.isInteger(v)||v<1||v>BOOK_PAGES.length) return; goToPage(v-1); }
+    /* ── Navigation ── */
+    function goToPage(i) {
+      if (i < 0 || i >= BOOK_PAGES.length) return;
+      currentIndex = i;
+      setupPage();
+    }
 
-    topPrevBtn.addEventListener("click",prevPage);
-    prevBtn.addEventListener("click",prevPage);
-    topNextBtn.addEventListener("click",nextPage);
-    nextBtn.addEventListener("click",nextPage);
-    jumpBtn.addEventListener("click",jumpToPage);
-    pageInput.addEventListener("keydown",e=>{ if(e.key==="Enter") jumpToPage(); });
-    document.addEventListener("keydown",e=>{ if(e.key==="ArrowRight") nextPage(); if(e.key==="ArrowLeft") prevPage(); });
+    const nextPage = () => goToPage(currentIndex + 1);
+    const prevPage = () => goToPage(currentIndex - 1);
+
+    function jumpToPage() {
+      const v = Number(pageInput.value);
+      if (!Number.isInteger(v) || v < 1 || v > BOOK_PAGES.length) return;
+      goToPage(v - 1);
+    }
+
+    prevBtn.addEventListener("click", prevPage);
+    nextBtn.addEventListener("click", nextPage);
+    jumpBtn.addEventListener("click", jumpToPage);
+    pageInput.addEventListener("keydown", e => { if (e.key === "Enter") jumpToPage(); });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") nextPage();
+      if (e.key === "ArrowLeft") prevPage();
+    });
 
     setupPage();
   </script>

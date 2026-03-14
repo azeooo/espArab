@@ -26,12 +26,22 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Azim', sans-serif; /* Updated font */
     background: linear-gradient(180deg, #a8d8f0 0%, #c9e8ff 40%, #e8f6ff 100%);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
   }
+
+ @font-face {
+  font-family: 'Azim';
+  src: url('./fonts/Azim.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Sakkal Majalla';
+  src: url('./fonts/Sakkal-Majalla-Regular.ttf') format('truetype');
+}
 
   .home-btn{
     position:fixed;
@@ -157,6 +167,7 @@
   }
 
   .main-header {
+     font-family: 'Azim', sans-serif; /* Updated font */
     position: relative;
     z-index: 10;
     text-align: center;
@@ -176,7 +187,7 @@
     box-shadow: 0 4px 12px rgba(59,158,221,0.4);
   }
   .main-title {
-    font-family: 'Baloo 2', cursive;
+    font-family: 'Azim', sans-serif /* Updated font */, cursive;
     font-size: clamp(1.9rem, 5vw, 3.2rem);
     font-weight: 800;
     background: linear-gradient(135deg, #1a6fad, #3b9edd, #5dd6ff);
@@ -194,11 +205,11 @@
   }
 
   .mascot {
-    font-size: 3rem;
-    display: inline-block;
-    animation: mascotBounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 4px 8px rgba(255,200,0,0.4));
-  }
+  font-size: 3rem;
+  display: inline-block;
+  animation: mascotBounce 2s ease-in-out infinite;
+  font-family: 'Sakkal Majalla', serif; /* Updated font */
+}
   @keyframes mascotBounce {
     0%,100% { transform: translateY(0) rotate(-5deg); }
     50% { transform: translateY(-12px) rotate(5deg); }
@@ -322,7 +333,7 @@
   }
   .hero-book-title {
     margin-top: .85rem;
-    font-family: 'Baloo 2', cursive;
+    font-family: 'Sakkal Majalla', serif, /* Updated font */ ;
     color: var(--textDark);
     font-size: clamp(1.8rem, 4vw, 2.9rem);
     line-height: 1.08;
@@ -397,7 +408,7 @@
     padding: 0 .2rem;
   }
   .section-title {
-    font-family: 'Baloo 2', cursive;
+    font-family: 'Azim', sans-serif; /* Updated font */
     font-size: clamp(1.4rem, 3vw, 2rem);
     color: var(--textDark);
     line-height: 1.05;
@@ -956,7 +967,7 @@
 
     <div class="modal-prompt">Pilih permainan untuk topik ini</div>
     <div class="sub-grid" id="gameOptionsContainer"></div>
-    <div class="mini-note">Gambar game disusun fit dalam box supaya tak nampak tercut.</div>
+  
   </div>
 </div>
 
@@ -1038,7 +1049,7 @@
     if (label.includes('angkasa')) return 'Permainan bertema angkasa dengan suasana interaktif dan ceria.';
     if (label.includes('usrati')) return 'Permainan keluarga untuk kenal kosa kata topik ini.';
     if (label.includes('alat tulis')) return 'Kenal objek pembelajaran seperti alat tulis dengan cara interaktif.';
-    if (label.includes('racing') || label.includes('car')) return 'Permainan lumba kereta yang fun untuk ulangkaji sambil bermain.';
+    if (label.includes('racing') || label.includes('car')) return 'Permainan lumba kereta yang seronok untuk ulangkaji sambil bermain.';
 
     return 'Permainan interaktif untuk topik ini.';
   }

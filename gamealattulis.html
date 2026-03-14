@@ -839,7 +839,7 @@ box-shadow:0 2px 0 rgba(0,0,0,.2);
         container.classList.add('pulsing');
         setTimeout(()=>container.classList.remove('pulsing'), 900);
         const fb = document.getElementById('feedback-text');
-        fb.textContent = '✨ أَحْسَنْتَ! ✨'; fb.classList.add('show');
+       
         triggerFlash('correct'); createSparkles();
 
         const voKey = voForItemId(STATIONERY_ITEMS[STATE.currentIndex].id);
